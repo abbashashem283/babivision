@@ -1,19 +1,18 @@
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/debug/B.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
-class PasswordCodeConfirmation extends StatefulWidget {
-  const PasswordCodeConfirmation({super.key});
+class PasswordReset extends StatefulWidget {
+  const PasswordReset({super.key});
 
   @override
-  State<PasswordCodeConfirmation> createState() =>
-      _PasswordCodeConfirmationState();
+  State<PasswordReset> createState() => _PasswordResetState();
 }
 
-class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
+class _PasswordResetState extends State<PasswordReset> {
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
       services.SystemUiMode.immersiveSticky,
@@ -31,7 +30,6 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final isKeyboardUp = bottomInset > 0;
-    bool codeSent = false;
 
     return Scaffold(
       body: GestureDetector(
@@ -84,32 +82,20 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                         SizedBox(height: 30),
                         FormMessage(
                           type: MessageType.error,
-                          messages: ["Invalid Code"],
+                          messages: [
+                            "Password is required",
+                            "Email is required",
+                          ],
                         ),
                         SizedBox(height: 35),
-                        Text(
-                          codeSent
-                              ? "Enter the code you received below"
-                              : "Enter your Email",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 18,
-                          ),
+                        TextInput(obscureText: true, labelText: "New Password"),
+                        SizedBox(height: 15),
+                        TextInput(
+                          obscureText: true,
+                          labelText: "Confirm New Password",
                         ),
-                        SizedBox(height: 10),
-                        codeSent
-                            ? PinCodeTextField(
-                              appContext: context,
-                              length: 6,
-                              pinTheme: PinTheme(
-                                selectedColor: Colors.amber,
-                                activeColor: Colors.purple,
-                                inactiveColor: Colors.blue,
-                                shape: PinCodeFieldShape.circle,
-                              ),
-                            )
-                            : TextInput(labelText: "Email"),
-                        SizedBox(height: codeSent ? 5 : 35),
+                        // SizedBox(height: 15),
+                        SizedBox(height: 35),
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
@@ -121,7 +107,7 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                               padding: EdgeInsets.all(15),
                             ),
                             child: Text(
-                              codeSent ? "Verify" : "Send Code",
+                              "Reset Password",
                               style: TextStyle(fontSize: 20),
                             ),
                           ),

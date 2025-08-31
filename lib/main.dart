@@ -1,4 +1,5 @@
 import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
+import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/HomePage.dart';
 import 'package:babivision/views/pages/Auth/LoginPage.dart';
@@ -23,7 +24,7 @@ class _MyAppState extends State<MyApp> {
         ).copyWith(primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PasswordCodeConfirmation(),
+      home: PasswordReset(),
     );
   }
 }

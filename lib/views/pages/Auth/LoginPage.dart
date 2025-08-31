@@ -1,3 +1,4 @@
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
@@ -90,6 +91,16 @@ class _LoginpageState extends State<Loginpage> {
                         TextInput(labelText: "Email"),
                         SizedBox(height: 15),
                         TextInput(obscureText: true, labelText: "Password"),
+                        SizedBox(height: 15),
+                        OutlinedButton(
+                          onPressed: () {},
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: KColors.getColor(context, "primary"),
+                            ),
+                          ),
+                          child: Text("Forgot Password?"),
+                        ),
                         SizedBox(height: 35),
                         SizedBox(
                           width: double.infinity,
