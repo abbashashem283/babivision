@@ -1,3 +1,5 @@
+import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
@@ -50,54 +52,68 @@ class _LoginpageState extends State<Loginpage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      //spacing: 10,
-                      children: [
-                        Image.asset(
-                          'assets/images/babivision-logo.png',
-                          width: 150,
-                          height: 75,
-                          fit: BoxFit.fill,
-                        ),
+                    child: B(
+                      color: "tr",
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //spacing: 10,
+                        children: [
+                          Image.asset(
+                            'assets/images/babivision-logo.png',
+                            width: 150,
+                            height: 75,
+                            fit: BoxFit.fill,
+                          ),
 
-                        RichText(
-                          text: TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 32),
-                            children: [
-                              TextSpan(
-                                text: "Babi",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 32,
                               ),
-                              TextSpan(
-                                text: "Vision",
-                                style: TextStyle(fontWeight: FontWeight.w300),
-                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Babi",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: "Vision",
+                                  style: TextStyle(fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          FormMessage(
+                            type: MessageType.error,
+                            messages: [
+                              "Password is required",
+                              "Email is required",
                             ],
                           ),
-                        ),
-                        SizedBox(height: 30),
-                        TextInput(labelText: "Email"),
-                        SizedBox(height: 15),
-                        TextInput(obscureText: true, labelText: "Password"),
-                        SizedBox(height: 35),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: () {},
-                            style: FilledButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                          SizedBox(height: 35),
+                          TextInput(labelText: "Email"),
+                          SizedBox(height: 15),
+                          TextInput(obscureText: true, labelText: "Password"),
+                          SizedBox(height: 35),
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () {},
+                              style: FilledButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: EdgeInsets.all(15),
                               ),
-                              padding: EdgeInsets.all(15),
-                            ),
-                            child: Text(
-                              "Login",
-                              style: TextStyle(fontSize: 20),
+                              child: Text(
+                                "Login",
+                                style: TextStyle(fontSize: 20),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
