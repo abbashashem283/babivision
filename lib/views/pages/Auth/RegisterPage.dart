@@ -1,3 +1,4 @@
+import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
@@ -75,6 +76,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ],
                           ),
+                        ),
+                        SizedBox(height: 20),
+                        FormMessage(
+                          type: MessageType.error,
+                          messages: [
+                            "Name is required",
+                            "Email is required",
+                            "Password is required",
+                            "Confirm Password is required",
+                          ],
                         ),
                         SizedBox(height: 30),
                         TextInput(labelText: "Name"),
