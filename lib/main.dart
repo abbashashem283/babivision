@@ -1,5 +1,6 @@
+import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/HomePage.dart';
-import 'package:babivision/views/pages/LoginPage.dart';
+import 'package:babivision/views/pages/Auth/LoginPage.dart';
 import 'package:babivision/views/pages/SplashScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _MyAppState extends State<MyApp> {
         ).copyWith(primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Loginpage(),
+      home: RegisterPage(),
     );
   }
 }
