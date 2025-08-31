@@ -1,17 +1,19 @@
 import 'package:babivision/views/debug/B.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
-class Loginpage extends StatefulWidget {
-  const Loginpage({super.key});
+class PasswordCodeConfirmation extends StatefulWidget {
+  const PasswordCodeConfirmation({super.key});
 
   @override
-  State<Loginpage> createState() => _LoginpageState();
+  State<PasswordCodeConfirmation> createState() =>
+      _PasswordCodeConfirmationState();
 }
 
-class _LoginpageState extends State<Loginpage> {
+class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
       services.SystemUiMode.immersiveSticky,
@@ -81,16 +83,28 @@ class _LoginpageState extends State<Loginpage> {
                         SizedBox(height: 30),
                         FormMessage(
                           type: MessageType.error,
-                          messages: [
-                            "Password is required",
-                            "Email is required",
-                          ],
+                          messages: ["Invalid Code"],
                         ),
                         SizedBox(height: 35),
-                        TextInput(labelText: "Email"),
-                        SizedBox(height: 15),
-                        TextInput(obscureText: true, labelText: "Password"),
-                        SizedBox(height: 35),
+                        Text(
+                          "Enter the code you received below",
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        PinCodeTextField(
+                          appContext: context,
+                          length: 6,
+                          pinTheme: PinTheme(
+                            selectedColor: Colors.amber,
+                            activeColor: Colors.purple,
+                            inactiveColor: Colors.blue,
+                            shape: PinCodeFieldShape.circle,
+                          ),
+                        ),
+                        SizedBox(height: 5),
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
@@ -102,7 +116,7 @@ class _LoginpageState extends State<Loginpage> {
                               padding: EdgeInsets.all(15),
                             ),
                             child: Text(
-                              "Login",
+                              "Verify",
                               style: TextStyle(fontSize: 20),
                             ),
                           ),
