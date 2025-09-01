@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 class TextInput extends StatefulWidget {
   final bool obscureText;
   final String labelText;
+  final TextEditingController? controller;
+
   const TextInput({
     super.key,
     this.obscureText = false,
+    this.controller = null,
     required this.labelText,
   });
 
@@ -17,6 +20,7 @@ class TextInput extends StatefulWidget {
 class _TextInputState extends State<TextInput> {
   late bool obscureText;
   late String labelText;
+  late TextEditingController? controller;
 
   @override
   void initState() {
@@ -24,6 +28,7 @@ class _TextInputState extends State<TextInput> {
     super.initState();
     obscureText = widget.obscureText;
     labelText = widget.labelText;
+    controller = widget.controller;
   }
 
   @override
@@ -32,6 +37,7 @@ class _TextInputState extends State<TextInput> {
       height: 50,
       child: TextField(
         obscureText: obscureText,
+        controller: controller,
         style: TextStyle(color: Colors.grey[500]),
         decoration: InputDecoration(
           labelText: labelText,
