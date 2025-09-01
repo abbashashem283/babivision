@@ -11,6 +11,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
       services.SystemUiMode.immersiveSticky,
@@ -88,15 +94,26 @@ class _RegisterPageState extends State<RegisterPage> {
                           ],
                         ),
                         SizedBox(height: 30),
-                        TextInput(labelText: "Name"),
+                        TextInput(
+                          labelText: "Name",
+                          controller: nameController,
+                        ),
                         SizedBox(height: 15),
-                        TextInput(labelText: "Email"),
+                        TextInput(
+                          labelText: "Email",
+                          controller: emailController,
+                        ),
                         SizedBox(height: 15),
-                        TextInput(obscureText: true, labelText: "Password"),
+                        TextInput(
+                          obscureText: true,
+                          labelText: "Password",
+                          controller: passwordController,
+                        ),
                         SizedBox(height: 15),
                         TextInput(
                           obscureText: true,
                           labelText: "Confirm Password",
+                          controller: confirmPasswordController,
                         ),
                         SizedBox(height: 35),
                         SizedBox(

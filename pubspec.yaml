@@ -36,6 +36,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   pin_code_fields: ^8.0.1
+  flutter_dotenv: ^6.0.0
+  dio: ^5.9.0
 
  
 
@@ -62,8 +64,9 @@ flutter:
   uses-material-design: true
 
   assets:
-  - assets/images/
-  - assets/screens/ 
+    - assets/images/
+    - assets/screens/
+    - .env 
 
   # To add assets to your application, add an assets section, like this:
   # assets:

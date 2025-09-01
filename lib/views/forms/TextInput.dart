@@ -9,7 +9,7 @@ class TextInput extends StatefulWidget {
   const TextInput({
     super.key,
     this.obscureText = false,
-    this.controller = null,
+    this.controller,
     required this.labelText,
   });
 
@@ -20,15 +20,12 @@ class TextInput extends StatefulWidget {
 class _TextInputState extends State<TextInput> {
   late bool obscureText;
   late String labelText;
-  late TextEditingController? controller;
+  TextEditingController? controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    obscureText = widget.obscureText;
-    labelText = widget.labelText;
-    controller = widget.controller;
   }
 
   @override
@@ -36,11 +33,11 @@ class _TextInputState extends State<TextInput> {
     return SizedBox(
       height: 50,
       child: TextField(
-        obscureText: obscureText,
-        controller: controller,
+        obscureText: widget.obscureText,
+        controller: widget.controller,
         style: TextStyle(color: Colors.grey[500]),
         decoration: InputDecoration(
-          labelText: labelText,
+          labelText: widget.labelText,
           labelStyle: TextStyle(color: Colors.grey[400]!),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
