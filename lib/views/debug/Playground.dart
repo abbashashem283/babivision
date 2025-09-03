@@ -39,32 +39,6 @@ class _PlaygroundState extends State<Playground> {
                   }
                 },
               ),
-              FutureBuilder(
-                future: SecureStorage().write("test", "this is a test"),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (!snapshot.hasError) {
-                    return Text("maybe it worked");
-                  } else {
-                    return Text("Idk man this is fishy");
-                  }
-                },
-              ),
-              FutureBuilder(
-                future: SecureStorage().read("test"),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text("theres an error ${snapshot.error}");
-                  } else if (snapshot.hasData) {
-                    return Text("there you go bro ${snapshot.data}");
-                  } else {
-                    return Text("idk man this is fishy");
-                  }
-                },
-              ),
             ],
           ),
         ),

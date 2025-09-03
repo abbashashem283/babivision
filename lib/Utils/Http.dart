@@ -8,11 +8,19 @@ class Http {
   }) async {
     final client = Dio();
     final fullPath = "${dotenv.env['HOST']}$endpoint";
-    final response = await client.get(
-      fullPath,
-      options: Options(headers: headers),
-    );
-    return response;
+    headers = {...?headers, "Accept": "application/json"};
+    try {
+      final response = await client.get(
+        fullPath,
+        options: Options(headers: headers),
+      );
+      return response;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return e.response!;
+      }
+      rethrow;
+    }
   }
 
   static Future<Response<dynamic>> post(
@@ -22,11 +30,19 @@ class Http {
   }) async {
     final client = Dio();
     final fullPath = "${dotenv.env['HOST']}$endpoint";
-    final response = await client.post(
-      fullPath,
-      data: data,
-      options: Options(headers: headers),
-    );
-    return response;
+    headers = {...?headers, "Accept": "application/json"};
+    try {
+      final response = await client.post(
+        fullPath,
+        data: data,
+        options: Options(headers: headers),
+      );
+      return response;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return e.response!;
+      }
+      rethrow;
+    }
   }
 }

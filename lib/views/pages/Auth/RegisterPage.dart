@@ -1,5 +1,9 @@
+import 'package:babivision/Utils/Http.dart';
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
@@ -11,11 +15,14 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  Future<dynamic>? fetcher;
+  Map<String, dynamic>? errors;
 
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
@@ -84,42 +91,76 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        FormMessage(
-                          type: MessageType.error,
-                          messages: [
-                            "Name is required",
-                            "Email is required",
-                            "Password is required",
-                            "Confirm Password is required",
-                          ],
+                        FutureBuilder(
+                          future: fetcher,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator(
+                                color: Colors.purple,
+                              );
+                            }
+                            if (snapshot.hasError) {
+                              return Text(
+                                "ERROR: ${snapshot.error}",
+                                style: TextStyle(color: Colors.red),
+                              );
+                            }
+                            if (snapshot.hasData) {
+                              final Response<dynamic> response = snapshot.data;
+                              if (response.statusCode == 200) {
+                                return FormMessage(
+                                  messages: ["${response.data['message']}"],
+                                  httpCode: response.statusCode,
+                                );
+                              }
+
+                              errors = response.data['errors'];
+                            }
+                            return SizedBox.shrink();
+                          },
                         ),
                         SizedBox(height: 30),
                         TextInput(
                           labelText: "Name",
-                          controller: nameController,
+                          controller: _nameController,
+                          errorText: errors?["name"]?[0],
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           labelText: "Email",
-                          controller: emailController,
+                          errorText: errors?["email"]?[0],
+                          controller: _emailController,
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           obscureText: true,
                           labelText: "Password",
-                          controller: passwordController,
+                          errorText: errors?["password"]?[0],
+                          controller: _passwordController,
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           obscureText: true,
                           labelText: "Confirm Password",
-                          controller: confirmPasswordController,
+                          errorText: errors?["confirm_password"]?[0],
+                          controller: _confirmPasswordController,
                         ),
                         SizedBox(height: 35),
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                fetcher = Http.post("/api/auth/test", {
+                                  "name": _nameController.text,
+                                  "email": _emailController.text,
+                                  "password": _passwordController.text,
+                                  /*"confirm_pwd":
+                                      _confirmPasswordController.text,*/
+                                });
+                              });
+                            },
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),

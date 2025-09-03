@@ -5,14 +5,31 @@ enum MessageType { success, error, warning }
 
 class FormMessage extends StatelessWidget {
   final MessageType type;
+  final int? httpCode;
   final List messages;
 
-  const FormMessage({super.key, required this.type, required this.messages});
+  const FormMessage({
+    super.key,
+    this.type = MessageType.success,
+    this.httpCode = -1,
+    required this.messages,
+  });
 
   @override
   Widget build(BuildContext context) {
     Color backgroundColor, textColor;
     IconData messageIcon;
+    MessageType type = this.type;
+
+    if (httpCode != -1) {
+      switch (httpCode) {
+        case 200:
+          type = MessageType.success;
+          break;
+        default:
+          type = MessageType.error;
+      }
+    }
 
     switch (type) {
       case MessageType.success:
@@ -53,9 +70,11 @@ class FormMessage extends StatelessWidget {
                       spacing: 5,
                       children: [
                         Icon(messageIcon, color: textColor),
-                        Text(
-                          message,
-                          style: TextStyle(color: textColor, fontSize: 18),
+                        Flexible(
+                          child: Text(
+                            message,
+                            style: TextStyle(color: textColor, fontSize: 18),
+                          ),
                         ),
                       ],
                     ),
