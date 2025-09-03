@@ -17,9 +17,9 @@ class Http {
 
   static Future<Response<dynamic>> post(
     String endpoint,
-    Map<String, dynamic> data,
+    Map<String, dynamic> data, {
     Map<String, dynamic>? headers,
-  ) async {
+  }) async {
     final client = Dio();
     final fullPath = "${dotenv.env['HOST']}$endpoint";
     final response = await client.post(
