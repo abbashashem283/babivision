@@ -152,12 +152,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: FilledButton(
                             onPressed: () {
                               setState(() {
+                                FocusScope.of(context).unfocus();
                                 fetcher = Http.post("/api/auth/test", {
                                   "name": _nameController.text,
                                   "email": _emailController.text,
                                   "password": _passwordController.text,
-                                  /*"confirm_pwd":
-                                      _confirmPasswordController.text,*/
+                                  "confirm_password":
+                                      _confirmPasswordController.text,
                                 });
                               });
                             },
