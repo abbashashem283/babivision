@@ -1,6 +1,8 @@
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/data/storage/SecureStorage.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/forms/LaraForm.dart';
+import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 
 class Playground extends StatefulWidget {
@@ -11,6 +13,13 @@ class Playground extends StatefulWidget {
 }
 
 class _PlaygroundState extends State<Playground> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final GlobalKey<LaraformState> formKey = GlobalKey<LaraformState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,22 +30,53 @@ class _PlaygroundState extends State<Playground> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FutureBuilder(
-                future: Http.get("/api/auth/test"),
-                builder: (context, snapshot) {
-                  // Check the connection state
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    // The data is available here
-                    return Text(
-                      'Data received: ${snapshot.data!.data.toString()}',
-                    );
-                  } else {
-                    return const Text('No data');
-                  }
+              Laraform(
+                key: formKey,
+                builder:
+                    (errors) => Column(
+                      children: [
+                        TextInput(
+                          labelText: "Name",
+                          controller: _nameController,
+                          errorText: formKey.currentState?.getError("name"),
+                        ),
+                        SizedBox(height: 15),
+                        TextInput(
+                          labelText: "Email",
+                          errorText: formKey.currentState?.getError("email"),
+                          controller: _emailController,
+                        ),
+                        SizedBox(height: 15),
+                        TextInput(
+                          obscureText: true,
+                          labelText: "Password",
+                          errorText: formKey.currentState?.getError("password"),
+                          controller: _passwordController,
+                        ),
+                        SizedBox(height: 15),
+                        TextInput(
+                          obscureText: true,
+                          labelText: "Confirm Password",
+                          errorText: formKey.currentState?.getError(
+                            "confirm_password",
+                          ),
+                          controller: _confirmPasswordController,
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            formKey.currentState!.submit();
+                          },
+                          child: Text("submit"),
+                        ),
+                      ],
+                    ),
+                fetcher: () async {
+                  return Http.post("/api/auth/test", {
+                    "name": _nameController.text,
+                    "email": _emailController.text,
+                    "password": _passwordController.text,
+                    "confirm_password": _confirmPasswordController.text,
+                  });
                 },
               ),
             ],
