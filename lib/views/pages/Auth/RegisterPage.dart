@@ -20,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool isLoading = false, isDone = false, isError = false;
+  dynamic responseData;
 
   Future<dynamic>? fetcher;
   Map<String, dynamic>? errors;
@@ -35,6 +37,16 @@ class _RegisterPageState extends State<RegisterPage> {
     // TODO: implement initState
     _setImmersiveMode();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -91,35 +103,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        FutureBuilder(
-                          future: fetcher,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return CircularProgressIndicator(
-                                color: Colors.purple,
-                              );
-                            }
-                            if (snapshot.hasError) {
-                              return Text(
-                                "ERROR: ${snapshot.error}",
-                                style: TextStyle(color: Colors.red),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              final Response<dynamic> response = snapshot.data;
-                              if (response.statusCode == 200) {
-                                return FormMessage(
-                                  messages: ["${response.data['message']}"],
-                                  httpCode: response.statusCode,
-                                );
-                              }
-
-                              errors = response.data['errors'];
-                            }
-                            return SizedBox.shrink();
-                          },
-                        ),
+                        isLoading
+                            ? CircularProgressIndicator(color: Colors.purple)
+                            : isDone
+                            ? errors != null
+                                ? SizedBox.shrink()
+                                : FormMessage(messages: [responseData])
+                            : isError
+                            ? FormMessage(
+                              messages: ["Error: Couldn't proccess form"],
+                              type: MessageType.error,
+                            )
+                            : SizedBox.shrink(),
                         SizedBox(height: 30),
                         TextInput(
                           labelText: "Name",
@@ -150,8 +145,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: () {
-                              setState(() {
+                            onPressed: () async {
+                              /*setState(() {
                                 FocusScope.of(context).unfocus();
                                 fetcher = Http.post("/api/auth/test", {
                                   "name": _nameController.text,
@@ -160,7 +155,40 @@ class _RegisterPageState extends State<RegisterPage> {
                                   "confirm_password":
                                       _confirmPasswordController.text,
                                 });
+                              });*/
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                isLoading = true;
+                                isDone = false;
+                                isError = false;
                               });
+                              try {
+                                Response<dynamic> response =
+                                    await Http.post("/api/auth/test", {
+                                      "name": _nameController.text,
+                                      "email": _emailController.text,
+                                      "password": _passwordController.text,
+                                      "confirm_password":
+                                          _confirmPasswordController.text,
+                                    });
+                                //responseData = response.data["message"];
+                                setState(() {
+                                  errors = null;
+                                  isLoading = false;
+                                  isDone = true;
+                                  if (response.statusCode == 422) {
+                                    errors = response.data["errors"];
+                                  }
+                                  isError = false;
+                                  responseData = response.data["message"];
+                                });
+                              } catch (e) {
+                                setState(() {
+                                  isLoading = false;
+                                  isDone = false;
+                                  isError = true;
+                                });
+                              }
                             },
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(

@@ -49,6 +49,7 @@ class _TextInputState extends State<TextInput> {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: Colors.red[900]!, width: 2),
           ),
+
           labelStyle: TextStyle(color: Colors.grey[400]!),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
