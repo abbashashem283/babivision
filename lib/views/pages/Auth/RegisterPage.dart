@@ -1,6 +1,8 @@
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/data/KConstants.dart';
+import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
+import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final GlobalKey<LaraformState> formKey = GlobalKey<LaraformState>();
   bool isLoading = false, isDone = false, isError = false;
   dynamic responseData;
 
@@ -102,44 +105,52 @@ class _RegisterPageState extends State<RegisterPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 20),
-                        isLoading
-                            ? CircularProgressIndicator(color: Colors.purple)
-                            : isDone
-                            ? errors != null
-                                ? SizedBox.shrink()
-                                : FormMessage(messages: [responseData])
-                            : isError
-                            ? FormMessage(
-                              messages: ["Error: Couldn't proccess form"],
-                              type: MessageType.error,
-                            )
-                            : SizedBox.shrink(),
-                        SizedBox(height: 30),
-                        TextInput(
-                          labelText: "Name",
-                          controller: _nameController,
-                          errorText: errors?["name"]?[0],
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          labelText: "Email",
-                          errorText: errors?["email"]?[0],
-                          controller: _emailController,
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          obscureText: true,
-                          labelText: "Password",
-                          errorText: errors?["password"]?[0],
-                          controller: _passwordController,
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          obscureText: true,
-                          labelText: "Confirm Password",
-                          errorText: errors?["confirm_password"]?[0],
-                          controller: _confirmPasswordController,
+                        Laraform(
+                          key: formKey,
+                          topMargin: 30,
+                          topMarginIM: 20,
+                          fetcher: () async {
+                            return Http.post("/api/auth/test", {
+                              "name": _nameController.text,
+                              "email": _emailController.text,
+                              "password": _passwordController.text,
+                              "confirm_password":
+                                  _confirmPasswordController.text,
+                            });
+                          },
+                          onSuccess:
+                              () =>
+                                  debugPrint("Im gonna send you to some page"),
+                          builder:
+                              (errors) => Column(
+                                children: [
+                                  TextInput(
+                                    labelText: "Name",
+                                    controller: _nameController,
+                                    errorText: errors("name"),
+                                  ),
+                                  SizedBox(height: 15),
+                                  TextInput(
+                                    labelText: "Email",
+                                    errorText: errors("email"),
+                                    controller: _emailController,
+                                  ),
+                                  SizedBox(height: 15),
+                                  TextInput(
+                                    obscureText: true,
+                                    labelText: "Password",
+                                    errorText: errors("password"),
+                                    controller: _passwordController,
+                                  ),
+                                  SizedBox(height: 15),
+                                  TextInput(
+                                    obscureText: true,
+                                    labelText: "Confirm Password",
+                                    errorText: errors("confirm_password"),
+                                    controller: _confirmPasswordController,
+                                  ),
+                                ],
+                              ),
                         ),
                         SizedBox(height: 35),
                         SizedBox(
@@ -147,38 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: FilledButton(
                             onPressed: () async {
                               FocusScope.of(context).unfocus();
-                              setState(() {
-                                isLoading = true;
-                                isDone = false;
-                                isError = false;
-                              });
-                              try {
-                                Response<dynamic> response =
-                                    await Http.post("/api/auth/test", {
-                                      "name": _nameController.text,
-                                      "email": _emailController.text,
-                                      "password": _passwordController.text,
-                                      "confirm_password":
-                                          _confirmPasswordController.text,
-                                    });
-                                //responseData = response.data["message"];
-                                setState(() {
-                                  errors = null;
-                                  isLoading = false;
-                                  isDone = true;
-                                  if (response.statusCode == 422) {
-                                    errors = response.data["errors"];
-                                  }
-                                  isError = false;
-                                  responseData = response.data["message"];
-                                });
-                              } catch (e) {
-                                setState(() {
-                                  isLoading = false;
-                                  isDone = false;
-                                  isError = true;
-                                });
-                              }
+                              formKey.currentState!.submit();
                             },
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(

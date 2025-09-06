@@ -10,13 +10,24 @@ class Laraform extends StatefulWidget {
   final Widget Function(String? Function(String) errorGetter) builder;
   final Widget waitingIndicator;
   final String? errorMessage;
+  final double? topMargin;
+  final double? topMarginIM;
   final Future<Response<dynamic>> Function() fetcher;
+  final Function() onSuccess;
+  final Function()? onError;
+  final Function()? onValidationError;
   const Laraform({
     required GlobalKey<LaraformState> key,
     this.waitingIndicator = const CircularProgressIndicator(),
     this.errorMessage = "Error: Couldn't proccess form",
+    this.topMargin = 0, //form top space that changes with state
+    this.topMarginIM =
+        0, //form top space when form is loading or showing message
+    this.onError,
+    this.onValidationError,
     required this.builder,
     required this.fetcher,
+    required this.onSuccess,
   }) : super(key: key);
 
   @override
@@ -36,20 +47,29 @@ class LaraformState extends State<Laraform> {
         isError = false;
       });
       response = await widget.fetcher();
+      debugPrint(response?.data.toString());
       setState(() {
         isLoading = false;
         isDone = true;
         isError = false;
-        errors = response!.statusCode == 422 ? response!.data["errors"] : null;
-        debugPrint("${errors!["name"]}");
+        errors = response!.data?["errors"];
       });
-    } catch (_) {
+      if (errors == null) {
+        widget.onSuccess();
+      } else if (widget.onValidationError != null) {
+        widget.onValidationError!();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
       setState(() {
         isLoading = false;
         isDone = false;
         isError = true;
         errors = null;
       });
+      if (widget.onError != null) {
+        widget.onError!();
+      }
     }
   }
 
@@ -61,6 +81,12 @@ class LaraformState extends State<Laraform> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(
+          height:
+              (isLoading || (isDone && errors == null) || isError)
+                  ? widget.topMarginIM
+                  : widget.topMargin,
+        ),
         isLoading
             ? widget.waitingIndicator
             : isDone
@@ -73,7 +99,9 @@ class LaraformState extends State<Laraform> {
               type: MessageType.error,
             )
             : SizedBox.shrink(),
-        SizedBox(height: 30),
+        SizedBox(
+          height: (isLoading || (isDone && errors == null) || isError) ? 30 : 0,
+        ),
         widget.builder(getError),
       ],
     );

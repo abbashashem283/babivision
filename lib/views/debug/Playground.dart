@@ -32,6 +32,7 @@ class _PlaygroundState extends State<Playground> {
             children: [
               Laraform(
                 key: formKey,
+                onSuccess: () {},
                 builder:
                     (errors) => Column(
                       children: [
