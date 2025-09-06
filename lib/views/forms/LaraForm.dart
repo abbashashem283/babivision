@@ -25,9 +25,9 @@ class Laraform extends StatefulWidget {
         0, //form top space when form is loading or showing message
     this.onError,
     this.onValidationError,
-    required this.builder,
     required this.fetcher,
     required this.onSuccess,
+    required this.builder,
   }) : super(key: key);
 
   @override

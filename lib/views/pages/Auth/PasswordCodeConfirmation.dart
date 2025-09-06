@@ -1,4 +1,7 @@
+import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/forms/LaraForm.dart';
+import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
@@ -14,6 +17,8 @@ class PasswordCodeConfirmation extends StatefulWidget {
 }
 
 class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
+  GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
+
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
       services.SystemUiMode.immersiveSticky,
@@ -81,50 +86,65 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 30),
-                        FormMessage(
-                          type: MessageType.error,
-                          messages: ["Invalid Code"],
-                        ),
-                        SizedBox(height: 35),
-                        Text(
-                          codeSent
-                              ? "Enter the code you received below"
-                              : "Enter your Email",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        codeSent
-                            ? PinCodeTextField(
-                              appContext: context,
-                              length: 6,
-                              pinTheme: PinTheme(
-                                selectedColor: Colors.amber,
-                                activeColor: Colors.purple,
-                                inactiveColor: Colors.blue,
-                                shape: PinCodeFieldShape.circle,
+
+                        /* */
+                        Laraform(
+                          key: _formKey,
+                          topMargin: 20,
+                          topMarginIM: 20,
+                          errorMessage: "Possible Network Error!",
+                          fetcher: () async => Http.get("endpoint"),
+                          onSuccess: () {},
+                          builder:
+                              (_) => Column(
+                                children: [
+                                  Text(
+                                    "Enter the code you received below",
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  PinCodeTextField(
+                                    appContext: context,
+                                    length: 6,
+                                    pinTheme: PinTheme(
+                                      selectedColor: Colors.amber,
+                                      activeColor: Colors.purple,
+                                      inactiveColor: Colors.blue,
+                                      shape: PinCodeFieldShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: FilledButton(
+                                      onPressed: () {
+                                        //_formKey.currentState!.submit();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => PasswordReset(),
+                                          ),
+                                        );
+                                      },
+                                      style: FilledButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.all(15),
+                                      ),
+                                      child: Text(
+                                        "Verify",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ) /* */,
+                                ],
                               ),
-                            )
-                            : TextInput(labelText: "Email"),
-                        SizedBox(height: codeSent ? 5 : 35),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: () {},
-                            style: FilledButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: EdgeInsets.all(15),
-                            ),
-                            child: Text(
-                              codeSent ? "Verify" : "Send Code",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
                         ),
                       ],
                     ),

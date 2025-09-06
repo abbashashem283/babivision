@@ -1,6 +1,8 @@
+import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
+import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
@@ -13,10 +15,24 @@ class PasswordReset extends StatefulWidget {
 }
 
 class _PasswordResetState extends State<PasswordReset> {
+  GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
+
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
       services.SystemUiMode.immersiveSticky,
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -79,39 +95,50 @@ class _PasswordResetState extends State<PasswordReset> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 30),
-                        FormMessage(
-                          type: MessageType.error,
-                          messages: [
-                            "Password is required",
-                            "Email is required",
-                          ],
-                        ),
-                        SizedBox(height: 35),
-                        TextInput(obscureText: true, labelText: "New Password"),
-                        SizedBox(height: 15),
-                        TextInput(
-                          obscureText: true,
-                          labelText: "Confirm New Password",
-                        ),
-                        // SizedBox(height: 15),
-                        SizedBox(height: 35),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: () {},
-                            style: FilledButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                        /*** */
+                        Laraform(
+                          key: _formKey,
+                          fetcher: () async => Http.get("endpoint"),
+                          onSuccess: () {},
+                          builder:
+                              (errors) => Column(
+                                children: [
+                                  TextInput(
+                                    obscureText: true,
+                                    labelText: "New Password",
+                                    controller: _passwordController,
+                                  ),
+                                  SizedBox(height: 15),
+                                  TextInput(
+                                    obscureText: true,
+                                    labelText: "Confirm New Password",
+                                    controller: _confirmPasswordController,
+                                  ),
+                                  // SizedBox(height: 15),
+                                  SizedBox(height: 35),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: FilledButton(
+                                      onPressed: () {},
+                                      style: FilledButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.all(15),
+                                      ),
+                                      child: Text(
+                                        "Reset Password",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              padding: EdgeInsets.all(15),
-                            ),
-                            child: Text(
-                              "Reset Password",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
                         ),
+
+                        /** */
                       ],
                     ),
                   ),

@@ -1,10 +1,6 @@
 import 'package:babivision/Utils/Http.dart';
-import 'package:babivision/data/KConstants.dart';
-import 'package:babivision/views/debug/B.dart';
-import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
@@ -109,6 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           key: formKey,
                           topMargin: 30,
                           topMarginIM: 20,
+                          errorMessage: "Possible Network Error!",
                           fetcher: () async {
                             return Http.post("/api/auth/test", {
                               "name": _nameController.text,
