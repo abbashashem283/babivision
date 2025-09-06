@@ -107,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           topMarginIM: 20,
                           errorMessage: "Possible Network Error!",
                           fetcher: () async {
-                            return Http.post("/api/auth/test", {
+                            return Http.post("/api/auth/register", {
                               "name": _nameController.text,
                               "email": _emailController.text,
                               "password": _passwordController.text,

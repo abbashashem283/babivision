@@ -98,6 +98,8 @@ class _PasswordResetState extends State<PasswordReset> {
                         /*** */
                         Laraform(
                           key: _formKey,
+                          topMargin: 30,
+                          topMarginIM: 20,
                           fetcher: () async => Http.get("endpoint"),
                           onSuccess: () {},
                           builder:

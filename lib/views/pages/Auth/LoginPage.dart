@@ -102,7 +102,7 @@ class _LoginpageState extends State<Loginpage> {
                           topMarginIM: 20,
                           errorMessage: "Possible Network Error!",
                           fetcher: () async {
-                            return Http.post("/api/auth/test", {
+                            return Http.post("/api/auth/login", {
                               "email": _emailController.text,
                               "password": _passwordController.text,
                             });
