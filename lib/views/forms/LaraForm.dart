@@ -7,7 +7,7 @@ enum LFMethod { get, post }
 class Laraform extends StatefulWidget {
   //A Simple form wrapper that works well with laravel validations
 
-  final Widget Function(Map<String, dynamic>? errors) builder;
+  final Widget Function(String? Function(String) errorGetter) builder;
   final Widget waitingIndicator;
   final String? errorMessage;
   final Future<Response<dynamic>> Function() fetcher;
@@ -60,7 +60,6 @@ class LaraformState extends State<Laraform> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      key: ValueKey(errors),
       children: [
         isLoading
             ? widget.waitingIndicator
@@ -75,7 +74,7 @@ class LaraformState extends State<Laraform> {
             )
             : SizedBox.shrink(),
         SizedBox(height: 30),
-        widget.builder(errors),
+        widget.builder(getError),
       ],
     );
   }

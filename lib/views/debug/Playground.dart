@@ -38,28 +38,26 @@ class _PlaygroundState extends State<Playground> {
                         TextInput(
                           labelText: "Name",
                           controller: _nameController,
-                          errorText: formKey.currentState?.getError("name"),
+                          errorText: errors("name"),
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           labelText: "Email",
-                          errorText: formKey.currentState?.getError("email"),
+                          errorText: errors("email"),
                           controller: _emailController,
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           obscureText: true,
                           labelText: "Password",
-                          errorText: formKey.currentState?.getError("password"),
+                          errorText: errors("password"),
                           controller: _passwordController,
                         ),
                         SizedBox(height: 15),
                         TextInput(
                           obscureText: true,
                           labelText: "Confirm Password",
-                          errorText: formKey.currentState?.getError(
-                            "confirm_password",
-                          ),
+                          errorText: errors("confirm_password"),
                           controller: _confirmPasswordController,
                         ),
                         FilledButton(
