@@ -116,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             });
                           },
                           onSuccess:
-                              () =>
+                              (response) =>
                                   debugPrint("Im gonna send you to some page"),
                           builder:
                               (errors) => Column(

@@ -20,7 +20,7 @@ class _LoginpageState extends State<Loginpage> {
   GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool forgotPassword = false;
+  bool _forgotPassword = false;
 
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
@@ -102,35 +102,62 @@ class _LoginpageState extends State<Loginpage> {
                           topMarginIM: 20,
                           errorMessage: "Possible Network Error!",
                           fetcher: () async {
-                            return Http.post("/api/auth/login", {
+                            final endPoint =
+                                _forgotPassword
+                                    ? "/api/auth/password/forgot-password"
+                                    : "/api/auth/login";
+                            return Http.post(endPoint, {
                               "email": _emailController.text,
                               "password": _passwordController.text,
                             });
                           },
-                          onSuccess:
-                              () => debugPrint("Sending you to some page"),
+                          onSuccess: (response) {
+                            final data = response.data;
+                            debugPrint(data.toString());
+                            if (_forgotPassword) {
+                              Future.delayed(Duration(seconds: 3), () {
+                                if (mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => PasswordCodeConfirmation(
+                                            email: _emailController.text,
+                                          ),
+                                    ),
+                                  );
+                                }
+                              });
+                            }
+                          },
                           builder:
                               (errors) => Column(
                                 children: [
                                   TextInput(
                                     labelText: "Email",
                                     controller: _emailController,
-                                    errorText: errors("email"),
+                                    errorText:
+                                        _forgotPassword
+                                            ? null
+                                            : errors("email"),
                                   ),
                                   SizedBox(height: 15),
-                                  if (!forgotPassword)
+                                  if (!_forgotPassword)
                                     TextInput(
                                       obscureText: true,
                                       labelText: "Password",
                                       controller: _passwordController,
-                                      errorText: errors("password"),
+                                      errorText:
+                                          _forgotPassword
+                                              ? null
+                                              : errors("password"),
                                     ),
-                                  SizedBox(height: forgotPassword ? 0 : 15),
+                                  SizedBox(height: _forgotPassword ? 0 : 15),
 
                                   OutlinedButton(
                                     onPressed: () {
                                       setState(() {
-                                        forgotPassword = !forgotPassword;
+                                        _forgotPassword = !_forgotPassword;
                                       });
                                     },
                                     style: OutlinedButton.styleFrom(
@@ -142,28 +169,17 @@ class _LoginpageState extends State<Loginpage> {
                                       ),
                                     ),
                                     child: Text(
-                                      forgotPassword
+                                      _forgotPassword
                                           ? "Remember Password?"
                                           : "Forgot Password?",
                                     ),
                                   ),
-                                  SizedBox(height: forgotPassword ? 15 : 35),
+                                  SizedBox(height: _forgotPassword ? 15 : 35),
                                   SizedBox(
                                     width: double.infinity,
                                     child: FilledButton(
                                       onPressed: () {
                                         FocusScope.of(context).unfocus();
-                                        if (forgotPassword) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                      PasswordCodeConfirmation(),
-                                            ),
-                                          );
-                                          return;
-                                        }
                                         _formKey.currentState!.submit();
                                       },
                                       style: FilledButton.styleFrom(
@@ -175,7 +191,7 @@ class _LoginpageState extends State<Loginpage> {
                                         padding: EdgeInsets.all(15),
                                       ),
                                       child: Text(
-                                        forgotPassword
+                                        _forgotPassword
                                             ? "Send Password Reset Code"
                                             : "Login",
                                         style: TextStyle(fontSize: 20),

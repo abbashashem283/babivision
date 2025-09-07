@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
 class PasswordCodeConfirmation extends StatefulWidget {
-  const PasswordCodeConfirmation({super.key});
+  final String email;
+  const PasswordCodeConfirmation({super.key, required this.email});
 
   @override
   State<PasswordCodeConfirmation> createState() =>
@@ -18,6 +19,7 @@ class PasswordCodeConfirmation extends StatefulWidget {
 
 class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
   GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
+  final TextEditingController _pinController = TextEditingController();
 
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
@@ -33,10 +35,16 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    //_pinController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final isKeyboardUp = bottomInset > 0;
-    bool codeSent = false;
+    final _bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final _isKeyboardUp = _bottomInset > 0;
 
     return Scaffold(
       body: GestureDetector(
@@ -46,7 +54,7 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
         },
         child: Stack(
           children: [
-            isKeyboardUp
+            _isKeyboardUp
                 ? SizedBox.shrink()
                 : Image.asset(
                   "assets/screens/wavy.png",
@@ -93,8 +101,29 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                           topMargin: 20,
                           topMarginIM: 20,
                           errorMessage: "Possible Network Error!",
-                          fetcher: () async => Http.get("endpoint"),
-                          onSuccess: () {},
+                          fetcher:
+                              () async =>
+                                  Http.post("/api/auth/password/check-code", {
+                                    "email": widget.email,
+                                    "code": _pinController.text,
+                                  }),
+                          onError: (e) {},
+                          onSuccess: (response) {
+                            if (response.statusCode == 200) {
+                              //Future.delayed(Duration(seconds: 2), () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => PasswordReset(
+                                        email: widget.email,
+                                        code: _pinController.text,
+                                      ),
+                                ),
+                              );
+                              // });
+                            }
+                          },
                           builder:
                               (_) => Column(
                                 children: [
@@ -109,6 +138,7 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                   PinCodeTextField(
                                     appContext: context,
                                     length: 6,
+                                    controller: _pinController,
                                     pinTheme: PinTheme(
                                       selectedColor: Colors.amber,
                                       activeColor: Colors.purple,
@@ -120,12 +150,16 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                     width: double.infinity,
                                     child: FilledButton(
                                       onPressed: () {
-                                        //_formKey.currentState!.submit();
+                                        final code = _pinController.text;
+                                        _formKey.currentState!.submit();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder:
-                                                (context) => PasswordReset(),
+                                                (context) => PasswordReset(
+                                                  email: widget.email,
+                                                  code: code,
+                                                ),
                                           ),
                                         );
                                       },

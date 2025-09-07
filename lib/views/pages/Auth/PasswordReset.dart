@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
 class PasswordReset extends StatefulWidget {
-  const PasswordReset({super.key});
+  final String email;
+  final String code;
+  const PasswordReset({super.key, required this.email, required this.code});
 
   @override
   State<PasswordReset> createState() => _PasswordResetState();
@@ -100,8 +102,18 @@ class _PasswordResetState extends State<PasswordReset> {
                           key: _formKey,
                           topMargin: 30,
                           topMarginIM: 20,
-                          fetcher: () async => Http.get("endpoint"),
-                          onSuccess: () {},
+                          fetcher:
+                              () async =>
+                                  Http.post("/api/auth/password/reset", {
+                                    "email": widget.email,
+                                    "code": widget.code,
+                                    "password": _passwordController.text,
+                                    "confirm_password":
+                                        _confirmPasswordController.text,
+                                  }),
+                          onSuccess: (response) {
+                            debugPrint(response.data.toString());
+                          },
                           builder:
                               (errors) => Column(
                                 children: [
@@ -121,7 +133,9 @@ class _PasswordResetState extends State<PasswordReset> {
                                   SizedBox(
                                     width: double.infinity,
                                     child: FilledButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        _formKey.currentState!.submit();
+                                      },
                                       style: FilledButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
