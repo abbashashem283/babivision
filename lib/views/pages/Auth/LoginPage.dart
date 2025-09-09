@@ -8,6 +8,7 @@ import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:flutter/services.dart' as services;
+import 'package:babivision/Utils/Widgets.dart' as w;
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -115,7 +116,7 @@ class _LoginpageState extends State<Loginpage> {
                             final data = response.data;
                             debugPrint(data.toString());
                             if (_forgotPassword) {
-                              Future.delayed(Duration(seconds: 3), () {
+                              Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
                                   Navigator.push(
                                     context,
@@ -156,6 +157,7 @@ class _LoginpageState extends State<Loginpage> {
 
                                   OutlinedButton(
                                     onPressed: () {
+                                      w.unfocus(context);
                                       setState(() {
                                         _forgotPassword = !_forgotPassword;
                                       });
@@ -179,7 +181,7 @@ class _LoginpageState extends State<Loginpage> {
                                     width: double.infinity,
                                     child: FilledButton(
                                       onPressed: () {
-                                        FocusScope.of(context).unfocus();
+                                        w.unfocus(context);
                                         _formKey.currentState!.submit();
                                       },
                                       style: FilledButton.styleFrom(

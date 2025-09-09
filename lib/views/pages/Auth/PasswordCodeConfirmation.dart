@@ -110,18 +110,19 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                           onError: (e) {},
                           onSuccess: (response) {
                             if (response.statusCode == 200) {
-                              //Future.delayed(Duration(seconds: 2), () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => PasswordReset(
-                                        email: widget.email,
-                                        code: _pinController.text,
-                                      ),
-                                ),
-                              );
-                              // });
+                              Future.delayed(Duration(seconds: 2), () {
+                                if (!mounted) return;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => PasswordReset(
+                                          email: widget.email,
+                                          code: _pinController.text,
+                                        ),
+                                  ),
+                                );
+                              });
                             }
                           },
                           builder:
@@ -150,18 +151,7 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                     width: double.infinity,
                                     child: FilledButton(
                                       onPressed: () {
-                                        final code = _pinController.text;
                                         _formKey.currentState!.submit();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => PasswordReset(
-                                                  email: widget.email,
-                                                  code: code,
-                                                ),
-                                          ),
-                                        );
                                       },
                                       style: FilledButton.styleFrom(
                                         shape: RoundedRectangleBorder(

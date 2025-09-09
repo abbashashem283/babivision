@@ -6,6 +6,7 @@ import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
+import 'package:babivision/Utils/Widgets.dart' as w;
 
 class PasswordReset extends StatefulWidget {
   final String email;
@@ -121,12 +122,14 @@ class _PasswordResetState extends State<PasswordReset> {
                                     obscureText: true,
                                     labelText: "New Password",
                                     controller: _passwordController,
+                                    errorText: errors("password"),
                                   ),
                                   SizedBox(height: 15),
                                   TextInput(
                                     obscureText: true,
                                     labelText: "Confirm New Password",
                                     controller: _confirmPasswordController,
+                                    errorText: errors("confirm_password"),
                                   ),
                                   // SizedBox(height: 15),
                                   SizedBox(height: 35),
@@ -134,6 +137,7 @@ class _PasswordResetState extends State<PasswordReset> {
                                     width: double.infinity,
                                     child: FilledButton(
                                       onPressed: () {
+                                        w.unfocus(context);
                                         _formKey.currentState!.submit();
                                       },
                                       style: FilledButton.styleFrom(

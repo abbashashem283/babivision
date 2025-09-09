@@ -26,59 +26,28 @@ class _PlaygroundState extends State<Playground> {
       body: Center(
         child: B(
           color: "g",
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Laraform(
-                key: formKey,
-                onSuccess: (response) {},
-                builder:
-                    (errors) => Column(
-                      children: [
-                        TextInput(
-                          labelText: "Name",
-                          controller: _nameController,
-                          errorText: errors("name"),
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          labelText: "Email",
-                          errorText: errors("email"),
-                          controller: _emailController,
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          obscureText: true,
-                          labelText: "Password",
-                          errorText: errors("password"),
-                          controller: _passwordController,
-                        ),
-                        SizedBox(height: 15),
-                        TextInput(
-                          obscureText: true,
-                          labelText: "Confirm Password",
-                          errorText: errors("confirm_password"),
-                          controller: _confirmPasswordController,
-                        ),
-                        FilledButton(
-                          onPressed: () {
-                            formKey.currentState!.submit();
-                          },
-                          child: Text("submit"),
-                        ),
-                      ],
+          child: SizedBox(
+            width: 500,
+            height: 500,
+            child: Center(
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: B(
+                  color: "r",
+                  child: Center(
+                    child: B(
+                      color: "o",
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Icon(Icons.visibility, size: 56),
+                      ),
                     ),
-                fetcher: () async {
-                  return Http.post("/api/auth/test", {
-                    "name": _nameController.text,
-                    "email": _emailController.text,
-                    "password": _passwordController.text,
-                    "confirm_password": _confirmPasswordController.text,
-                  });
-                },
+                  ),
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),

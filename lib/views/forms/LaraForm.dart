@@ -1,3 +1,4 @@
+import 'package:babivision/views/debug/B.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -96,6 +97,7 @@ class Laraform extends StatefulWidget {
   const Laraform({
     required GlobalKey<LaraformState> key,
     this.waitingIndicator = const CircularProgressIndicator(),
+
     this.errorMessage = "Error: Couldn't proccess form",
     this.topMargin = 0, //form top space that changes with state
     this.topMarginIM =
@@ -124,6 +126,7 @@ class LaraformState extends State<Laraform> {
   }
 
   Future<void> submit() async {
+    if (isLoading) return;
     try {
       setState(() {
         isLoading = true;
@@ -168,6 +171,7 @@ class LaraformState extends State<Laraform> {
 
   bool _isLoadingOrMessage() {
     final message = _getMessage()?["message"];
+    //errors null check cz laravel validation errors also send a "message"
     return (message != null || isLoading) && errors == null;
   }
 
@@ -198,6 +202,7 @@ class LaraformState extends State<Laraform> {
         SizedBox(
           height: _isLoadingOrMessage() ? widget.topMarginIM : widget.topMargin,
         ),
+
         isLoading
             ? widget.waitingIndicator
             : isDone
@@ -207,7 +212,9 @@ class LaraformState extends State<Laraform> {
             : isError
             ? FormMessage(message: message, type: MessageType.error)
             : SizedBox.shrink(),
-        SizedBox(height: _isLoadingOrMessage() ? 30 : 0),
+        SizedBox(
+          height: _isLoadingOrMessage() || isLoading && errors != null ? 30 : 0,
+        ),
         widget.builder(getError),
       ],
     );
