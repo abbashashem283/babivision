@@ -181,12 +181,13 @@ class LaraformState extends State<Laraform> {
     }
     if (!isDone) return null;
     if (userMessage == null) {
+      final autoType =
+          _codeIsOK(response?.statusCode)
+              ? MessageType.success
+              : MessageType.error;
       return {
         "message": response!.data?["message"],
-        "type":
-            _codeIsOK(response?.statusCode)
-                ? MessageType.success
-                : MessageType.error,
+        "type": userMessageType ?? autoType,
       };
     }
     userMessageType ??= MessageType.success;

@@ -115,6 +115,9 @@ class _LoginpageState extends State<Loginpage> {
                           onSuccess: (response) {
                             final data = response.data;
                             debugPrint(data.toString());
+                            if (data["type"] == "warning") {
+                              return {"type": MessageType.warning};
+                            }
                             if (_forgotPassword) {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
@@ -137,10 +140,7 @@ class _LoginpageState extends State<Loginpage> {
                                   TextInput(
                                     labelText: "Email",
                                     controller: _emailController,
-                                    errorText:
-                                        _forgotPassword
-                                            ? null
-                                            : errors("email"),
+                                    errorText: errors("email"),
                                   ),
                                   SizedBox(height: 15),
                                   if (!_forgotPassword)
@@ -148,10 +148,7 @@ class _LoginpageState extends State<Loginpage> {
                                       obscureText: true,
                                       labelText: "Password",
                                       controller: _passwordController,
-                                      errorText:
-                                          _forgotPassword
-                                              ? null
-                                              : errors("password"),
+                                      errorText: errors("password"),
                                     ),
                                   SizedBox(height: _forgotPassword ? 0 : 15),
 
