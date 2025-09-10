@@ -115,7 +115,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   _confirmPasswordController.text,
                             });
                           },
-                          onSuccess:
+                          onFetched:
                               (response) =>
                                   debugPrint("Im gonna send you to some page"),
                           builder:

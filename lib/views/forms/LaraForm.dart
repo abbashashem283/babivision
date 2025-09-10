@@ -90,10 +90,13 @@ class Laraform extends StatefulWidget {
   final String? errorMessage;
   final double? topMargin;
   final double? topMarginIM;
-  final Future<Response<dynamic>> Function() fetcher;
-  final Function(Response<dynamic> response) onSuccess;
-  final Function(Object e)? onError;
-  final Function()? onValidationError;
+  final Future<Response<dynamic>> Function() fetcher; //fetcher fcn
+  final Function(Response<dynamic> response)
+  onFetched; //data fetched from server
+  final Function(Object e)?
+  onError; //Exception happened after submit (ex: no internet connection)
+  final Function()?
+  onValidationError; //when laravel server returns validation errors
   const Laraform({
     required GlobalKey<LaraformState> key,
     this.waitingIndicator = const CircularProgressIndicator(),
@@ -105,7 +108,7 @@ class Laraform extends StatefulWidget {
     this.onError,
     this.onValidationError,
     required this.fetcher,
-    required this.onSuccess,
+    required this.onFetched,
     required this.builder,
   }) : super(key: key);
 
@@ -142,11 +145,11 @@ class LaraformState extends State<Laraform> {
         errors = response!.data?["errors"];
       });
       if (errors == null) {
-        Map<String, dynamic>? userData = widget.onSuccess(response!);
+        Map<String, dynamic>? userData = await widget.onFetched(response!);
         userMessage = userData?["message"];
         userMessageType = userData?["type"];
       } else if (widget.onValidationError != null) {
-        widget.onValidationError!();
+        await widget.onValidationError!();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -157,7 +160,7 @@ class LaraformState extends State<Laraform> {
         errors = null;
       });
       if (widget.onError != null) {
-        Map<String, dynamic>? userData = widget.onError!(e);
+        Map<String, dynamic>? userData = await widget.onError!(e);
         userMessage = userData?["message"];
         debugPrint("hererreerer");
         debugPrint(e.toString());

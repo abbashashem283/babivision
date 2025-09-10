@@ -108,7 +108,7 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                     "code": _pinController.text,
                                   }),
                           onError: (e) {},
-                          onSuccess: (response) {
+                          onFetched: (response) {
                             if (response.statusCode == 200) {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (!mounted) return;

@@ -112,7 +112,7 @@ class _PasswordResetState extends State<PasswordReset> {
                                     "confirm_password":
                                         _confirmPasswordController.text,
                                   }),
-                          onSuccess: (response) {
+                          onFetched: (response) {
                             debugPrint(response.data.toString());
                           },
                           builder:

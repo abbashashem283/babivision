@@ -1,4 +1,5 @@
 import 'package:babivision/Utils/Http.dart';
+import 'package:babivision/Utils/Tokens.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
@@ -99,7 +100,7 @@ class _LoginpageState extends State<Loginpage> {
                         ),
                         Laraform(
                           key: _formKey,
-                          topMargin: 30,
+                          topMargin: 27,
                           topMarginIM: 20,
                           errorMessage: "Possible Network Error!",
                           fetcher: () async {
@@ -112,9 +113,9 @@ class _LoginpageState extends State<Loginpage> {
                               "password": _passwordController.text,
                             });
                           },
-                          onSuccess: (response) {
+                          onFetched: (response) async {
                             final data = response.data;
-                            debugPrint(data.toString());
+                            //debugPrint(data.toString());
                             if (data["type"] == "warning") {
                               return {"type": MessageType.warning};
                             }
@@ -132,6 +133,17 @@ class _LoginpageState extends State<Loginpage> {
                                   );
                                 }
                               });
+                            }
+                            debugPrint("Setting Tokens");
+                            if (data?["access_token"] != null) {
+                              final String accessToken = data['access_token'];
+                              final String refreshToken = data['refresh_token'];
+                              final String csrfToken = data['csrf_token'];
+                              await Tokens.setAll(
+                                accessToken: accessToken,
+                                refreshToken: refreshToken,
+                                csrfToken: csrfToken,
+                              );
                             }
                           },
                           builder:
