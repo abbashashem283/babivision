@@ -13,8 +13,35 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  int _currentIndex = 3;
+
   @override
   Widget build(BuildContext context) {
+    bool homeActive = _currentIndex == 0;
+    bool servicesActive = _currentIndex == 1;
+    bool profileActive = _currentIndex == 2;
+    bool notificationsActive = _currentIndex == 3;
+
+    Color homeIconColor = homeActive ? Colors.white : Colors.purple;
+    Color homeBgColor = homeActive ? Colors.purple : Colors.transparent;
+
+    Color servicesIconColor =
+        servicesActive ? Colors.white : KColors.homeFloatingBtn;
+    Color servicesBgColor =
+        servicesActive ? KColors.homeFloatingBtn : Colors.transparent;
+
+    Color profileIconColor =
+        profileActive ? Colors.white : KColors.profileIconColor;
+    Color profileBgColor =
+        profileActive ? KColors.profileIconColor : Colors.transparent;
+
+    Color notificationsIconColor =
+        notificationsActive ? Colors.white : KColors.notificationIconColor;
+    Color notificationsBgColor =
+        notificationsActive
+            ? KColors.notificationIconColor
+            : Colors.transparent;
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(child: Text("This is home page")),
@@ -23,7 +50,8 @@ class _HomepageState extends State<Homepage> {
           border: Border(top: BorderSide(color: Colors.grey[300]!)),
         ),
         child: BottomAppBar(
-          //height: 83,
+          //height: 53,
+          padding: EdgeInsets.fromLTRB(3, 12, 3, 0),
           color: Colors.white10,
 
           shape: CircularNotchedRectangle(),
@@ -34,64 +62,88 @@ class _HomepageState extends State<Homepage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 BottomNavButton(
-                  onPress: null,
-                  icon: Icon(Icons.home, color: Colors.purple, size: 35),
+                  onPress: () {
+                    setState(() {
+                      _currentIndex = 0;
+                    });
+                  },
+                  isActive: homeActive,
+                  backgroundColor: homeBgColor,
+                  icon: Icon(Icons.home, color: homeIconColor, size: 35),
                   label: Text(
                     "Home",
-                    style: TextStyle(color: Colors.purple, fontSize: 10),
+                    style: TextStyle(color: homeIconColor, fontSize: 9),
                   ),
                 ),
                 BottomNavButton(
-                  onPress: null,
+                  onPress: () {
+                    setState(() {
+                      _currentIndex = 1;
+                    });
+                  },
+                  isActive: servicesActive,
+                  backgroundColor: servicesBgColor,
                   icon: Icon(
                     Icons.format_list_bulleted,
-                    color: KColors.homeFloatingBtn,
+                    color: servicesIconColor,
                     size: 35,
                   ),
                   label: Text(
                     "Services",
-                    style: TextStyle(
-                      color: KColors.homeFloatingBtn,
-                      fontSize: 10,
-                    ),
+                    style: TextStyle(color: servicesIconColor, fontSize: 9),
                   ),
                 ),
                 SizedBox(
                   width: 60,
-                  height: 35,
+                  height: 40,
                   child: Center(
                     child: Text(
                       "Shop",
                       style: TextStyle(
                         color: KColors.homeFloatingBtn,
                         fontWeight: FontWeight.bold,
-                        //fontSize: 10,
+                        //fontSize: 9,
                       ),
                     ),
                   ),
                 ),
                 BottomNavButton(
-                  onPress: null,
+                  onPress: () {
+                    setState(() {
+                      _currentIndex = 2;
+                    });
+                  },
+                  isActive: profileActive,
+                  backgroundColor: profileBgColor,
                   icon: Icon(
                     Icons.person_outline_rounded,
-                    color: Colors.grey,
+                    color: profileIconColor,
                     size: 35,
                   ),
                   label: Text(
                     "Profile",
-                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                    style: TextStyle(color: profileIconColor, fontSize: 9),
                   ),
                 ),
                 BottomNavButton(
-                  onPress: null,
+                  onPress: () {
+                    setState(() {
+                      _currentIndex = 3;
+                    });
+                  },
+                  isActive: notificationsActive,
+                  backgroundColor: notificationsBgColor,
                   icon: Icon(
                     Icons.notifications_none,
-                    color: Colors.grey,
+                    color: notificationsIconColor,
                     size: 35,
                   ),
                   label: Text(
                     "Notifications",
-                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                    style: TextStyle(
+                      color: notificationsIconColor,
+                      fontSize: 9,
+                    ),
                   ),
                 ),
               ],

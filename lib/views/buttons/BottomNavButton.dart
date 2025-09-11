@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 class BottomNavButton extends StatefulWidget {
   final dynamic Function()? onPress;
   final Icon icon;
-  final Widget label;
+  final Text label;
   final Color backgroundColor;
   final Color activeBgColor;
+  final Color textColor;
+  final Color activeTextColor;
   final bool isActive;
   const BottomNavButton({
     super.key,
@@ -14,8 +16,10 @@ class BottomNavButton extends StatefulWidget {
     required this.icon,
     required this.label,
     this.backgroundColor = Colors.transparent,
+    this.textColor = Colors.black,
     this.isActive = false,
     this.activeBgColor = Colors.red,
+    this.activeTextColor = Colors.white,
   });
 
   @override
@@ -25,14 +29,15 @@ class BottomNavButton extends StatefulWidget {
 class _BottomNavButtonState extends State<BottomNavButton> {
   @override
   Widget build(BuildContext context) {
-    final Color _bgColor =
-        widget.isActive ? widget.activeBgColor : widget.backgroundColor;
-
     return GestureDetector(
       onTap: widget.onPress,
       child: Container(
         width: 63,
-        color: _bgColor,
+        padding: EdgeInsets.all(1.5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: widget.backgroundColor,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
