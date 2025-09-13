@@ -51,52 +51,53 @@ class _HomepageState extends State<Homepage> {
         ),
         child: BottomAppBar(
           //height: 53,
-          padding: EdgeInsets.fromLTRB(3, 12, 3, 0),
+          padding: EdgeInsets.all(3),
           color: Colors.white10,
 
           shape: CircularNotchedRectangle(),
           notchMargin: 0,
-          child: SingleChildScrollView(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                BottomNavButton(
-                  onPress: () {
-                    setState(() {
-                      _currentIndex = 0;
-                    });
-                  },
-                  isActive: homeActive,
-                  backgroundColor: homeBgColor,
-                  icon: Icon(Icons.home, color: homeIconColor, size: 35),
-                  label: Text(
-                    "Home",
-                    style: TextStyle(color: homeIconColor, fontSize: 9),
-                  ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              BottomNavButton(
+                onPress: () {
+                  setState(() {
+                    _currentIndex = 0;
+                  });
+                },
+                isActive: homeActive,
+                backgroundColor: homeBgColor,
+                icon: Icon(Icons.home, color: homeIconColor, size: 35),
+                label: Text(
+                  "Home",
+                  style: TextStyle(color: homeIconColor, fontSize: 9),
                 ),
-                BottomNavButton(
-                  onPress: () {
-                    setState(() {
-                      _currentIndex = 1;
-                    });
-                  },
-                  isActive: servicesActive,
-                  backgroundColor: servicesBgColor,
-                  icon: Icon(
-                    Icons.format_list_bulleted,
-                    color: servicesIconColor,
-                    size: 35,
-                  ),
-                  label: Text(
-                    "Services",
-                    style: TextStyle(color: servicesIconColor, fontSize: 9),
-                  ),
+              ),
+              BottomNavButton(
+                onPress: () {
+                  setState(() {
+                    _currentIndex = 1;
+                  });
+                },
+                isActive: servicesActive,
+                backgroundColor: servicesBgColor,
+                icon: Icon(
+                  Icons.format_list_bulleted,
+                  color: servicesIconColor,
+                  size: 35,
                 ),
-                SizedBox(
-                  width: 60,
-                  height: 40,
-                  child: Center(
+                label: Text(
+                  "Services",
+                  style: TextStyle(color: servicesIconColor, fontSize: 9),
+                ),
+              ),
+              SizedBox(
+                width: 60,
+                height: 40,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       "Shop",
                       style: TextStyle(
@@ -107,47 +108,44 @@ class _HomepageState extends State<Homepage> {
                     ),
                   ),
                 ),
-                BottomNavButton(
-                  onPress: () {
-                    setState(() {
-                      _currentIndex = 2;
-                    });
-                  },
-                  isActive: profileActive,
-                  backgroundColor: profileBgColor,
-                  icon: Icon(
-                    Icons.person_outline_rounded,
-                    color: profileIconColor,
-                    size: 35,
-                  ),
-                  label: Text(
-                    "Profile",
-                    style: TextStyle(color: profileIconColor, fontSize: 9),
-                  ),
+              ),
+              BottomNavButton(
+                onPress: () {
+                  setState(() {
+                    _currentIndex = 2;
+                  });
+                },
+                isActive: profileActive,
+                backgroundColor: profileBgColor,
+                icon: Icon(
+                  Icons.person_outline_rounded,
+                  color: profileIconColor,
+                  size: 35,
                 ),
-                BottomNavButton(
-                  onPress: () {
-                    setState(() {
-                      _currentIndex = 3;
-                    });
-                  },
-                  isActive: notificationsActive,
-                  backgroundColor: notificationsBgColor,
-                  icon: Icon(
-                    Icons.notifications_none,
-                    color: notificationsIconColor,
-                    size: 35,
-                  ),
-                  label: Text(
-                    "Notifications",
-                    style: TextStyle(
-                      color: notificationsIconColor,
-                      fontSize: 9,
-                    ),
-                  ),
+                label: Text(
+                  "Profile",
+                  style: TextStyle(color: profileIconColor, fontSize: 9),
                 ),
-              ],
-            ),
+              ),
+              BottomNavButton(
+                onPress: () {
+                  setState(() {
+                    _currentIndex = 3;
+                  });
+                },
+                isActive: notificationsActive,
+                backgroundColor: notificationsBgColor,
+                icon: Icon(
+                  Icons.notifications_none,
+                  color: notificationsIconColor,
+                  size: 35,
+                ),
+                label: Text(
+                  "Notifications",
+                  style: TextStyle(color: notificationsIconColor, fontSize: 9),
+                ),
+              ),
+            ],
           ),
         ),
       ),

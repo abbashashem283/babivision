@@ -33,6 +33,7 @@ class _BottomNavButtonState extends State<BottomNavButton> {
       onTap: widget.onPress,
       child: Container(
         width: 63,
+        height: 63,
         padding: EdgeInsets.all(1.5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
