@@ -13,7 +13,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  int _currentIndex = 3;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,61 @@ class _HomepageState extends State<Homepage> {
             : Colors.transparent;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(110),
+        child: B(
+          color: "tr",
+          child: SafeArea(
+            child: B(
+              color: "tr",
+              child: AppBar(
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        child: B(
+                          color: "tr",
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(
+                              minWidth: 4,
+                              minHeight: 4,
+                            ),
+                            onPressed: () {
+                              //Scaffold.of(context).openDrawer();
+                            },
+                            icon: Icon(Icons.menu, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      B(
+                        color: "tr",
+                        child: Center(
+                          child: Column(
+                            spacing: 5,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/babivision-logo.png',
+                                width: 120,
+
+                                //height: 75,
+                                fit: BoxFit.fill,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Center(child: Text("This is home page")),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
