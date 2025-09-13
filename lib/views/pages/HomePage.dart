@@ -45,56 +45,141 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(110),
-        child: B(
-          color: "tr",
-          child: SafeArea(
-            child: B(
-              color: "tr",
-              child: AppBar(
-                flexibleSpace: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: 50,
-                        child: B(
-                          color: "tr",
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(
-                              minWidth: 4,
-                              minHeight: 4,
-                            ),
-                            onPressed: () {
-                              //Scaffold.of(context).openDrawer();
-                            },
-                            icon: Icon(Icons.menu, color: Colors.black),
+        child: SafeArea(
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            flexibleSpace: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Builder(
+                      builder: (context) {
+                        return IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(
+                            minWidth: 4,
+                            minHeight: 4,
                           ),
-                        ),
-                      ),
-                      B(
-                        color: "tr",
-                        child: Center(
-                          child: Column(
-                            spacing: 5,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/babivision-logo.png',
-                                width: 120,
-
-                                //height: 75,
-                                fit: BoxFit.fill,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          icon: Icon(Icons.menu, color: Colors.black),
+                        );
+                      },
+                    ),
                   ),
-                ),
+                  Center(
+                    child: Column(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          'assets/images/babivision-logo.png',
+                          width: 120,
+
+                          //height: 75,
+                          fit: BoxFit.fill,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
+        ),
+      ),
+      drawer: SafeArea(
+        child: Container(
+          width: 280,
+          height: double.infinity,
+          color: KColors.offWhite,
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.purple[100],
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "JD",
+                        style: TextStyle(color: Colors.purple, fontSize: 40),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Text("John Doe", style: TextStyle(fontSize: 25)),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 200),
+                    child: Text(
+                      "jdoe@example.com",
+                      style: TextStyle(
+                        fontSize: 15,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.info,
+                      size: 35,
+                      color: KColors.aboutUsIcon,
+                    ),
+                    title: Text("About Us", style: TextStyle(fontSize: 20)),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.message_rounded,
+                      size: 35,
+                      color: KColors.contactIcon,
+                    ),
+                    title: Text(
+                      "Contact / Support",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.settings,
+                      size: 35,
+                      color: Colors.grey[600],
+                    ),
+                    title: Text("Settings", style: TextStyle(fontSize: 20)),
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.settings,
+                      size: 35,
+                      color: Colors.grey[600],
+                    ),
+                    title: Text("Settings", style: TextStyle(fontSize: 20)),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.settings,
+                      size: 35,
+                      color: Colors.grey[600],
+                    ),
+                    title: Text("Settings", style: TextStyle(fontSize: 20)),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
