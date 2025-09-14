@@ -17,6 +17,9 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     bool homeActive = _currentIndex == 0;
     bool servicesActive = _currentIndex == 1;
     bool profileActive = _currentIndex == 2;
@@ -130,60 +133,193 @@ class _HomepageState extends State<Homepage> {
                 ],
               ),
               SizedBox(height: 50),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.info,
-                      size: 35,
-                      color: KColors.aboutUsIcon,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ListTile(
+                      leading: Icon(
+                        Icons.info,
+                        size: 35,
+                        color: KColors.aboutUsIcon,
+                      ),
+                      title: Text("About Us", style: TextStyle(fontSize: 20)),
                     ),
-                    title: Text("About Us", style: TextStyle(fontSize: 20)),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.message_rounded,
-                      size: 35,
-                      color: KColors.contactIcon,
+                    ListTile(
+                      leading: Icon(
+                        Icons.message_rounded,
+                        size: 35,
+                        color: KColors.contactIcon,
+                      ),
+                      title: Text(
+                        "Contact / Support",
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
-                    title: Text(
-                      "Contact / Support",
-                      style: TextStyle(fontSize: 20),
+                    ListTile(
+                      leading: Icon(
+                        Icons.settings,
+                        size: 35,
+                        color: Colors.grey[600],
+                      ),
+                      title: Text("Settings", style: TextStyle(fontSize: 20)),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.settings,
-                      size: 35,
-                      color: Colors.grey[600],
+                    Divider(),
+                    ListTile(
+                      leading: Icon(
+                        Icons.article,
+                        size: 35,
+                        color: Colors.orange,
+                      ),
+                      title: Text(
+                        "Terms & Privacy",
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
-                    title: Text("Settings", style: TextStyle(fontSize: 20)),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(
-                      Icons.settings,
-                      size: 35,
-                      color: Colors.grey[600],
+                    ListTile(
+                      leading: Icon(
+                        Icons.logout_outlined,
+                        size: 35,
+                        color: Colors.red,
+                      ),
+                      title: Text("Logout", style: TextStyle(fontSize: 20)),
                     ),
-                    title: Text("Settings", style: TextStyle(fontSize: 20)),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.settings,
-                      size: 35,
-                      color: Colors.grey[600],
-                    ),
-                    title: Text("Settings", style: TextStyle(fontSize: 20)),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
         ),
       ),
-      body: Center(child: Text("This is home page")),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: B(
+          color: "r",
+          child: FractionallySizedBox(
+            //height: 250,
+            widthFactor: 0.95,
+            //height: 250,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.teal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.red,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.teal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.red,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.teal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            color: Colors.red,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.question_mark_rounded),
+                                Text("Hello"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(top: BorderSide(color: Colors.grey[300]!)),
