@@ -87,13 +87,6 @@ class DiagonalShadow extends StatelessWidget {
                           children: [B(color: "tr", child: icon), label],
                         ),
                       ),
-                      /*Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: parentHeight * 0.15),
-                          child: label,
-                        ),
-                      ),*/
                     ],
                   );
                 },
