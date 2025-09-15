@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:babivision/views/buttons/CIconButton.dart';
+import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
@@ -22,18 +23,24 @@ class _HomepageState extends State<Homepage> {
             itemsData
                 .map(
                   (data) => Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CIconButton(
-                          onPress: data["onPress"],
-                          icon: data["icon"] ?? Icon(Icons.error, size: 40),
-                          label: data["label"] ?? Text("{null}"),
-                          spacing: 20,
-                          backgroundColor:
-                              data["backgroundColor"] ?? Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DiagonalShadow(
+                        shadowSize: 60,
+                        label: Text(
+                          "Home",
+                          style: TextStyle(color: Colors.white, fontSize: 24),
                         ),
+                        icon: Image.asset(
+                          "assets/icon-images/calendar.png",
+                          width: 70,
+                          height: 70,
+                        ),
+                        decoration: BoxDecoration(
+                          color: KColors.aboutUsIcon,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        //shadowDecoration: BoxDecoration(color: Colors.red),
                       ),
                     ),
                   ),

@@ -87,8 +87,11 @@ class _PlaygroundState extends State<Playground> {
             style: TextStyle(color: Colors.white, fontSize: 24),
           ),
           icon: Icon(Icons.error, size: 70, color: Colors.white),
-          decoration: BoxDecoration(color: KColors.aboutUsIcon),
-          shadowDecoration: BoxDecoration(color: Colors.red),
+          decoration: BoxDecoration(
+            color: KColors.aboutUsIcon,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          //shadowDecoration: BoxDecoration(color: Colors.red),
         ),
       ),
     );

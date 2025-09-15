@@ -37,61 +37,56 @@ class DiagonalShadow extends StatelessWidget {
           decoration: decoration ?? BoxDecoration(color: Colors.blue),
           width: width,
           height: height,
-          child: B(
-            child: B(
-              color: "p",
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final parentWidth = constraints.maxWidth;
-                  final parentHeight = constraints.maxHeight;
-                  final diagonal = sqrt(
-                    parentWidth * parentWidth + parentHeight * parentHeight,
-                  );
-                  debugPrint("w $parentWidth");
-                  debugPrint("h $parentHeight");
-                  debugPrint("h $diagonal");
-                  return Stack(
-                    children: [
-                      OverflowBox(
-                        maxWidth: diagonal,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: FractionalTranslation(
-                            translation: Offset(.5, -.4),
-                            child: Transform.rotate(
-                              angle: (atan(parentHeight / parentWidth)) * 1,
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                height: shadowSize,
-                                width: diagonal / 2 + 100,
-                                decoration:
-                                    shadowDecoration ??
-                                    BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color.fromARGB(50, 0, 0, 0),
-                                          Color.fromARGB(5, 0, 0, 0),
-                                        ],
-                                      ),
-                                    ),
-                              ),
-                            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final parentWidth = constraints.maxWidth;
+              final parentHeight = constraints.maxHeight;
+              final diagonal = sqrt(
+                parentWidth * parentWidth + parentHeight * parentHeight,
+              );
+              debugPrint("w $parentWidth");
+              debugPrint("h $parentHeight");
+              debugPrint("h $diagonal");
+              return Stack(
+                children: [
+                  OverflowBox(
+                    maxWidth: diagonal,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: FractionalTranslation(
+                        translation: Offset(.5, -.4),
+                        child: Transform.rotate(
+                          angle: (atan(parentHeight / parentWidth)) * 1,
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            height: shadowSize,
+                            width: diagonal / 2 + 100,
+                            decoration:
+                                shadowDecoration ??
+                                BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(50, 0, 0, 0),
+                                      Color.fromARGB(5, 0, 0, 0),
+                                    ],
+                                  ),
+                                ),
                           ),
                         ),
                       ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 15,
-                          children: [B(color: "tr", child: icon), label],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+                    ),
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 15,
+                      children: [icon, label],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
