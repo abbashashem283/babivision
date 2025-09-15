@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:babivision/views/buttons/BottomNavButton.dart';
+import 'package:babivision/views/buttons/CIconButton.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
@@ -14,6 +14,34 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
+
+  Widget _buildGridRow(List<Map<String, dynamic>> itemsData) {
+    return Expanded(
+      child: Row(
+        children:
+            itemsData
+                .map(
+                  (data) => Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CIconButton(
+                          onPress: data["onPress"],
+                          icon: data["icon"] ?? Icon(Icons.error, size: 40),
+                          label: data["label"] ?? Text("{null}"),
+                          spacing: 20,
+                          backgroundColor:
+                              data["backgroundColor"] ?? Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,123 +226,59 @@ class _HomepageState extends State<Homepage> {
           child: FractionallySizedBox(
             //height: 250,
             widthFactor: 0.95,
+            heightFactor: 0.92,
             //height: 250,
             child: Column(
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.teal,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.red,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.teal,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.red,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.teal,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            color: Colors.red,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.question_mark_rounded),
-                                Text("Hello"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildGridRow([
+                  {
+                    "onPress": null,
+                    "icon": Icon(
+                      Icons.calendar_month,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                    "label": Text(
+                      "Book Appointment",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    "backgroundColor": KColors.appointment,
+                  },
+                  {
+                    "onPress": null,
+                    "icon": Icon(Icons.question_mark_outlined, size: 40),
+                    "label": Text("Ask Please"),
+                    "backgroundColor": Colors.green,
+                  },
+                ]),
+                _buildGridRow([
+                  {
+                    "onPress": null,
+                    "icon": Icon(Icons.question_mark_outlined, size: 40),
+                    "label": Text("Ask Please"),
+                    "backgroundColor": Colors.yellow,
+                  },
+                  {
+                    "onPress": null,
+                    "icon": Icon(Icons.question_mark_outlined, size: 40),
+                    "label": Text("Ask Please"),
+                    "backgroundColor": Colors.teal,
+                  },
+                ]),
+                _buildGridRow([
+                  {
+                    "onPress": null,
+                    "icon": Icon(Icons.question_mark_outlined, size: 40),
+                    "label": Text("Ask Please"),
+                    "backgroundColor": Colors.orange,
+                  },
+                  {
+                    "onPress": null,
+                    "icon": Icon(Icons.question_mark_outlined, size: 40),
+                    "label": Text("Ask Please"),
+                    "backgroundColor": Colors.pink,
+                  },
+                ]),
               ],
             ),
           ),
@@ -335,12 +299,15 @@ class _HomepageState extends State<Homepage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              BottomNavButton(
+              CIconButton(
                 onPress: () {
                   setState(() {
                     _currentIndex = 0;
                   });
                 },
+                width: 63,
+                height: 63,
+                padding: EdgeInsets.all(1.5),
                 isActive: homeActive,
                 backgroundColor: homeBgColor,
                 icon: Icon(Icons.home, color: homeIconColor, size: 35),
@@ -349,12 +316,15 @@ class _HomepageState extends State<Homepage> {
                   style: TextStyle(color: homeIconColor, fontSize: 9),
                 ),
               ),
-              BottomNavButton(
+              CIconButton(
                 onPress: () {
                   setState(() {
                     _currentIndex = 1;
                   });
                 },
+                width: 63,
+                height: 63,
+                padding: EdgeInsets.all(1.5),
                 isActive: servicesActive,
                 backgroundColor: servicesBgColor,
                 icon: Icon(
@@ -384,12 +354,15 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
               ),
-              BottomNavButton(
+              CIconButton(
                 onPress: () {
                   setState(() {
                     _currentIndex = 2;
                   });
                 },
+                width: 63,
+                height: 63,
+                padding: EdgeInsets.all(1.5),
                 isActive: profileActive,
                 backgroundColor: profileBgColor,
                 icon: Icon(
@@ -402,12 +375,15 @@ class _HomepageState extends State<Homepage> {
                   style: TextStyle(color: profileIconColor, fontSize: 9),
                 ),
               ),
-              BottomNavButton(
+              CIconButton(
                 onPress: () {
                   setState(() {
                     _currentIndex = 3;
                   });
                 },
+                width: 63,
+                height: 63,
+                padding: EdgeInsets.all(1.5),
                 isActive: notificationsActive,
                 backgroundColor: notificationsBgColor,
                 icon: Icon(

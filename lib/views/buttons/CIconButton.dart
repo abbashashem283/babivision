@@ -1,7 +1,7 @@
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 
-class BottomNavButton extends StatefulWidget {
+class CIconButton extends StatefulWidget {
   final dynamic Function()? onPress;
   final Icon icon;
   final Text label;
@@ -10,7 +10,11 @@ class BottomNavButton extends StatefulWidget {
   final Color textColor;
   final Color activeTextColor;
   final bool isActive;
-  const BottomNavButton({
+  final double? width;
+  final double? height;
+  final double spacing;
+  final EdgeInsetsGeometry? padding;
+  const CIconButton({
     super.key,
     required this.onPress,
     required this.icon,
@@ -20,26 +24,31 @@ class BottomNavButton extends StatefulWidget {
     this.isActive = false,
     this.activeBgColor = Colors.red,
     this.activeTextColor = Colors.white,
+    this.width,
+    this.height,
+    this.padding,
+    this.spacing = 0,
   });
 
   @override
-  State<BottomNavButton> createState() => _BottomNavButtonState();
+  State<CIconButton> createState() => _CIconButtonState();
 }
 
-class _BottomNavButtonState extends State<BottomNavButton> {
+class _CIconButtonState extends State<CIconButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onPress,
       child: Container(
-        width: 63,
-        height: 63,
-        padding: EdgeInsets.all(1.5),
+        width: widget.width,
+        height: widget.height,
+        padding: widget.padding,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: widget.backgroundColor,
         ),
         child: Column(
+          spacing: widget.spacing,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [widget.icon, widget.label],

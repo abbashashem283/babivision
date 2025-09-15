@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:babivision/Utils/Http.dart';
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/data/storage/SecureStorage.dart';
+import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
@@ -24,31 +28,66 @@ class _PlaygroundState extends State<Playground> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: B(
-          color: "g",
-          child: SizedBox(
-            width: 500,
-            height: 500,
-            child: Center(
-              child: SizedBox(
-                width: 100,
-                height: 100,
-                child: B(
-                  color: "r",
-                  child: Center(
-                    child: B(
-                      color: "o",
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Icon(Icons.visibility, size: 56),
-                      ),
+        /*child: ClipRRect(
+          child: Container(
+            color: Colors.blue,
+            width: 200,
+            height: 600,
+            child: B(
+              child: Stack(
+                children: [
+                  B(
+                    color: "p",
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final parentWidth = constraints.maxWidth;
+                        final parentHeight = constraints.maxHeight;
+                        final diagonal = sqrt(
+                          parentWidth * parentWidth +
+                              parentHeight * parentHeight,
+                        );
+                        debugPrint("w $parentWidth");
+                        debugPrint("h $parentHeight");
+                        debugPrint("h $diagonal");
+                        return OverflowBox(
+                          maxWidth: diagonal,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: FractionalTranslation(
+                              translation: Offset(.5, 0),
+                              child: Transform.rotate(
+                                angle: atan(parentHeight / parentWidth),
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  color: Colors.green,
+                                  height: 30,
+                                  width: diagonal / 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                ),
+                  Center(
+                    child: B(color: "o", child: Icon(Icons.home, size: 50)),
+                  ),
+                ],
               ),
             ),
           ),
+        ),*/
+        child: DiagonalShadow(
+          width: 300,
+          height: 200,
+          shadowSize: 60,
+          label: Text(
+            "Home",
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
+          icon: Icon(Icons.error, size: 70, color: Colors.white),
+          decoration: BoxDecoration(color: KColors.aboutUsIcon),
         ),
       ),
     );
