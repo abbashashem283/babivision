@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class DiagonalShadow extends StatelessWidget {
   final double? width;
   final double? height;
+  final double? iconWidth;
+  final double? iconHeight;
   final BoxDecoration? shadowDecoration;
   final Decoration? decoration;
   final double shadowSize;
@@ -19,6 +21,8 @@ class DiagonalShadow extends StatelessWidget {
     this.shadowDecoration,
     this.decoration,
     this.onPress,
+    this.iconWidth = 30,
+    this.iconHeight = 30,
     required this.shadowSize,
     required this.label,
     required this.icon,
@@ -53,13 +57,13 @@ class DiagonalShadow extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.center,
                           child: FractionalTranslation(
-                            translation: Offset(.5, 0),
+                            translation: Offset(.5, -.4),
                             child: Transform.rotate(
-                              angle: atan(parentHeight / parentWidth),
+                              angle: (atan(parentHeight / parentWidth)) * 1,
                               alignment: Alignment.centerLeft,
                               child: Container(
                                 height: shadowSize,
-                                width: diagonal / 2,
+                                width: diagonal / 2 + 100,
                                 decoration:
                                     shadowDecoration ??
                                     BoxDecoration(
@@ -75,14 +79,21 @@ class DiagonalShadow extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Center(child: B(color: "tr", child: icon)),
-                      Align(
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 15,
+                          children: [B(color: "tr", child: icon), label],
+                        ),
+                      ),
+                      /*Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
                           padding: EdgeInsets.only(bottom: parentHeight * 0.15),
                           child: label,
                         ),
-                      ),
+                      ),*/
                     ],
                   );
                 },

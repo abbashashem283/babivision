@@ -79,8 +79,8 @@ class _PlaygroundState extends State<Playground> {
           ),
         ),*/
         child: DiagonalShadow(
-          width: 300,
-          height: 200,
+          width: 400,
+          height: 300,
           shadowSize: 60,
           label: Text(
             "Home",
@@ -88,6 +88,7 @@ class _PlaygroundState extends State<Playground> {
           ),
           icon: Icon(Icons.error, size: 70, color: Colors.white),
           decoration: BoxDecoration(color: KColors.aboutUsIcon),
+          shadowDecoration: BoxDecoration(color: Colors.red),
         ),
       ),
     );
