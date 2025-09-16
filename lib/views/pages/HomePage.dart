@@ -5,6 +5,7 @@ import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
+import 'package:flutter_svg/svg.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -16,7 +17,12 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
 
-  Widget _buildGridRow(List<Map<String, dynamic>> itemsData) {
+  Widget _buildGridRow(
+    BuildContext context,
+    List<Map<String, dynamic>> itemsData,
+  ) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Expanded(
       child: Row(
         children:
@@ -26,18 +32,21 @@ class _HomepageState extends State<Homepage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DiagonalShadow(
-                        shadowSize: 60,
+                        shadowSize: (height * .08) * .9,
                         label: Text(
-                          "Home",
-                          style: TextStyle(color: Colors.white, fontSize: 24),
+                          data["label"],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (height * 0.03).clamp(0, 17),
+                          ),
                         ),
-                        icon: Image.asset(
-                          "assets/icon-images/calendar.png",
-                          width: 70,
-                          height: 70,
+                        icon: SvgPicture.asset(
+                          data["img_src"],
+                          width: height * 0.08,
+                          height: height * 0.08,
                         ),
                         decoration: BoxDecoration(
-                          color: KColors.aboutUsIcon,
+                          color: data["backgroundColor"],
                           borderRadius: BorderRadius.circular(8),
                         ),
                         //shadowDecoration: BoxDecoration(color: Colors.red),
@@ -52,9 +61,6 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
     bool homeActive = _currentIndex == 0;
     bool servicesActive = _currentIndex == 1;
     bool profileActive = _currentIndex == 2;
@@ -237,52 +243,45 @@ class _HomepageState extends State<Homepage> {
             //height: 250,
             child: Column(
               children: [
-                _buildGridRow([
+                _buildGridRow(context, [
                   {
                     "onPress": null,
-                    "icon": Icon(
-                      Icons.calendar_month,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                    "label": Text(
-                      "Book Appointment",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    "img_src": "assets/icon-images/calendar.svg",
+                    "label": "Book Appointment",
                     "backgroundColor": KColors.appointment,
                   },
                   {
                     "onPress": null,
-                    "icon": Icon(Icons.question_mark_outlined, size: 40),
-                    "label": Text("Ask Please"),
-                    "backgroundColor": Colors.green,
+                    "img_src": "assets/icon-images/map.svg",
+                    "label": "Book Appointment",
+                    "backgroundColor": KColors.findUs,
                   },
                 ]),
-                _buildGridRow([
+                _buildGridRow(context, [
                   {
                     "onPress": null,
-                    "icon": Icon(Icons.question_mark_outlined, size: 40),
-                    "label": Text("Ask Please"),
-                    "backgroundColor": Colors.yellow,
+                    "img_src": "assets/icon-images/note.svg",
+                    "label": "Book Appointment",
+                    "backgroundColor": Colors.white,
                   },
                   {
                     "onPress": null,
-                    "icon": Icon(Icons.question_mark_outlined, size: 40),
-                    "label": Text("Ask Please"),
-                    "backgroundColor": Colors.teal,
+                    "img_src": "assets/icon-images/note.svg",
+                    "label": "Book Appointment",
+                    "backgroundColor": KColors.orderLenses,
                   },
                 ]),
-                _buildGridRow([
+                _buildGridRow(context, [
                   {
                     "onPress": null,
-                    "icon": Icon(Icons.question_mark_outlined, size: 40),
-                    "label": Text("Ask Please"),
+                    "img_src": "assets/icon-images/lenses.svg",
+                    "label": "Book Appointment",
                     "backgroundColor": Colors.orange,
                   },
                   {
                     "onPress": null,
-                    "icon": Icon(Icons.question_mark_outlined, size: 40),
-                    "label": Text("Ask Please"),
+                    "img_src": "assets/icon-images/glasses.svg",
+                    "label": "Book Appointment",
                     "backgroundColor": Colors.pink,
                   },
                 ]),

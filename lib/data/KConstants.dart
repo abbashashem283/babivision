@@ -13,6 +13,8 @@ class KColors {
   static final Color aboutUsIcon = Color.fromARGB(255, 90, 51, 176);
   static final Color contactIcon = Color.fromARGB(255, 39, 118, 143);
   static final Color appointment = Color.fromARGB(255, 137, 101, 211);
+  static final Color findUs = Color.fromARGB(255, 236, 240, 249);
+  static final Color orderLenses = Color.fromARGB(255, 206, 242, 206);
 
   static Color getColor(context, String color) {
     switch (color) {
