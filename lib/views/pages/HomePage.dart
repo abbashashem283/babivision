@@ -5,6 +5,7 @@ import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
+import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Homepage extends StatefulWidget {
@@ -36,8 +37,8 @@ class _HomepageState extends State<Homepage> {
                         label: Text(
                           data["label"],
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: (height * 0.03).clamp(0, 17),
+                            color: data["color"],
+                            fontSize: context.responsive(sm: 16, md: 26),
                           ),
                         ),
                         icon: SvgPicture.asset(
@@ -48,7 +49,9 @@ class _HomepageState extends State<Homepage> {
                         decoration: BoxDecoration(
                           color: data["backgroundColor"],
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[400]!),
                         ),
+
                         //shadowDecoration: BoxDecoration(color: Colors.red),
                       ),
                     ),
@@ -137,7 +140,7 @@ class _HomepageState extends State<Homepage> {
       ),
       drawer: SafeArea(
         child: Container(
-          width: 280,
+          width: context.percentageOfWidth(.7),
           height: double.infinity,
           color: KColors.offWhite,
           child: Column(
@@ -146,11 +149,16 @@ class _HomepageState extends State<Homepage> {
               Column(
                 children: [
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: (context.percentageOfWidth(.2) / context.ratio)
+                        .clamp(100, 150),
+                    height: (context.percentageOfWidth(.2) / context.ratio)
+                        .clamp(100, 150),
                     decoration: BoxDecoration(
                       color: Colors.purple[100],
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(
+                        ((context.percentageOfWidth(.2) / 2) / context.ratio)
+                            .clamp(50, 75),
+                      ),
                     ),
                     child: Center(
                       child: Text(
@@ -184,7 +192,14 @@ class _HomepageState extends State<Homepage> {
                         size: 35,
                         color: KColors.aboutUsIcon,
                       ),
-                      title: Text("About Us", style: TextStyle(fontSize: 20)),
+                      title: Text(
+                        "About Us",
+                        style: TextStyle(
+                          fontSize: (context.percentageOfWidth(
+                            .02,
+                          )).clamp(18, 25),
+                        ),
+                      ),
                     ),
                     ListTile(
                       leading: Icon(
@@ -194,7 +209,11 @@ class _HomepageState extends State<Homepage> {
                       ),
                       title: Text(
                         "Contact / Support",
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: (context.percentageOfWidth(
+                            .02,
+                          )).clamp(18, 25),
+                        ),
                       ),
                     ),
                     ListTile(
@@ -203,7 +222,14 @@ class _HomepageState extends State<Homepage> {
                         size: 35,
                         color: Colors.grey[600],
                       ),
-                      title: Text("Settings", style: TextStyle(fontSize: 20)),
+                      title: Text(
+                        "Settings",
+                        style: TextStyle(
+                          fontSize: (context.percentageOfWidth(
+                            .02,
+                          )).clamp(18, 25),
+                        ),
+                      ),
                     ),
                     Divider(),
                     ListTile(
@@ -214,7 +240,11 @@ class _HomepageState extends State<Homepage> {
                       ),
                       title: Text(
                         "Terms & Privacy",
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: (context.percentageOfWidth(
+                            .02,
+                          )).clamp(18, 25),
+                        ),
                       ),
                     ),
                     ListTile(
@@ -223,7 +253,14 @@ class _HomepageState extends State<Homepage> {
                         size: 35,
                         color: Colors.red,
                       ),
-                      title: Text("Logout", style: TextStyle(fontSize: 20)),
+                      title: Text(
+                        "Logout",
+                        style: TextStyle(
+                          fontSize: (context.percentageOfWidth(
+                            .02,
+                          )).clamp(18, 25),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -236,56 +273,65 @@ class _HomepageState extends State<Homepage> {
         alignment: Alignment.topCenter,
         child: B(
           color: "r",
-          child: FractionallySizedBox(
-            //height: 250,
-            widthFactor: 0.95,
-            heightFactor: 0.92,
-            //height: 250,
-            child: Column(
-              children: [
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/calendar.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": KColors.appointment,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/map.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": KColors.findUs,
-                  },
-                ]),
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/note.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": Colors.white,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/note.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": KColors.orderLenses,
-                  },
-                ]),
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/lenses.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": Colors.orange,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/glasses.svg",
-                    "label": "Book Appointment",
-                    "backgroundColor": Colors.pink,
-                  },
-                ]),
-              ],
+          child: SizedBox(
+            width: double.infinity.clamp(50, 800),
+            child: FractionallySizedBox(
+              //height: 250,
+              widthFactor: 0.95,
+              heightFactor: 0.92,
+              //height: 250,
+              child: Column(
+                children: [
+                  _buildGridRow(context, [
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/calendar.svg",
+                      "label": "Book Appointment",
+                      "color": Colors.white,
+                      "backgroundColor": KColors.appointment,
+                    },
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/map.svg",
+                      "label": "Find Us",
+                      "color": Colors.black,
+                      "backgroundColor": KColors.findUs,
+                    },
+                  ]),
+                  _buildGridRow(context, [
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/note.svg",
+                      "label": "My Prescriptions",
+                      "color": Colors.black,
+                      "backgroundColor": Colors.white,
+                    },
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/note.svg",
+                      "label": "Book Appointment",
+                      "color": Colors.black,
+                      "backgroundColor": KColors.orderLenses,
+                    },
+                  ]),
+                  _buildGridRow(context, [
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/lenses.svg",
+                      "label": "Browse Lenses",
+                      "color": Colors.black,
+                      "backgroundColor": KColors.findUs,
+                    },
+                    {
+                      "onPress": null,
+                      "img_src": "assets/icon-images/glasses.svg",
+                      "label": "Browse Glasses",
+                      "color": Colors.black,
+                      "backgroundColor": Color.fromARGB(255, 233, 244, 248),
+                    },
+                  ]),
+                ],
+              ),
             ),
           ),
         ),

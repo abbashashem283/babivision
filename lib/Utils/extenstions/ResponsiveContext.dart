@@ -4,6 +4,8 @@ enum ScreenSize { sm, md, lg, xl, xxl }
 
 extension ResponsiveContext on BuildContext {
   double get width => MediaQuery.of(this).size.width;
+  double get height => MediaQuery.of(this).size.height;
+  double get ratio => width / height;
 
   ScreenSize get screenSize {
     if (width >= 1536) return ScreenSize.xxl;
@@ -27,5 +29,13 @@ extension ResponsiveContext on BuildContext {
       default:
         return sm;
     }
+  }
+
+  double percentageOfWidth(double percent) {
+    return width * percent;
+  }
+
+  double percentageOfHeight(double percent) {
+    return height * percent;
   }
 }
