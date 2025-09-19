@@ -25,10 +25,25 @@ extension ResponsiveContext on BuildContext {
         return lg ?? md ?? sm;
       case ScreenSize.md:
         return md ?? sm;
-      case ScreenSize.sm:
       default:
         return sm;
     }
+  }
+
+  T responsiveExplicit<T>(
+    Map<int, T> breakPoints, {
+    required T fallback,
+    bool onWidth = true,
+  }) {
+    final List points = breakPoints.keys.toList();
+    for (final point in points) {
+      if (onWidth) {
+        if (width >= point) return breakPoints[point]!;
+      } else if (height >= point) {
+        return breakPoints[point]!;
+      }
+    }
+    return fallback;
   }
 
   double percentageOfWidth(double percent) {

@@ -33,6 +33,7 @@ class DiagonalShadow extends StatelessWidget {
     return GestureDetector(
       onTap: onPress,
       child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           decoration: decoration ?? BoxDecoration(color: Colors.blue),
           width: width,

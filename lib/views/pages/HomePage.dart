@@ -33,18 +33,34 @@ class _HomepageState extends State<Homepage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DiagonalShadow(
-                        shadowSize: (height * .08) * .9,
+                        //shadowSize: (height * .08) * .9,
+                        shadowSize: context.percentageOfHeight(.08) * .9,
                         label: Text(
                           data["label"],
                           style: TextStyle(
                             color: data["color"],
-                            fontSize: context.responsive(sm: 16, md: 26),
+                            fontSize: context.responsive(
+                              sm: 16,
+                              md: context.responsiveExplicit(
+                                {555: 26},
+                                fallback: 9,
+                                onWidth: false,
+                              ),
+                            ),
                           ),
                         ),
                         icon: SvgPicture.asset(
                           data["img_src"],
-                          width: height * 0.08,
-                          height: height * 0.08,
+                          width: context.responsiveExplicit(
+                            {555: context.percentageOfHeight(.08)},
+                            fallback: context.percentageOfHeight(.07),
+                            onWidth: false,
+                          ),
+                          height: context.responsiveExplicit(
+                            {555: context.percentageOfHeight(.08)},
+                            fallback: context.percentageOfHeight(.07),
+                            onWidth: false,
+                          ),
                         ),
                         decoration: BoxDecoration(
                           color: data["backgroundColor"],
@@ -58,6 +74,58 @@ class _HomepageState extends State<Homepage> {
                   ),
                 )
                 .toList(),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBtn({
+    required Function() onPress,
+    required bool isActive,
+    required Color bgColor,
+    required Color iconColor,
+    required Color textColor,
+    required IconData icon,
+    required String text,
+  }) {
+    return CIconButton(
+      onPress: onPress,
+      width: context.responsive(
+        sm: context.percentageOfHeight(.1).clamp(0, 68),
+        md: context.percentageOfHeight(.12),
+        lg: context.percentageOfWidth(.1),
+      ),
+      height: context.responsive(
+        sm: context.percentageOfHeight(.1).clamp(0, 68),
+        md: context.percentageOfHeight(.12),
+        lg: context.percentageOfWidth(.1),
+      ),
+      padding: EdgeInsets.all(1.5),
+      isActive: isActive,
+      backgroundColor: bgColor,
+      icon: Icon(
+        icon,
+        color: iconColor,
+        size: context.responsive(
+          sm: 35,
+          md: context.percentageOfHeight(.04),
+          lg: context.percentageOfWidth(.04).clamp(0, 40),
+        ),
+      ), //35
+      label: Text(
+        text,
+        style: TextStyle(
+          color: textColor,
+          fontSize: context.responsive(
+            sm: 9,
+            md: context.responsiveExplicit(
+              {1300: 11},
+              fallback: 16,
+              onWidth: false,
+            ),
+            lg: 16,
+          ),
+          //fontSize: context.responsiveExplicit({}, fallback: 9)
+        ),
       ),
     );
   }
@@ -91,7 +159,7 @@ class _HomepageState extends State<Homepage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(110),
+        preferredSize: Size.fromHeight(80),
         child: SafeArea(
           child: AppBar(
             automaticallyImplyLeading: false,
@@ -112,7 +180,11 @@ class _HomepageState extends State<Homepage> {
                           onPressed: () {
                             Scaffold.of(context).openDrawer();
                           },
-                          icon: Icon(Icons.menu, color: Colors.black),
+                          icon: Icon(
+                            Icons.menu,
+                            color: Colors.black,
+                            size: context.percentageOfWidth(.1).clamp(20, 50),
+                          ),
                         );
                       },
                     ),
@@ -122,9 +194,9 @@ class _HomepageState extends State<Homepage> {
                       spacing: 5,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          'assets/images/babivision-logo.png',
-                          width: 120,
+                        SvgPicture.asset(
+                          'assets/images/babivision-logo.svg',
+                          width: context.percentageOfWidth(.2).clamp(120, 150),
 
                           //height: 75,
                           fit: BoxFit.fill,
@@ -271,67 +343,64 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Align(
         alignment: Alignment.topCenter,
-        child: B(
-          color: "r",
-          child: SizedBox(
-            width: double.infinity.clamp(50, 800),
-            child: FractionallySizedBox(
-              //height: 250,
-              widthFactor: 0.95,
-              heightFactor: 0.92,
-              //height: 250,
-              child: Column(
-                children: [
-                  _buildGridRow(context, [
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/calendar.svg",
-                      "label": "Book Appointment",
-                      "color": Colors.white,
-                      "backgroundColor": KColors.appointment,
-                    },
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/map.svg",
-                      "label": "Find Us",
-                      "color": Colors.black,
-                      "backgroundColor": KColors.findUs,
-                    },
-                  ]),
-                  _buildGridRow(context, [
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/note.svg",
-                      "label": "My Prescriptions",
-                      "color": Colors.black,
-                      "backgroundColor": Colors.white,
-                    },
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/note.svg",
-                      "label": "Book Appointment",
-                      "color": Colors.black,
-                      "backgroundColor": KColors.orderLenses,
-                    },
-                  ]),
-                  _buildGridRow(context, [
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/lenses.svg",
-                      "label": "Browse Lenses",
-                      "color": Colors.black,
-                      "backgroundColor": KColors.findUs,
-                    },
-                    {
-                      "onPress": null,
-                      "img_src": "assets/icon-images/glasses.svg",
-                      "label": "Browse Glasses",
-                      "color": Colors.black,
-                      "backgroundColor": Color.fromARGB(255, 233, 244, 248),
-                    },
-                  ]),
-                ],
-              ),
+        child: SizedBox(
+          width: double.infinity.clamp(50, 800),
+          child: FractionallySizedBox(
+            //height: 250,
+            widthFactor: 0.95,
+            heightFactor: 0.92,
+            //height: 250,
+            child: Column(
+              children: [
+                _buildGridRow(context, [
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/calendar.svg",
+                    "label": "Book Appointment",
+                    "color": Colors.white,
+                    "backgroundColor": KColors.appointment,
+                  },
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/map.svg",
+                    "label": "Find Us",
+                    "color": Colors.black,
+                    "backgroundColor": KColors.findUs,
+                  },
+                ]),
+                _buildGridRow(context, [
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/note.svg",
+                    "label": "My Prescriptions",
+                    "color": Colors.black,
+                    "backgroundColor": Colors.white,
+                  },
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/accessories.svg",
+                    "label": "Accessories",
+                    "color": Colors.black,
+                    "backgroundColor": KColors.orderLenses,
+                  },
+                ]),
+                _buildGridRow(context, [
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/lenses.svg",
+                    "label": "Lenses",
+                    "color": Colors.black,
+                    "backgroundColor": KColors.findUs,
+                  },
+                  {
+                    "onPress": null,
+                    "img_src": "assets/icon-images/glasses.svg",
+                    "label": "Glasses",
+                    "color": Colors.black,
+                    "backgroundColor": Color.fromARGB(255, 233, 244, 248),
+                  },
+                ]),
+              ],
             ),
           ),
         ),
@@ -351,43 +420,31 @@ class _HomepageState extends State<Homepage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CIconButton(
+              _buildBottomNavBtn(
                 onPress: () {
                   setState(() {
                     _currentIndex = 0;
                   });
                 },
-                width: 63,
-                height: 63,
-                padding: EdgeInsets.all(1.5),
+                icon: Icons.home,
                 isActive: homeActive,
-                backgroundColor: homeBgColor,
-                icon: Icon(Icons.home, color: homeIconColor, size: 35),
-                label: Text(
-                  "Home",
-                  style: TextStyle(color: homeIconColor, fontSize: 9),
-                ),
+                bgColor: homeBgColor,
+                iconColor: homeIconColor,
+                textColor: homeIconColor,
+                text: "Home",
               ),
-              CIconButton(
+              _buildBottomNavBtn(
                 onPress: () {
                   setState(() {
                     _currentIndex = 1;
                   });
                 },
-                width: 63,
-                height: 63,
-                padding: EdgeInsets.all(1.5),
+                icon: Icons.format_list_bulleted,
                 isActive: servicesActive,
-                backgroundColor: servicesBgColor,
-                icon: Icon(
-                  Icons.format_list_bulleted,
-                  color: servicesIconColor,
-                  size: 35,
-                ),
-                label: Text(
-                  "Services",
-                  style: TextStyle(color: servicesIconColor, fontSize: 9),
-                ),
+                bgColor: servicesBgColor,
+                iconColor: servicesIconColor,
+                textColor: servicesIconColor,
+                text: "Services",
               ),
               SizedBox(
                 width: 60,
@@ -406,47 +463,31 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
               ),
-              CIconButton(
+              _buildBottomNavBtn(
                 onPress: () {
                   setState(() {
                     _currentIndex = 2;
                   });
                 },
-                width: 63,
-                height: 63,
-                padding: EdgeInsets.all(1.5),
                 isActive: profileActive,
-                backgroundColor: profileBgColor,
-                icon: Icon(
-                  Icons.person_outline_rounded,
-                  color: profileIconColor,
-                  size: 35,
-                ),
-                label: Text(
-                  "Profile",
-                  style: TextStyle(color: profileIconColor, fontSize: 9),
-                ),
+                bgColor: profileBgColor,
+                iconColor: profileIconColor,
+                textColor: profileIconColor,
+                icon: Icons.person_outline_rounded,
+                text: "Profile",
               ),
-              CIconButton(
+              _buildBottomNavBtn(
                 onPress: () {
                   setState(() {
                     _currentIndex = 3;
                   });
                 },
-                width: 63,
-                height: 63,
-                padding: EdgeInsets.all(1.5),
                 isActive: notificationsActive,
-                backgroundColor: notificationsBgColor,
-                icon: Icon(
-                  Icons.notifications_none,
-                  color: notificationsIconColor,
-                  size: 35,
-                ),
-                label: Text(
-                  "Notifications",
-                  style: TextStyle(color: notificationsIconColor, fontSize: 9),
-                ),
+                bgColor: notificationsBgColor,
+                iconColor: notificationsIconColor,
+                textColor: notificationsIconColor,
+                icon: Icons.notifications_none,
+                text: "Notifications",
               ),
             ],
           ),
