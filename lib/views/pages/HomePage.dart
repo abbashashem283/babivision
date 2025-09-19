@@ -22,8 +22,6 @@ class _HomepageState extends State<Homepage> {
     BuildContext context,
     List<Map<String, dynamic>> itemsData,
   ) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Expanded(
       child: Row(
         children:
@@ -35,31 +33,31 @@ class _HomepageState extends State<Homepage> {
                       child: DiagonalShadow(
                         //shadowSize: (height * .08) * .9,
                         shadowSize: context.percentageOfHeight(.08) * .9,
+                        spacing: context.responsiveExplicit(
+                          fallback: 2,
+                          onHeight: {555: 15},
+                        ),
                         label: Text(
                           data["label"],
                           style: TextStyle(
+                            //color: data["color"],
                             color: data["color"],
-                            fontSize: context.responsive(
-                              sm: 16,
-                              md: context.responsiveExplicit(
-                                {555: 26},
-                                fallback: 9,
-                                onWidth: false,
-                              ),
+                            fontSize: context.responsiveExplicit(
+                              fallback: 16,
+                              onWidth: {context.sm: 16, context.md: 26},
+                              onHeight: {-500: 9},
                             ),
                           ),
                         ),
                         icon: SvgPicture.asset(
                           data["img_src"],
                           width: context.responsiveExplicit(
-                            {555: context.percentageOfHeight(.08)},
+                            onHeight: {555: context.percentageOfHeight(.08)},
                             fallback: context.percentageOfHeight(.07),
-                            onWidth: false,
                           ),
                           height: context.responsiveExplicit(
-                            {555: context.percentageOfHeight(.08)},
+                            onHeight: {555: context.percentageOfHeight(.08)},
                             fallback: context.percentageOfHeight(.07),
-                            onWidth: false,
                           ),
                         ),
                         decoration: BoxDecoration(
@@ -89,15 +87,13 @@ class _HomepageState extends State<Homepage> {
   }) {
     return CIconButton(
       onPress: onPress,
-      width: context.responsive(
-        sm: context.percentageOfHeight(.1).clamp(0, 68),
-        md: context.percentageOfHeight(.12),
-        lg: context.percentageOfWidth(.1),
-      ),
-      height: context.responsive(
-        sm: context.percentageOfHeight(.1).clamp(0, 68),
-        md: context.percentageOfHeight(.12),
-        lg: context.percentageOfWidth(.1),
+      width: context.responsiveExplicit(
+        fallback: 10,
+        onWidth: {
+          context.sm: context.percentageOfHeight(.1).clamp(0, 68),
+          context.md: context.percentageOfWidth(.12),
+          context.lg: context.percentageOfWidth(.1),
+        },
       ),
       padding: EdgeInsets.all(1.5),
       isActive: isActive,
@@ -105,28 +101,90 @@ class _HomepageState extends State<Homepage> {
       icon: Icon(
         icon,
         color: iconColor,
-        size: context.responsive(
-          sm: 35,
-          md: context.percentageOfHeight(.04),
-          lg: context.percentageOfWidth(.04).clamp(0, 40),
+        size: context.responsiveExplicit(
+          fallback: 35,
+          onWidth: {
+            context.sm: 35,
+            context.md: context.percentageOfHeight(.04),
+            context.lg: context.percentageOfWidth(.04).clamp(0, 40),
+          },
+          onHeight: {-580: context.percentageOfHeight(.03).clamp(20, 25)},
         ),
       ), //35
       label: Text(
         text,
         style: TextStyle(
           color: textColor,
-          fontSize: context.responsive(
-            sm: 9,
-            md: context.responsiveExplicit(
-              {1300: 11},
-              fallback: 16,
-              onWidth: false,
-            ),
-            lg: 16,
+          fontSize: context.responsiveExplicit(
+            fallback: 9,
+            onWidth: {
+              context.sm: context.responsiveExplicit(
+                fallback: 9,
+                onHeight: {-580: 5},
+              ),
+              context.md: context.responsiveExplicit(
+                //onWidth: {1300: 11},
+                onHeight: {-580: 5},
+                fallback: 9,
+              ),
+              context.lg: 16,
+            },
           ),
           //fontSize: context.responsiveExplicit({}, fallback: 9)
         ),
       ),
+    );
+  }
+
+  Widget _buildDrawerTile({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+  }) {
+    return ListTile(
+      leading: Icon(icon, size: 35, color: iconColor),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: (context.percentageOfWidth(.02)).clamp(18, 25),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSideMenu() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      spacing: context.responsiveOrientation(fallback: 0, onLandscape: 15),
+      children: [
+        _buildDrawerTile(
+          icon: Icons.info,
+          iconColor: KColors.aboutUsIcon,
+          label: "About Us",
+        ),
+
+        _buildDrawerTile(
+          icon: Icons.message_rounded,
+          iconColor: KColors.contactIcon,
+          label: "Contact / Support",
+        ),
+        _buildDrawerTile(
+          icon: Icons.settings,
+          iconColor: Colors.grey[600]!,
+          label: "Settings",
+        ),
+        Divider(),
+        _buildDrawerTile(
+          icon: Icons.article,
+          iconColor: Colors.orange,
+          label: "Terms & Privacy",
+        ),
+        _buildDrawerTile(
+          icon: Icons.logout_outlined,
+          iconColor: Colors.red,
+          label: "Logout",
+        ),
+      ],
     );
   }
 
@@ -254,88 +312,11 @@ class _HomepageState extends State<Homepage> {
                 ],
               ),
               SizedBox(height: 50),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ListTile(
-                      leading: Icon(
-                        Icons.info,
-                        size: 35,
-                        color: KColors.aboutUsIcon,
-                      ),
-                      title: Text(
-                        "About Us",
-                        style: TextStyle(
-                          fontSize: (context.percentageOfWidth(
-                            .02,
-                          )).clamp(18, 25),
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.message_rounded,
-                        size: 35,
-                        color: KColors.contactIcon,
-                      ),
-                      title: Text(
-                        "Contact / Support",
-                        style: TextStyle(
-                          fontSize: (context.percentageOfWidth(
-                            .02,
-                          )).clamp(18, 25),
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.settings,
-                        size: 35,
-                        color: Colors.grey[600],
-                      ),
-                      title: Text(
-                        "Settings",
-                        style: TextStyle(
-                          fontSize: (context.percentageOfWidth(
-                            .02,
-                          )).clamp(18, 25),
-                        ),
-                      ),
-                    ),
-                    Divider(),
-                    ListTile(
-                      leading: Icon(
-                        Icons.article,
-                        size: 35,
-                        color: Colors.orange,
-                      ),
-                      title: Text(
-                        "Terms & Privacy",
-                        style: TextStyle(
-                          fontSize: (context.percentageOfWidth(
-                            .02,
-                          )).clamp(18, 25),
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.logout_outlined,
-                        size: 35,
-                        color: Colors.red,
-                      ),
-                      title: Text(
-                        "Logout",
-                        style: TextStyle(
-                          fontSize: (context.percentageOfWidth(
-                            .02,
-                          )).clamp(18, 25),
-                        ),
-                      ),
-                    ),
-                  ],
+              context.responsiveOrientation(
+                onLandscape: Expanded(
+                  child: SingleChildScrollView(child: _buildSideMenu()),
                 ),
+                onPortrait: Expanded(child: _buildSideMenu()),
               ),
             ],
           ),

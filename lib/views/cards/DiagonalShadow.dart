@@ -8,6 +8,7 @@ class DiagonalShadow extends StatelessWidget {
   final double? height;
   final double? iconWidth;
   final double? iconHeight;
+  final double spacing;
   final BoxDecoration? shadowDecoration;
   final Decoration? decoration;
   final double shadowSize;
@@ -18,6 +19,7 @@ class DiagonalShadow extends StatelessWidget {
     super.key,
     this.width,
     this.height,
+    this.spacing = 15,
     this.shadowDecoration,
     this.decoration,
     this.onPress,
@@ -82,7 +84,7 @@ class DiagonalShadow extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 15,
+                      spacing: spacing,
                       children: [icon, label],
                     ),
                   ),
