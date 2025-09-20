@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:babivision/views/buttons/CIconButton.dart';
 import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/layout/AppBarDrawerScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
@@ -18,6 +19,66 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
 
+  Widget _getSelectedTab() {
+    switch (_currentIndex) {
+      case 0:
+        return Column(
+          children: [
+            _buildGridRow(context, [
+              {
+                "onPress": () => Navigator.pushNamed(context, '/appointments'),
+                "img_src": "assets/icon-images/calendar.svg",
+                "label": "Book Appointment",
+                "color": Colors.white,
+                "backgroundColor": KColors.appointment,
+              },
+              {
+                "onPress": null,
+                "img_src": "assets/icon-images/map.svg",
+                "label": "Find Us",
+                "color": Colors.black,
+                "backgroundColor": KColors.findUs,
+              },
+            ]),
+            _buildGridRow(context, [
+              {
+                "onPress": null,
+                "img_src": "assets/icon-images/note.svg",
+                "label": "My Prescriptions",
+                "color": Colors.black,
+                "backgroundColor": Colors.white,
+              },
+              {
+                "onPress": null,
+                "img_src": "assets/icon-images/accessories.svg",
+                "label": "Accessories",
+                "color": Colors.black,
+                "backgroundColor": KColors.orderLenses,
+              },
+            ]),
+            _buildGridRow(context, [
+              {
+                "onPress": null,
+                "img_src": "assets/icon-images/lenses.svg",
+                "label": "Lenses",
+                "color": Colors.black,
+                "backgroundColor": KColors.findUs,
+              },
+              {
+                "onPress": null,
+                "img_src": "assets/icon-images/glasses.svg",
+                "label": "Glasses",
+                "color": Colors.black,
+                "backgroundColor": Color.fromARGB(255, 233, 244, 248),
+              },
+            ]),
+          ],
+        );
+      default:
+        return SizedBox.shrink();
+    }
+  }
+
   Widget _buildGridRow(
     BuildContext context,
     List<Map<String, dynamic>> itemsData,
@@ -32,6 +93,7 @@ class _HomepageState extends State<Homepage> {
                       padding: const EdgeInsets.all(8.0),
                       child: DiagonalShadow(
                         //shadowSize: (height * .08) * .9,
+                        onPress: data["onPress"],
                         shadowSize: context.percentageOfHeight(.08) * .9,
                         spacing: context.responsiveExplicit(
                           fallback: 2,
@@ -215,113 +277,7 @@ class _HomepageState extends State<Homepage> {
             ? KColors.notificationIconColor
             : Colors.transparent;
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
-        child: SafeArea(
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            flexibleSpace: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    child: Builder(
-                      builder: (context) {
-                        return IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(
-                            minWidth: 4,
-                            minHeight: 4,
-                          ),
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          icon: Icon(
-                            Icons.menu,
-                            color: Colors.black,
-                            size: context.percentageOfWidth(.1).clamp(20, 50),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      spacing: 5,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/babivision-logo.svg',
-                          width: context.percentageOfWidth(.2).clamp(120, 150),
-
-                          //height: 75,
-                          fit: BoxFit.fill,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      drawer: SafeArea(
-        child: Container(
-          width: context.percentageOfWidth(.7),
-          height: double.infinity,
-          color: KColors.offWhite,
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Column(
-                children: [
-                  Container(
-                    width: (context.percentageOfWidth(.2) / context.ratio)
-                        .clamp(100, 150),
-                    height: (context.percentageOfWidth(.2) / context.ratio)
-                        .clamp(100, 150),
-                    decoration: BoxDecoration(
-                      color: Colors.purple[100],
-                      borderRadius: BorderRadius.circular(
-                        ((context.percentageOfWidth(.2) / 2) / context.ratio)
-                            .clamp(50, 75),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "JD",
-                        style: TextStyle(color: Colors.purple, fontSize: 40),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text("John Doe", style: TextStyle(fontSize: 25)),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 200),
-                    child: Text(
-                      "jdoe@example.com",
-                      style: TextStyle(
-                        fontSize: 15,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 50),
-              context.responsiveOrientation(
-                onLandscape: Expanded(
-                  child: SingleChildScrollView(child: _buildSideMenu()),
-                ),
-                onPortrait: Expanded(child: _buildSideMenu()),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return AppbaDrawerScaffold(
       body: Align(
         alignment: Alignment.topCenter,
         child: SizedBox(
@@ -331,58 +287,7 @@ class _HomepageState extends State<Homepage> {
             widthFactor: 0.95,
             heightFactor: 0.92,
             //height: 250,
-            child: Column(
-              children: [
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/calendar.svg",
-                    "label": "Book Appointment",
-                    "color": Colors.white,
-                    "backgroundColor": KColors.appointment,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/map.svg",
-                    "label": "Find Us",
-                    "color": Colors.black,
-                    "backgroundColor": KColors.findUs,
-                  },
-                ]),
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/note.svg",
-                    "label": "My Prescriptions",
-                    "color": Colors.black,
-                    "backgroundColor": Colors.white,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/accessories.svg",
-                    "label": "Accessories",
-                    "color": Colors.black,
-                    "backgroundColor": KColors.orderLenses,
-                  },
-                ]),
-                _buildGridRow(context, [
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/lenses.svg",
-                    "label": "Lenses",
-                    "color": Colors.black,
-                    "backgroundColor": KColors.findUs,
-                  },
-                  {
-                    "onPress": null,
-                    "img_src": "assets/icon-images/glasses.svg",
-                    "label": "Glasses",
-                    "color": Colors.black,
-                    "backgroundColor": Color.fromARGB(255, 233, 244, 248),
-                  },
-                ]),
-              ],
-            ),
+            child: _getSelectedTab(),
           ),
         ),
       ),

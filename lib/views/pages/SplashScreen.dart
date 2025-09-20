@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:babivision/views/pages/HomePage.dart';
+import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:flutter/material.dart';
 
 class Splashscreen extends StatefulWidget {
