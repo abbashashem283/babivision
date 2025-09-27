@@ -49,7 +49,6 @@ class AppointmentController {
       Set<String> appointments = {};
       Map<String, Set<String>> gaps = _getGaps(day);
       _opticianAvailability[day] = gaps;
-      print(gaps);
       _optician_ids.forEach((optician_id) {
         appointments.addAll(gaps[optician_id]!);
       });
