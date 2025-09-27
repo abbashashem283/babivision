@@ -32,7 +32,7 @@ class DiagonalShadow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onPress,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),

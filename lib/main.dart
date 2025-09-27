@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
         ).copyWith(primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Homepage(),
+      home: Playground(),
       routes: getRoutes(context),
     );
   }

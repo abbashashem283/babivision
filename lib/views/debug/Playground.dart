@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:babivision/Utils/Http.dart';
@@ -7,6 +8,7 @@ import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class Playground extends StatefulWidget {
@@ -78,20 +80,23 @@ class _PlaygroundState extends State<Playground> {
             ),
           ),
         ),*/
-        child: DiagonalShadow(
-          width: 400,
-          height: 300,
-          shadowSize: 60,
-          label: Text(
-            "Home",
-            style: TextStyle(color: Colors.white, fontSize: 24),
+        child: Center(
+          child: FutureBuilder(
+            future: Http.get("/api/appointments?upto=30"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Response<dynamic>? data = snapshot.data;
+                Map<String, dynamic> jsonData = jsonDecode(
+                  data?.toString() ?? "null",
+                );
+                return Text(
+                  (jsonData["appointments"]["2025-09-24"].toString()),
+                );
+              }
+              if (snapshot.hasError) return Text("error");
+              return Text("Loading...");
+            },
           ),
-          icon: Icon(Icons.error, size: 70, color: Colors.white),
-          decoration: BoxDecoration(
-            color: KColors.aboutUsIcon,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          //shadowDecoration: BoxDecoration(color: Colors.red),
         ),
       ),
     );
