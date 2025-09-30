@@ -89,9 +89,7 @@ class _PlaygroundState extends State<Playground> {
                 Map<String, dynamic> jsonData = jsonDecode(
                   data?.toString() ?? "null",
                 );
-                return Text(
-                  (jsonData["appointments"]["2025-09-24"].toString()),
-                );
+                return Text((jsonData["appointments"].toString()));
               }
               if (snapshot.hasError) return Text("error");
               return Text("Loading...");

@@ -5,6 +5,7 @@ class AppointmentController {
   final String openTime;
   final String closeTime;
   final Map<String, dynamic> appointments;
+  final Set<String> workdays;
 
   late Map<String, Map> _appointmentDays;
   late Map<String, List> _opticians;
@@ -15,6 +16,7 @@ class AppointmentController {
     required this.serviceTime,
     required this.openTime,
     required this.closeTime,
+    required this.workdays,
     required this.appointments,
   }) {
     _appointmentDays = this.appointments['appointments'];
@@ -46,14 +48,25 @@ class AppointmentController {
   }) {
     List<Map<String, dynamic>> result = [];
     for (int i = 0; i < upto; ++i) {
+      print(day);
+      print(Time.dayFromYMD(day));
+      if (!workdays.contains(Time.dayFromYMD(day))) {
+        day = Time.addDays(day, 1);
+        continue;
+      }
       Set<String> appointments = {};
       Map<String, Set<String>> gaps = _getGaps(day);
       _opticianAvailability[day] = gaps;
+      //print(gaps);
       _optician_ids.forEach((optician_id) {
         appointments.addAll(gaps[optician_id]!);
       });
       if (!appointments.isEmpty)
-        result.add({"day": day, "appointments": appointments.toList()..sort()});
+        result.add({
+          "day": day,
+          "displayDate": Time.displayFullDate(day),
+          "appointments": appointments.toList()..sort(),
+        });
       day = Time.addDays(day, 1);
     }
     return result;

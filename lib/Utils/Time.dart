@@ -22,4 +22,31 @@ class Time {
     final updated = dateTime.add(Duration(minutes: minutesToAdd));
     return updated.toString().substring(11, 16); // returns 'HH:mm'
   }
+
+  static String dayFromYMD(String ymd) {
+    final date = DateTime.parse('$ymd 14:00:00.000');
+
+    const weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+
+    final weekday = weekdays[date.weekday - 1];
+    return weekday;
+  }
+
+  static String displayFullDate(String ymd) {
+    final date = DateTime.parse(ymd);
+    final dmy =
+        '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
+
+    return '${dayFromYMD(ymd)}, $dmy';
+  }
 }
