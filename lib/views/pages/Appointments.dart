@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/controllers/AppointmentController.dart';
+import 'package:babivision/models/Clinic.dart';
+import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -15,22 +17,41 @@ class Appointments extends StatefulWidget {
   State<Appointments> createState() => _AppointmentsState();
 }
 
+class ComboPlaceHolder {
+  final int id;
+  final String name;
+  ComboPlaceHolder({required this.id, required this.name});
+}
+
 class _AppointmentsState extends State<Appointments> {
-  int _selectedService = -1;
-  int _selectedClinic = -1;
-  List? _services;
-  List? _clinics;
+  final ComboPlaceHolder _noServicePlaceHolder = ComboPlaceHolder(
+    id: -1,
+    name: "- select a service -",
+  );
+
+  final ComboPlaceHolder _noClinicPlaceHolder = ComboPlaceHolder(
+    id: -1,
+    name: "- select a clinic -",
+  );
+
+  late dynamic _selectedService;
+  late dynamic _selectedClinic;
+  List<Service>? _services;
+  List<Clinic>? _clinics;
+
+  String get optionUnselectedSvgUrl {
+    if (_selectedService.id == -1) return "assets/icon-images/no-service.svg";
+    if (_selectedClinic.id == -1) return "assets/icon-images/no-clinic.svg";
+    return "";
+  }
 
   Widget _buildCombo({
-    required int value,
-    required String placeHolder,
+    required dynamic value,
+    required ComboPlaceHolder placeHolder,
     required List items,
     required void Function(Object?) onChanged,
   }) {
-    List itemsWPlaceHolder = [
-      {'id': -1, 'name': placeHolder},
-      ...items,
-    ];
+    List itemsWPlaceHolder = [placeHolder, ...items];
 
     TextStyle getTextStyle(int id) {
       return TextStyle(
@@ -58,9 +79,7 @@ class _AppointmentsState extends State<Appointments> {
       alignment: Alignment.center,
       selectedItemBuilder: (context) {
         return itemsWPlaceHolder.map((item) {
-          return Center(
-            child: Text(item["name"], style: getTextStyle(item["id"])),
-          );
+          return Center(child: Text(item.name, style: getTextStyle(item.id)));
         }).toList();
       },
       items:
@@ -68,8 +87,8 @@ class _AppointmentsState extends State<Appointments> {
               .map(
                 (item) => DropdownMenuItem(
                   //alignment: Alignment.center,
-                  value: item["id"],
-                  child: Text(item["name"], style: getTextStyle(item["id"])),
+                  value: item,
+                  child: Text(item.name, style: getTextStyle(item.id)),
                 ),
               )
               .toList(),
@@ -78,13 +97,37 @@ class _AppointmentsState extends State<Appointments> {
   }
 
   Future<Map<String, dynamic>> _getServicesWClinics() async {
+    debugPrint("getting services + clinics");
     final servicesResponse = await Http.get("/api/services");
-    final Map<String, dynamic> services = jsonDecode(
+    final Map<String, dynamic> jsonServices = jsonDecode(
       servicesResponse.toString(),
     );
+    // debugPrint(jsonServices.toString());
     final clinicsResponse = await Http.get("/api/clinics");
-    final Map<String, dynamic> clinics = jsonDecode(clinicsResponse.toString());
-    return {"services": services["services"], "clinics": clinics["clinics"]};
+    final Map<String, dynamic> jsonClinics = jsonDecode(
+      clinicsResponse.toString(),
+    );
+    debugPrint("1");
+    List<Service> services =
+        (jsonServices["services"] as List)
+            .map((service) => Service.fromJson(service))
+            .toList();
+    debugPrint("2");
+    List<Clinic> clinics =
+        (jsonClinics["clinics"] as List)
+            .map((clinic) => Clinic.fromJson(clinic))
+            .toList();
+    debugPrint("3");
+
+    return {"services": services, "clinics": clinics};
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _selectedClinic = _noClinicPlaceHolder;
+    _selectedService = _noServicePlaceHolder;
+    super.initState();
   }
 
   @override
@@ -109,7 +152,7 @@ class _AppointmentsState extends State<Appointments> {
             Expanded(
               flex: 12,
               child: B(
-                color: "g",
+                color: "tr",
                 child: SizedBox(
                   width: double.infinity,
                   child: Column(
@@ -119,20 +162,24 @@ class _AppointmentsState extends State<Appointments> {
                         future: _getServicesWClinics(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
+                            debugPrint("4");
                             final Map<String, dynamic> data = snapshot.data!;
                             _services = data["services"];
+                            debugPrint("5");
                             _clinics = data["clinics"];
+                            debugPrint("6");
+                            debugPrint(_services.toString());
                             return B(
-                              color: "r",
+                              color: "tr",
                               child: Row(
                                 children: [
                                   Expanded(
                                     flex: 1,
                                     child: B(
-                                      color: "t",
+                                      color: "tr",
                                       child: _buildCombo(
                                         value: _selectedService,
-                                        placeHolder: "- select a service -",
+                                        placeHolder: _noServicePlaceHolder,
                                         items: _services!,
                                         onChanged: (newValue) {
                                           setState(() {
@@ -140,7 +187,7 @@ class _AppointmentsState extends State<Appointments> {
                                               newValue != null,
                                               "The new value of dropdown btn is null",
                                             );
-                                            _selectedService = newValue! as int;
+                                            _selectedService = newValue!;
                                           });
                                         },
                                       ),
@@ -153,10 +200,10 @@ class _AppointmentsState extends State<Appointments> {
                                   Expanded(
                                     flex: 1,
                                     child: B(
-                                      color: "t",
+                                      color: "tr",
                                       child: _buildCombo(
                                         value: _selectedClinic,
-                                        placeHolder: "- select a clinic -",
+                                        placeHolder: _noClinicPlaceHolder,
                                         items: _clinics!,
                                         onChanged: (newValue) {
                                           setState(() {
@@ -164,7 +211,7 @@ class _AppointmentsState extends State<Appointments> {
                                               newValue != null,
                                               "The new value of dropdown btn is null",
                                             );
-                                            _selectedClinic = newValue! as int;
+                                            _selectedClinic = newValue!;
                                           });
                                         },
                                       ),
@@ -176,7 +223,7 @@ class _AppointmentsState extends State<Appointments> {
                             );
                           }
                           if (snapshot.hasError) {
-                            return Text("Error");
+                            return Text(snapshot.error.toString());
                           }
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -186,10 +233,11 @@ class _AppointmentsState extends State<Appointments> {
                       ),
                       Expanded(
                         child:
-                            _selectedService == -1
+                            _selectedService.id == -1 ||
+                                    _selectedClinic.id == -1
                                 ? Center(
                                   child: SvgPicture.asset(
-                                    "assets/icon-images/no-service.svg",
+                                    optionUnselectedSvgUrl,
                                     width: 150,
                                     height: 150,
                                   ),
@@ -197,7 +245,7 @@ class _AppointmentsState extends State<Appointments> {
                                 : SingleChildScrollView(
                                   child: FutureBuilder(
                                     future: Http.get(
-                                      "/api/appointments?upto=3",
+                                      "/api/appointments?upto=3&clinic=${_selectedClinic.id}",
                                     ),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
@@ -205,11 +253,11 @@ class _AppointmentsState extends State<Appointments> {
                                             jsonDecode(
                                               snapshot.data.toString(),
                                             );
-                                        //AppointmentController appointmentController = AppointmentController(serviceTime: serviceTime, openTime: openTime, closeTime: closeTime, workdays: workdays, appointments: appointments)
+                                        // AppointmentController appointmentController = AppointmentController(serviceTime: serviceTime, openTime: openTime, closeTime: closeTime, workdays: workdays, appointments: appointments)
                                         return Text(snapshot.data.toString());
                                       }
                                       if (snapshot.hasError) {
-                                        return Text("error");
+                                        return Text(snapshot.error.toString());
                                       }
                                       return Center(
                                         child: CircularProgressIndicator(),
