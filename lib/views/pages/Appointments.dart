@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
-import 'package:babivision/controllers/AppointmentController.dart';
+import 'package:babivision/controllers/AppointmentManager.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
@@ -97,27 +97,27 @@ class _AppointmentsState extends State<Appointments> {
   }
 
   Future<Map<String, dynamic>> _getServicesWClinics() async {
-    debugPrint("getting services + clinics");
+    //debugPrint("getting services + clinics");
     final servicesResponse = await Http.get("/api/services");
     final Map<String, dynamic> jsonServices = jsonDecode(
       servicesResponse.toString(),
     );
-    // debugPrint(jsonServices.toString());
+    // //debugPrint(jsonServices.toString());
     final clinicsResponse = await Http.get("/api/clinics");
     final Map<String, dynamic> jsonClinics = jsonDecode(
       clinicsResponse.toString(),
     );
-    debugPrint("1");
+    //debugPrint("1");
     List<Service> services =
         (jsonServices["services"] as List)
             .map((service) => Service.fromJson(service))
             .toList();
-    debugPrint("2");
+    //debugPrint("2");
     List<Clinic> clinics =
         (jsonClinics["clinics"] as List)
             .map((clinic) => Clinic.fromJson(clinic))
             .toList();
-    debugPrint("3");
+    //debugPrint("3");
 
     return {"services": services, "clinics": clinics};
   }
@@ -162,13 +162,13 @@ class _AppointmentsState extends State<Appointments> {
                         future: _getServicesWClinics(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            debugPrint("4");
+                            //debugPrint("4");
                             final Map<String, dynamic> data = snapshot.data!;
                             _services = data["services"];
-                            debugPrint("5");
+                            //debugPrint("5");
                             _clinics = data["clinics"];
-                            debugPrint("6");
-                            debugPrint(_services.toString());
+                            //debugPrint("6");
+                            //debugPrint(_services.toString());
                             return B(
                               color: "tr",
                               child: Row(
@@ -253,8 +253,29 @@ class _AppointmentsState extends State<Appointments> {
                                             jsonDecode(
                                               snapshot.data.toString(),
                                             );
-                                        // AppointmentController appointmentController = AppointmentController(serviceTime: serviceTime, openTime: openTime, closeTime: closeTime, workdays: workdays, appointments: appointments)
-                                        return Text(snapshot.data.toString());
+                                        debugPrint("1");
+                                        AppointmentManager
+                                        appointmentController =
+                                            AppointmentManager(
+                                              serviceTime:
+                                                  _selectedService.durationMin,
+                                              openTime:
+                                                  _selectedClinic.openTime,
+                                              closeTime:
+                                                  _selectedClinic.closeTime,
+                                              workdays: {
+                                                ..._selectedClinic.workDays,
+                                              },
+                                              appointments: data,
+                                            );
+                                        return Text(
+                                          appointmentController
+                                              .allAvailableAppointments(
+                                                '2025-10-02',
+                                                upto: 1,
+                                              )
+                                              .toString(),
+                                        );
                                       }
                                       if (snapshot.hasError) {
                                         return Text(snapshot.error.toString());

@@ -1,18 +1,19 @@
 import 'package:babivision/Utils/Time.dart';
+import 'package:flutter/material.dart';
 
-class AppointmentController {
+class AppointmentManager {
   final int serviceTime;
   final String openTime;
   final String closeTime;
   final Map<String, dynamic> appointments;
   final Set<String> workdays;
 
-  late Map<String, Map> _appointmentDays;
-  late Map<String, List> _opticians;
+  late Map<String, dynamic> _appointmentDays;
+  late Map<String, dynamic> _opticians;
   late Map _opticianAvailability;
   late List<String> _optician_ids;
 
-  AppointmentController({
+  AppointmentManager({
     required this.serviceTime,
     required this.openTime,
     required this.closeTime,
@@ -25,13 +26,12 @@ class AppointmentController {
     _opticianAvailability = {};
   }
 
-  Map<String, Set<String>> _getGaps(String day) {
+  Map<String, dynamic> _getGaps(String day) {
     Map<String, Set<String>> result = {};
     final appointmentsDaily = _appointmentDays?[day] ?? {day: {}};
     //result[day] = {};
     _optician_ids.forEach((optician_id) {
-      List<Map<String, dynamic>>? opticianAppointments =
-          appointmentsDaily?['$optician_id'];
+      List<dynamic>? opticianAppointments = appointmentsDaily?['$optician_id'];
       Map<String, dynamic> optician = _opticians!['$optician_id']![0];
       String shift_start = optician!['shift_start'].substring(0, 5);
       String shift_end = optician!['shift_end'].substring(0, 5);
@@ -39,25 +39,27 @@ class AppointmentController {
         _timeGaps(opticianAppointments, shift_start, shift_end),
       );
     });
+    debugPrint(result.toString());
     return result;
   }
 
-  List<Map<String, dynamic>> allAvailableAppointments(
-    String day, {
-    int upto = 1,
-  }) {
-    List<Map<String, dynamic>> result = [];
+  List<dynamic> allAvailableAppointments(String day, {int upto = 1}) {
+    List<dynamic> result = [];
+
     for (int i = 0; i < upto; ++i) {
-      print(day);
-      print(Time.dayFromYMD(day));
+      //print(day);
+      //print(Time.dayFromYMD(day));
       if (!workdays.contains(Time.dayFromYMD(day))) {
         day = Time.addDays(day, 1);
         continue;
       }
+
       Set<String> appointments = {};
-      Map<String, Set<String>> gaps = _getGaps(day);
+
+      Map<String, dynamic> gaps = _getGaps(day);
+
       _opticianAvailability[day] = gaps;
-      //print(gaps);
+      ////print(gaps);
       _optician_ids.forEach((optician_id) {
         appointments.addAll(gaps[optician_id]!);
       });
@@ -81,7 +83,7 @@ class AppointmentController {
   }
 
   List<Map<String, int>> _timeGaps(
-    List<Map<String, dynamic>>? opticianAppointments,
+    List<dynamic>? opticianAppointments,
     String shift_start,
     String shift_end,
   ) {
@@ -101,7 +103,9 @@ class AppointmentController {
       time_end = appointment['end_time']?.substring(0, 5);
     });
     diff = Time.difference(shift_end, time_end!);
-    if (diff > 0) result.add({time_end!: diff});
+    if (diff > 0) {
+      result.add({time_end!: diff});
+    }
     return result;
   }
 
