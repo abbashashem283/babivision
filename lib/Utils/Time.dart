@@ -23,6 +23,20 @@ class Time {
     return updated.toString().substring(11, 16); // returns 'HH:mm'
   }
 
+  static bool compare(String t1, String t2, String operator) {
+    DateTime time1 = parseTime(t1);
+    DateTime time2 = parseTime(t2);
+    switch (operator) {
+      case "=":
+        return t1 == t2;
+      case "<":
+        return time1.isBefore(time2);
+      case ">":
+        return time1.isAfter(time2);
+    }
+    return false;
+  }
+
   static String dayFromYMD(String ymd) {
     final date = DateTime.parse('$ymd 14:00:00.000');
 

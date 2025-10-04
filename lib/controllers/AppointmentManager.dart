@@ -43,7 +43,11 @@ class AppointmentManager {
     return result;
   }
 
-  List<dynamic> allAvailableAppointments(String day, {int upto = 1}) {
+  List<dynamic> allAvailableAppointments(
+    String day, {
+    int upto = 1,
+    String? day0Time,
+  }) {
     List<dynamic> result = [];
 
     for (int i = 0; i < upto; ++i) {
@@ -63,6 +67,17 @@ class AppointmentManager {
       _optician_ids.forEach((optician_id) {
         appointments.addAll(gaps[optician_id]!);
       });
+      debugPrint(
+        'all available appoointments on $day unfiltered ${appointments.toString()}',
+      );
+      if (day0Time != null && i == 0)
+        appointments =
+            appointments
+                .where(
+                  (appointment) => Time.compare(day0Time, appointment, '<'),
+                )
+                .toSet();
+
       if (!appointments.isEmpty)
         result.add({
           "day": day,
@@ -72,6 +87,14 @@ class AppointmentManager {
       day = Time.addDays(day, 1);
     }
     return result;
+  }
+
+  Future<List<dynamic>> allAvailableAppointmentsAsync(
+    String day, {
+    int upto = 1,
+    String? day0Time,
+  }) async {
+    return allAvailableAppointments(day, upto: upto, day0Time: day0Time);
   }
 
   String? bookOptician(String day, String time) {
@@ -111,15 +134,18 @@ class AppointmentManager {
 
   Set<String> _availableSlots(List<Map<String, int>> gaps) {
     Set<String> result = {};
+    debugPrint("gapz ${gaps.toString()}");
     gaps.forEach((gap) {
       String time = gap.keys.first;
       int timeGap = gap[time]!;
       int iterations = timeGap ~/ serviceTime;
       for (int i = 0; i < iterations; ++i) {
+        debugPrint("timo $time");
         result.add(time);
         time = Time.addMinutes(time, serviceTime);
       }
     });
+    debugPrint("gapo $result");
     return result;
   }
 }

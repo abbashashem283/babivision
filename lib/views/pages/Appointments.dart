@@ -162,13 +162,9 @@ class _AppointmentsState extends State<Appointments> {
                         future: _getServicesWClinics(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            //debugPrint("4");
                             final Map<String, dynamic> data = snapshot.data!;
                             _services = data["services"];
-                            //debugPrint("5");
                             _clinics = data["clinics"];
-                            //debugPrint("6");
-                            //debugPrint(_services.toString());
                             return B(
                               color: "tr",
                               child: Row(
@@ -191,10 +187,6 @@ class _AppointmentsState extends State<Appointments> {
                                           });
                                         },
                                       ),
-                                      // child: SizedBox(
-                                      //   width: double.infinity,
-                                      //   height: 30,
-                                      // ),
                                     ),
                                   ),
                                   Expanded(
@@ -271,8 +263,9 @@ class _AppointmentsState extends State<Appointments> {
                                         return Text(
                                           appointmentController
                                               .allAvailableAppointments(
-                                                '2025-10-02',
-                                                upto: 1,
+                                                '2025-10-06',
+                                                upto: 2,
+                                                day0Time: '11:00',
                                               )
                                               .toString(),
                                         );
