@@ -181,7 +181,8 @@ class _AppointmentsState extends State<Appointments> {
         child:
             _isLoading
                 ? Center(child: CircularProgressIndicator())
-                : Column(
+                : _isDone
+                ? Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
@@ -332,6 +333,20 @@ class _AppointmentsState extends State<Appointments> {
                       ),
                     ),
                   ],
+                )
+                : SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline, size: 150, color: Colors.red),
+                      Text(
+                        "Error",
+                        style: TextStyle(color: Colors.red, fontSize: 32),
+                      ),
+                    ],
+                  ),
                 ),
       ),
     );
