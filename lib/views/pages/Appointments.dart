@@ -27,21 +27,18 @@ class SlotButton extends StatefulWidget {
 }
 
 class _SlotButtonState extends State<SlotButton> {
-  late bool _isActive;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _isActive = widget.active;
   }
 
   Color get _foreGroundColor {
-    return _isActive ? Colors.white : Colors.purple;
+    return widget.active ? Colors.white : Colors.purple;
   }
 
   Color? get _backgroundColor {
-    return _isActive ? Colors.purple : null;
+    return widget.active ? Colors.purple : null;
   }
 
   @override
@@ -54,10 +51,10 @@ class _SlotButtonState extends State<SlotButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       onPressed: () {
+        // setState(() {
+        //   _isActive = !_isActive;
+        // });
         if (widget.onPressed != null) widget.onPressed!();
-        setState(() {
-          _isActive = !_isActive;
-        });
       },
       child: Text(widget.label),
     );
@@ -66,14 +63,27 @@ class _SlotButtonState extends State<SlotButton> {
 
 class AppointmentList extends StatefulWidget {
   final List<dynamic> appointments;
-  const AppointmentList({super.key, required this.appointments});
+  final String? selectedAppointment;
+  final Function(String appointment) onAppointmentSelected;
+  const AppointmentList({
+    super.key,
+    required this.appointments,
+    required this.onAppointmentSelected,
+    this.selectedAppointment,
+  });
 
   @override
   State<AppointmentList> createState() => _AppointmentListState();
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  Widget _buildListDelegate({required String date, required List slots}) {
+  String? _selectedAppointment;
+
+  Widget _buildListDelegate({
+    required String displayDate,
+    required String day,
+    required List slots,
+  }) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Column(
@@ -90,7 +100,7 @@ class _AppointmentListState extends State<AppointmentList> {
               ),
             ),
             child: Text(
-              date,
+              displayDate,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -127,13 +137,32 @@ class _AppointmentListState extends State<AppointmentList> {
               // }),
               children: List.generate(slots.length, (index) {
                 String slot = slots[index];
-                return SlotButton(label: slot);
+                String currentAppointment = '$day $slot';
+                bool slotActive = currentAppointment == _selectedAppointment;
+                debugPrint('slot active: $slotActive');
+                return SlotButton(
+                  label: slot,
+                  active: slotActive,
+                  onPressed: () {
+                    setState(() {
+                      _selectedAppointment = currentAppointment;
+                    });
+                    widget.onAppointmentSelected(currentAppointment);
+                  },
+                );
               }),
             ),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _selectedAppointment = widget.selectedAppointment;
   }
 
   @override
@@ -144,7 +173,8 @@ class _AppointmentListState extends State<AppointmentList> {
       itemBuilder: (context, index) {
         final appointment = widget.appointments[index];
         return _buildListDelegate(
-          date: appointment["displayDate"],
+          displayDate: appointment["displayDate"],
+          day: appointment["day"],
           slots: appointment["appointments"],
         );
       },
@@ -444,11 +474,13 @@ class _AppointmentsState extends State<Appointments> {
                                               // );
                                               return B(
                                                 child: AppointmentList(
+                                                  onAppointmentSelected:
+                                                      (newAppointment) {},
                                                   appointments:
                                                       appointmentController
                                                           .allAvailableAppointments(
                                                             Time.today.day,
-                                                            upto: 10,
+                                                            upto: 30,
                                                             day0Time:
                                                                 Time.today.time,
                                                           ),
