@@ -77,6 +77,7 @@ class _AppointmentListState extends State<AppointmentList> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: double.infinity,
@@ -98,7 +99,7 @@ class _AppointmentListState extends State<AppointmentList> {
           ),
           Container(
             width: double.infinity,
-            height: 100,
+            //height: 100,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.purple),
               borderRadius: BorderRadius.only(
@@ -110,18 +111,23 @@ class _AppointmentListState extends State<AppointmentList> {
               crossAxisCount: 3, // number of columns
               mainAxisSpacing: 10, // vertical spacing
               crossAxisSpacing: 10, // horizontal spacing
+              shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.all(10),
-              children: List.generate(10, (index) {
-                return Container(
-                  color: Colors.purple,
-                  child: Center(
-                    child: Text(
-                      "Item $index",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
+              // children: List.generate(10, (index) {
+              //   return Container(
+              //     color: Colors.purple,
+              //     child: Center(
+              //       child: Text(
+              //         "Item $index",
+              //         style: TextStyle(color: Colors.white),
+              //       ),
+              //     ),
+              //   );
+              // }),
+              children: List.generate(slots.length, (index) {
+                String slot = slots[index];
+                return SlotButton(label: slot);
               }),
             ),
           ),
@@ -133,35 +139,16 @@ class _AppointmentListState extends State<AppointmentList> {
   @override
   Widget build(BuildContext context) {
     debugPrint("${widget.appointments.length}");
-    return ListView.builder(
+    return ListView.separated(
       itemCount: widget.appointments.length,
       itemBuilder: (context, index) {
         final appointment = widget.appointments[index];
         return _buildListDelegate(
           date: appointment["displayDate"],
-          slots: [
-            '08:00',
-            '08:30',
-            '09:00',
-            '09:30',
-            '10:00',
-            '10:30',
-            '11:00',
-            '11:30',
-            '12:00',
-            '12:30',
-            '13:00',
-            '13:30',
-            '14:00',
-            '14:30',
-            '15:00',
-            '15:30',
-            '16:00',
-            '16:30',
-            '17:00',
-          ],
+          slots: appointment["appointments"],
         );
       },
+      separatorBuilder: (context, index) => SizedBox(height: 50),
     );
   }
 }
@@ -455,15 +442,17 @@ class _AppointmentsState extends State<Appointments> {
                                               //       )
                                               //       .toString(),
                                               // );
-                                              return AppointmentList(
-                                                appointments:
-                                                    appointmentController
-                                                        .allAvailableAppointments(
-                                                          Time.today.day,
-                                                          upto: 2,
-                                                          day0Time:
-                                                              Time.today.time,
-                                                        ),
+                                              return B(
+                                                child: AppointmentList(
+                                                  appointments:
+                                                      appointmentController
+                                                          .allAvailableAppointments(
+                                                            Time.today.day,
+                                                            upto: 10,
+                                                            day0Time:
+                                                                Time.today.time,
+                                                          ),
+                                                ),
                                               );
                                             }
                                             if (snapshot.hasError) {
