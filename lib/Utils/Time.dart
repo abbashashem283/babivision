@@ -1,3 +1,9 @@
+class Today {
+  final String day;
+  final String time;
+  Today({required this.day, required this.time});
+}
+
 class Time {
   static DateTime parseTime(String time) {
     return DateTime.parse('2025-01-01 $time');
@@ -62,5 +68,20 @@ class Time {
         '${date.year}';
 
     return '${dayFromYMD(ymd)}, $dmy';
+  }
+
+  static Today get today {
+    final now = DateTime.now();
+
+    final String day =
+        '${now.year.toString().padLeft(4, '0')}-'
+        '${now.month.toString().padLeft(2, '0')}-'
+        '${now.day.toString().padLeft(2, '0')}';
+
+    final String time =
+        '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
+
+    return Today(day: day, time: time);
   }
 }
