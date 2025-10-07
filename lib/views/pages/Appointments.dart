@@ -4,10 +4,11 @@ import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Time.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/controllers/AppointmentManager.dart';
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
-import 'package:dio/dio.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -34,11 +35,11 @@ class _SlotButtonState extends State<SlotButton> {
   }
 
   Color get _foreGroundColor {
-    return widget.active ? Colors.white : Colors.purple;
+    return widget.active ? Colors.white : KColors.selectedSlot;
   }
 
   Color? get _backgroundColor {
-    return widget.active ? Colors.purple : null;
+    return widget.active ? KColors.selectedSlot : null;
   }
 
   @override
@@ -78,82 +79,113 @@ class AppointmentList extends StatefulWidget {
 
 class _AppointmentListState extends State<AppointmentList> {
   String? _selectedAppointment;
+  String? _visibleDate;
+
+  Widget _buildCalendarTitle({required String date}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.purple,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(8.0),
+        ),
+      ),
+      child: Text(
+        date,
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
 
   Widget _buildListDelegate({
     required String displayDate,
     required String day,
     required List slots,
   }) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.purple,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8.0),
-                topRight: Radius.circular(8.0),
-              ),
-            ),
-            child: Text(
-              displayDate,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            //height: 100,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-            ),
-            child: GridView.count(
-              crossAxisCount: 3, // number of columns
-              mainAxisSpacing: 10, // vertical spacing
-              crossAxisSpacing: 10, // horizontal spacing
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(10),
-              // children: List.generate(10, (index) {
-              //   return Container(
-              //     color: Colors.purple,
-              //     child: Center(
-              //       child: Text(
-              //         "Item $index",
-              //         style: TextStyle(color: Colors.white),
-              //       ),
-              //     ),
-              //   );
-              // }),
-              children: List.generate(slots.length, (index) {
-                String slot = slots[index];
-                String currentAppointment = '$day $slot';
-                bool slotActive = currentAppointment == _selectedAppointment;
-                debugPrint('slot active: $slotActive');
-                return SlotButton(
-                  label: slot,
-                  active: slotActive,
-                  onPressed: () {
-                    setState(() {
-                      _selectedAppointment = currentAppointment;
-                    });
-                    widget.onAppointmentSelected(currentAppointment);
+    return VisibilityDetector(
+      key: Key(displayDate),
+      onVisibilityChanged: (info) {
+        debugPrint(
+          '$displayDate - ${info.size} - ${info.visibleFraction * 100} - ${info.visibleBounds.toString()}',
+        );
+        double top = info.visibleBounds.top;
+        double height = info.size.height;
+        if (top > 0 && (_visibleDate == null || _visibleDate != displayDate)) {
+          setState(() {
+            debugPrint("SETTING VISIBLE DATE !!!");
+            _visibleDate = displayDate;
+          });
+        }
+        if (info.visibleBounds == Rect.zero) {
+          setState(() {
+            debugPrint("REMOVING VISIBLE DATE !!!");
+
+            _visibleDate = null;
+          });
+        }
+      },
+      child: Align(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: double.infinity.clamp(100, 700),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                VisibilityDetector(
+                  key: Key('$displayDate!title'),
+                  onVisibilityChanged: (info) {
+                    if (info.visibleBounds == Rect.zero) {
+                      // setState(() {
+                      //   _visibleDate = displayDate;
+                      // });
+                    }
                   },
-                );
-              }),
+                  child: _buildCalendarTitle(date: displayDate),
+                ),
+                Container(
+                  width: double.infinity,
+                  //height: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.purple),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                  ),
+                  child: GridView.count(
+                    crossAxisCount: 3, // number of columns
+                    mainAxisSpacing: 10, // vertical spacing
+                    crossAxisSpacing: 10, // horizontal spacing hohohoh
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(10),
+                    children: List.generate(slots.length, (index) {
+                      String slot = slots[index];
+                      String currentAppointment = '$day $slot';
+                      bool slotActive =
+                          currentAppointment == _selectedAppointment;
+                      debugPrint('slot active: $slotActive');
+                      return SlotButton(
+                        label: slot,
+                        active: slotActive,
+                        onPressed: () {
+                          setState(() {
+                            _selectedAppointment = currentAppointment;
+                          });
+                          widget.onAppointmentSelected(currentAppointment);
+                        },
+                      );
+                    }),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -168,17 +200,41 @@ class _AppointmentListState extends State<AppointmentList> {
   @override
   Widget build(BuildContext context) {
     debugPrint("${widget.appointments.length}");
-    return ListView.separated(
-      itemCount: widget.appointments.length,
-      itemBuilder: (context, index) {
-        final appointment = widget.appointments[index];
-        return _buildListDelegate(
-          displayDate: appointment["displayDate"],
-          day: appointment["day"],
-          slots: appointment["appointments"],
-        );
-      },
-      separatorBuilder: (context, index) => SizedBox(height: 50),
+    return Stack(
+      children: [
+        ListView.separated(
+          itemCount: widget.appointments.length,
+          itemBuilder: (context, index) {
+            final appointment = widget.appointments[index];
+            return _buildListDelegate(
+              displayDate: appointment["displayDate"],
+              day: appointment["day"],
+              slots: appointment["appointments"],
+            );
+          },
+          separatorBuilder: (context, index) => SizedBox(height: 50),
+        ),
+
+        _visibleDate != null
+            ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.purple,
+                ),
+                child: Text(
+                  _visibleDate!,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ) //_buildCalendarTitle(date: _visibleDate!)
+            : SizedBox.shrink(),
+      ],
     );
   }
 }
@@ -197,6 +253,8 @@ class ComboPlaceHolder {
 }
 
 class _AppointmentsState extends State<Appointments> {
+  String? _appointment;
+
   final ComboPlaceHolder _noServicePlaceHolder = ComboPlaceHolder(
     id: -1,
     name: "- select a service -",
@@ -472,10 +530,19 @@ class _AppointmentsState extends State<Appointments> {
                                               //       )
                                               //       .toString(),
                                               // );
-                                              return B(
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                ),
                                                 child: AppointmentList(
-                                                  onAppointmentSelected:
-                                                      (newAppointment) {},
+                                                  onAppointmentSelected: (
+                                                    newAppointment,
+                                                  ) {
+                                                    // setState(() {
+                                                    //   _appointment =
+                                                    //       newAppointment;
+                                                    // });
+                                                  },
                                                   appointments:
                                                       appointmentController
                                                           .allAvailableAppointments(
