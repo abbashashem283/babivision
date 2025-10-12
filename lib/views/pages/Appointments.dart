@@ -107,21 +107,15 @@ class _AppointmentListState extends State<AppointmentList> {
     return VisibilityDetector(
       key: Key(displayDate),
       onVisibilityChanged: (info) {
-        debugPrint(
-          '$displayDate - ${info.size} - ${info.visibleFraction * 100} - ${info.visibleBounds.toString()}',
-        );
         double top = info.visibleBounds.top;
         double height = info.size.height;
         if (top > 0 && (_visibleDate == null || _visibleDate != displayDate)) {
           setState(() {
-            debugPrint("SETTING VISIBLE DATE !!!");
             _visibleDate = displayDate;
           });
         }
         if (info.visibleBounds == Rect.zero) {
           setState(() {
-            debugPrint("REMOVING VISIBLE DATE !!!");
-
             _visibleDate = null;
           });
         }
@@ -168,7 +162,7 @@ class _AppointmentListState extends State<AppointmentList> {
                       String currentAppointment = '$day $slot';
                       bool slotActive =
                           currentAppointment == _selectedAppointment;
-                      debugPrint('slot active: $slotActive');
+
                       return SlotButton(
                         label: slot,
                         active: slotActive,
@@ -199,20 +193,25 @@ class _AppointmentListState extends State<AppointmentList> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("${widget.appointments.length}");
+    int itemCount = widget.appointments.length;
     return Stack(
       children: [
-        ListView.separated(
-          itemCount: widget.appointments.length,
-          itemBuilder: (context, index) {
-            final appointment = widget.appointments[index];
-            return _buildListDelegate(
-              displayDate: appointment["displayDate"],
-              day: appointment["day"],
-              slots: appointment["appointments"],
-            );
-          },
-          separatorBuilder: (context, index) => SizedBox(height: 50),
+        GlowingOverscrollIndicator(
+          color: Colors.purple,
+          axisDirection: AxisDirection.down,
+          child: ListView.separated(
+            itemCount: itemCount,
+            padding: EdgeInsets.only(bottom: 20),
+            itemBuilder: (context, index) {
+              final appointment = widget.appointments[index];
+              return _buildListDelegate(
+                displayDate: appointment["displayDate"],
+                day: appointment["day"],
+                slots: appointment["appointments"],
+              );
+            },
+            separatorBuilder: (context, index) => SizedBox(height: 50),
+          ),
         ),
 
         _visibleDate != null
@@ -418,176 +417,159 @@ class _AppointmentsState extends State<Appointments> {
                   children: [
                     Expanded(
                       flex: 12,
-                      child: B(
-                        color: "tr",
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              B(
-                                color: "tr",
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: B(
-                                        color: "tr",
-                                        child: _buildCombo(
-                                          value: _selectedService,
-                                          placeHolder: _noServicePlaceHolder,
-                                          items: _services!,
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              assert(
-                                                newValue != null,
-                                                "The new value of dropdown btn is null",
-                                              );
-                                              _selectedService = newValue!;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: B(
-                                        color: "tr",
-                                        child: _buildCombo(
-                                          value: _selectedClinic,
-                                          placeHolder: _noClinicPlaceHolder,
-                                          items: _clinics!,
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              assert(
-                                                newValue != null,
-                                                "The new value of dropdown btn is null",
-                                              );
-                                              _selectedClinic = newValue!;
-                                            });
-                                          },
-                                        ),
-                                        // child: SizedBox(width: 30, height: 30),
-                                      ),
-                                    ),
-                                  ],
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildCombo(
+                                    value: _selectedService,
+                                    placeHolder: _noServicePlaceHolder,
+                                    items: _services!,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        assert(
+                                          newValue != null,
+                                          "The new value of dropdown btn is null",
+                                        );
+                                        _selectedService = newValue!;
+                                      });
+                                    },
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child:
-                                    _selectedService.id == -1 ||
-                                            _selectedClinic.id == -1
-                                        ? Center(
-                                          child: SvgPicture.asset(
-                                            optionUnselectedSvgUrl,
-                                            width: 150,
-                                            height: 150,
-                                          ),
-                                        )
-                                        : FutureBuilder(
-                                          future: Http.get(
-                                            "/api/appointments?upto=3&clinic=${_selectedClinic.id}",
-                                          ),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            }
-                                            if (snapshot.hasData) {
-                                              final Map<String, dynamic> data =
-                                                  jsonDecode(
-                                                    snapshot.data.toString(),
-                                                  );
-                                              debugPrint("1");
-                                              AppointmentManager
-                                              appointmentController =
-                                                  AppointmentManager(
-                                                    serviceTime:
-                                                        _selectedService
-                                                            .durationMin,
-                                                    openTime:
-                                                        _selectedClinic
-                                                            .openTime,
-                                                    closeTime:
-                                                        _selectedClinic
-                                                            .closeTime,
-                                                    workdays: {
-                                                      ..._selectedClinic
-                                                          .workDays,
-                                                    },
-                                                    appointments: data,
-                                                  );
-                                              // return Text(
-                                              //   appointmentController
-                                              //       .allAvailableAppointments(
-                                              //         Time.today.day,
-                                              //         upto: 2,
-                                              //         day0Time:
-                                              //             Time.today.time,
-                                              //       )
-                                              //       .toString(),
-                                              // );
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                ),
-                                                child: AppointmentList(
-                                                  onAppointmentSelected: (
-                                                    newAppointment,
-                                                  ) {
-                                                    // setState(() {
-                                                    //   _appointment =
-                                                    //       newAppointment;
-                                                    // });
-                                                  },
-                                                  appointments:
-                                                      appointmentController
-                                                          .allAvailableAppointments(
-                                                            Time.today.day,
-                                                            upto: 30,
-                                                            day0Time:
-                                                                Time.today.time,
-                                                          ),
-                                                ),
-                                              );
-                                            }
-                                            if (snapshot.hasError) {
-                                              return Text(
-                                                snapshot.error.toString(),
-                                              );
-                                            }
-                                            return SizedBox.shrink();
-                                          },
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildCombo(
+                                    value: _selectedClinic,
+                                    placeHolder: _noClinicPlaceHolder,
+                                    items: _clinics!,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        assert(
+                                          newValue != null,
+                                          "The new value of dropdown btn is null",
+                                        );
+                                        _selectedClinic = newValue!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Expanded(
+                              child:
+                                  _selectedService.id == -1 ||
+                                          _selectedClinic.id == -1
+                                      ? Center(
+                                        child: SvgPicture.asset(
+                                          optionUnselectedSvgUrl,
+                                          width: 150,
+                                          height: 150,
                                         ),
-                              ),
-                            ],
-                          ),
+                                      )
+                                      : FutureBuilder(
+                                        future: Http.get(
+                                          "/api/appointments?upto=3&clinic=${_selectedClinic.id}",
+                                        ),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          if (snapshot.hasData) {
+                                            final Map<String, dynamic> data =
+                                                jsonDecode(
+                                                  snapshot.data.toString(),
+                                                );
+                                            debugPrint(
+                                              'appointments from db ${data.toString()}',
+                                            );
+                                            AppointmentManager
+                                            appointmentController =
+                                                AppointmentManager(
+                                                  serviceTime:
+                                                      _selectedService
+                                                          .durationMin,
+                                                  openTime:
+                                                      _selectedClinic.openTime,
+                                                  closeTime:
+                                                      _selectedClinic.closeTime,
+                                                  workdays: {
+                                                    ..._selectedClinic.workDays,
+                                                  },
+                                                  appointments: data,
+                                                );
+                                            // return Text(
+                                            //   appointmentController
+                                            //       .allAvailableAppointments(
+                                            //         Time.today.day,
+                                            //         upto: 2,
+                                            //         day0Time:
+                                            //             Time.today.time,
+                                            //       )
+                                            //       .toString(),
+                                            // );
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 10,
+                                              ),
+                                              child: AppointmentList(
+                                                onAppointmentSelected: (
+                                                  newAppointment,
+                                                ) {
+                                                  // setState(() {
+                                                  //   _appointment =
+                                                  //       newAppointment;
+                                                  // });
+                                                },
+                                                appointments:
+                                                    appointmentController
+                                                        .allAvailableAppointments(
+                                                          Time.today.day,
+                                                          upto: 3,
+                                                          day0Time:
+                                                              Time.today.time,
+                                                        ),
+                                              ),
+                                            );
+                                          }
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                              snapshot.error.toString(),
+                                            );
+                                          }
+                                          return SizedBox.shrink();
+                                        },
+                                      ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                     Expanded(
                       flex: 1,
-                      child: B(
-                        color: "r",
-                        child: FilledButton(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.purple,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Book Appointment",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: context.responsive(
-                                  sm: 14,
-                                  md: 20,
-                                  lg: 22,
-                                ),
+                      child: FilledButton(
+                        onPressed: () {},
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Book Appointment",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: context.responsive(
+                                sm: 14,
+                                md: 20,
+                                lg: 22,
                               ),
                             ),
                           ),

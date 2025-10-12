@@ -11,6 +11,125 @@ import 'package:babivision/views/forms/TextInput.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter/material.dart';
+
+class InkUpList extends StatefulWidget {
+  const InkUpList({super.key});
+
+  @override
+  State<InkUpList> createState() => _InkUpListState();
+}
+
+class _InkUpListState extends State<InkUpList> {
+  //final ScrollController _scrollController = ScrollController();
+  bool _showInk = false;
+  double _lastOffset = 0;
+
+  final items = List.generate(100, (index) => 'Item ${index + 1}');
+
+  @override
+  void initState() {
+    super.initState();
+
+    // _scrollController.addListener(() {
+    //   double offset = _scrollController.position.pixels;
+    //   double maxOffset = _scrollController.position.maxScrollExtent;
+
+    //   bool atEnd = offset >= maxOffset - 5;
+    //   bool scrollingUp = offset < _lastOffset;
+
+    //   debugPrint('$offset $maxOffset');
+
+    //   // Show ink only if user is at end AND scrolling up
+    //   setState(() {
+    //     _showInk = atEnd;
+    //   });
+
+    //   _lastOffset = offset;
+    // });
+  }
+
+  @override
+  void dispose() {
+    //_scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint("build");
+    return Stack(
+      children: [
+        // Scrollable list
+        NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            // if (notification is ScrollUpdateNotification) {
+            //   debugPrint("ok");
+            // }
+            debugPrint(notification.runtimeType.toString());
+            if (notification is OverscrollNotification) {
+              debugPrint("over");
+              if (notification.overscroll < 0)
+                setState(() {
+                  _showInk = true;
+                });
+              if (notification.overscroll > 0)
+                setState(() {
+                  _showInk = false;
+                });
+            }
+            return true;
+          },
+          child: GlowingOverscrollIndicator(
+            color: Colors.purple,
+            axisDirection: AxisDirection.down,
+            child: ListView.separated(
+              //controller: _scrollController,
+              //physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 20),
+              itemCount: items.length,
+              separatorBuilder: (_, __) => const Divider(),
+              itemBuilder:
+                  (context, index) => ListTile(title: Text(items[index])),
+            ),
+          ),
+        ),
+
+        // InkWell appears only when scrolling up at the end
+        Positioned(
+          bottom: 10,
+          left: 0,
+          right: 0,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 250),
+            opacity: _showInk ? 0.5 : 0.0,
+            child: Center(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: 100,
+                height: _showInk ? 20 : 0,
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class Playground extends StatefulWidget {
   const Playground({super.key});
 
@@ -29,72 +148,13 @@ class _PlaygroundState extends State<Playground> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Playground")),
       body: Center(
-        /*child: ClipRRect(
-          child: Container(
-            color: Colors.blue,
-            width: 200,
-            height: 600,
-            child: B(
-              child: Stack(
-                children: [
-                  B(
-                    color: "p",
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final parentWidth = constraints.maxWidth;
-                        final parentHeight = constraints.maxHeight;
-                        final diagonal = sqrt(
-                          parentWidth * parentWidth +
-                              parentHeight * parentHeight,
-                        );
-                        debugPrint("w $parentWidth");
-                        debugPrint("h $parentHeight");
-                        debugPrint("h $diagonal");
-                        return OverflowBox(
-                          maxWidth: diagonal,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: FractionalTranslation(
-                              translation: Offset(.5, 0),
-                              child: Transform.rotate(
-                                angle: atan(parentHeight / parentWidth),
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  color: Colors.green,
-                                  height: 30,
-                                  width: diagonal / 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: B(color: "o", child: Icon(Icons.home, size: 50)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),*/
-        child: Center(
-          child: FutureBuilder(
-            future: Http.get("/api/appointments?upto=30"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                Response<dynamic>? data = snapshot.data;
-                Map<String, dynamic> jsonData = jsonDecode(
-                  data?.toString() ?? "null",
-                );
-                return Text((jsonData["appointments"].toString()));
-              }
-              if (snapshot.hasError) return Text("error");
-              return Text("Loading...");
-            },
-          ),
+        child: Container(
+          height: 500,
+          width: 300,
+          color: Colors.white24,
+          child: InkUpList(),
         ),
       ),
     );
