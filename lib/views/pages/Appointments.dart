@@ -8,6 +8,7 @@ import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:dio/dio.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -151,7 +152,10 @@ class _AppointmentListState extends State<AppointmentList> {
                     ),
                   ),
                   child: GridView.count(
-                    crossAxisCount: 3, // number of columns
+                    crossAxisCount: context.responsiveExplicit(
+                      fallback: 3,
+                      onWidth: {500: 4},
+                    ), // number of columns
                     mainAxisSpacing: 10, // vertical spacing
                     crossAxisSpacing: 10, // horizontal spacing hohohoh
                     shrinkWrap: true,
@@ -271,6 +275,17 @@ class _AppointmentsState extends State<Appointments> {
 
   bool _isLoading = true, _isError = false, _isDone = false;
 
+  Future<Response<dynamic>> fetchAppointments({
+    required startDay,
+    required upto,
+    required clinic,
+  }) async {
+    debugPrint("fetch data $startDay $upto $clinic");
+    return Http.get(
+      "/api/appointments?startDay=$startDay&upto=$upto&clinic=$clinic",
+    );
+  }
+
   String get optionUnselectedSvgUrl {
     if (_selectedService.id == -1) return "assets/icon-images/no-service.svg";
     if (_selectedClinic.id == -1) return "assets/icon-images/no-clinic.svg";
@@ -330,6 +345,7 @@ class _AppointmentsState extends State<Appointments> {
 
   void get _getServicesWClinics async {
     //debugPrint("getting services + clinics");
+    if (_services != null && _clinics != null) return;
     if (mounted) {
       setState(() {
         _isLoading = true;
@@ -389,6 +405,11 @@ class _AppointmentsState extends State<Appointments> {
     super.initState();
     _selectedClinic = _noClinicPlaceHolder;
     _selectedService = _noServicePlaceHolder;
+    // _appointmentsFuture = fetchAppointments(
+    //   startDay: Time.today.day,
+    //   upto: 30,
+    //   clinic: _selectedClinic.id,
+    // );
     _getServicesWClinics;
   }
 
@@ -472,8 +493,10 @@ class _AppointmentsState extends State<Appointments> {
                                         ),
                                       )
                                       : FutureBuilder(
-                                        future: Http.get(
-                                          "/api/appointments?upto=3&clinic=${_selectedClinic.id}",
+                                        future: fetchAppointments(
+                                          startDay: Time.today.day,
+                                          upto: 30,
+                                          clinic: _selectedClinic.id,
                                         ),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState ==
@@ -483,7 +506,15 @@ class _AppointmentsState extends State<Appointments> {
                                                   CircularProgressIndicator(),
                                             );
                                           }
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                              snapshot.error.toString(),
+                                            );
+                                          }
                                           if (snapshot.hasData) {
+                                            debugPrint(
+                                              "ff1 ${snapshot.data.toString()}",
+                                            );
                                             final Map<String, dynamic> data =
                                                 jsonDecode(
                                                   snapshot.data.toString(),
@@ -524,16 +555,16 @@ class _AppointmentsState extends State<Appointments> {
                                                 onAppointmentSelected: (
                                                   newAppointment,
                                                 ) {
-                                                  // setState(() {
-                                                  //   _appointment =
-                                                  //       newAppointment;
-                                                  // });
+                                                  _appointment = newAppointment;
+                                                  debugPrint(
+                                                    "book appointment $newAppointment",
+                                                  );
                                                 },
                                                 appointments:
                                                     appointmentController
                                                         .allAvailableAppointments(
                                                           Time.today.day,
-                                                          upto: 3,
+                                                          upto: 30,
                                                           day0Time:
                                                               Time.today.time,
                                                         ),
@@ -556,7 +587,55 @@ class _AppointmentsState extends State<Appointments> {
                     Expanded(
                       flex: 1,
                       child: FilledButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_appointment == null) {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: Text("No Appointment!"),
+                                    content: Text(
+                                      "Please choose an appointment",
+                                    ),
+                                    actions: [
+                                      FilledButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("OK"),
+                                      ),
+                                    ],
+                                    actionsAlignment: MainAxisAlignment.center,
+                                  ),
+                            );
+                          }
+
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Book Appointment"),
+                                content: Text(
+                                  "Proceed with booking appointment at $_appointment",
+                                ),
+                                actions: [
+                                  FilledButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Yes"),
+                                  ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("No"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.purple,
                         ),

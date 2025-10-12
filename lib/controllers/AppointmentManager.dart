@@ -26,7 +26,7 @@ class AppointmentManager {
     _opticianAvailability = {};
   }
 
-  Map<String, dynamic> _getGaps(String day) {
+  Map<String, dynamic>? _getGaps(String day) {
     Map<String, Set<String>> result = {};
     final appointmentsDaily = _appointmentDays?[day] ?? {day: {}};
     //result[day] = {};
@@ -68,7 +68,9 @@ class AppointmentManager {
 
       Set<String> appointments = {};
 
-      Map<String, dynamic> gaps = _getGaps(day);
+      Map<String, dynamic>? gaps = _getGaps(day);
+
+      if (gaps == null) break;
 
       debugPrint("gaps for day $day -> ${gaps.toString()}");
 
@@ -88,12 +90,20 @@ class AppointmentManager {
                 )
                 .toSet();
 
-      if (!appointments.isEmpty)
+      if (!appointments.isEmpty) {
         result.add({
           "day": day,
-          "displayDate": Time.displayFullDate(day),
+          "displayDate":
+              day == Time.today.day
+                  ? "Today"
+                  : day == Time.addDays(Time.today.day, 1)
+                  ? "Tomorrow"
+                  : Time.displayFullDate(day),
           "appointments": appointments.toList()..sort(),
         });
+      } else {
+        --i;
+      }
       day = Time.addDays(day, 1);
     }
     return result;
