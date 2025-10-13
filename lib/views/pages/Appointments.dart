@@ -8,6 +8,7 @@ import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:dio/dio.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/material.dart';
@@ -409,7 +410,7 @@ class _AppointmentsState extends State<Appointments> {
     final String? optician = _appointmentController!.bookOptician(day, time);
     if (optician == null) return null;
     return Http.post("/api/appointments/book", {
-      "user_id": 1,
+      "user_id": 7,
       "optician_id": optician,
       "service_id": service,
       "clinic_id": clinic,
@@ -635,9 +636,11 @@ class _AppointmentsState extends State<Appointments> {
 
                           showDialog(
                             context: context,
+                            barrierDismissible: false,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text("Book Appointment"),
+
                                 content: Text(
                                   "Proceed with booking appointment at $_appointment",
                                 ),
@@ -645,6 +648,96 @@ class _AppointmentsState extends State<Appointments> {
                                   FilledButton(
                                     onPressed: () {
                                       Navigator.pop(context);
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) => PopScope(
+                                              canPop: false,
+                                              child: AlertDialog(
+                                                contentPadding: EdgeInsets.zero,
+                                                content: FutureBuilder(
+                                                  future: _bookAppointment(),
+                                                  builder: (context, snapshot) {
+                                                    bool hasServerErrors =
+                                                        false;
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState.waiting)
+                                                      return SizedBox(
+                                                        width: 50,
+                                                        height: 50,
+                                                        child: Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        ),
+                                                      );
+
+                                                    if (snapshot.hasData) {
+                                                      final data = jsonDecode(
+                                                        snapshot.data
+                                                            .toString(),
+                                                      );
+                                                      debugPrint(
+                                                        "data from server ${data.toString()}",
+                                                      );
+                                                      if (data?["type"] ==
+                                                              "error" ||
+                                                          data?["errors"] !=
+                                                              null) {
+                                                        hasServerErrors = true;
+                                                      } else {
+                                                        Future.delayed(
+                                                          Duration(seconds: 2),
+                                                          () {
+                                                            if (mounted)
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                          },
+                                                        );
+                                                        return SizedBox(
+                                                          height: 40,
+                                                          child: FormMessage(
+                                                            type:
+                                                                MessageType
+                                                                    .success,
+                                                            message:
+                                                                "Appointment Added!",
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                    debugPrint(
+                                                      "server errors $hasServerErrors",
+                                                    );
+                                                    if (snapshot.hasError ||
+                                                        hasServerErrors) {
+                                                      Future.delayed(
+                                                        Duration(seconds: 2),
+                                                        () {
+                                                          if (mounted)
+                                                            Navigator.pop(
+                                                              context,
+                                                            );
+                                                        },
+                                                      );
+
+                                                      return SizedBox(
+                                                        height: 40,
+                                                        child: FormMessage(
+                                                          type:
+                                                              MessageType.error,
+                                                          message:
+                                                              "Couldn't place appointment",
+                                                        ),
+                                                      );
+                                                    }
+                                                    return SizedBox.shrink();
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                      );
                                     },
                                     child: Text("Yes"),
                                   ),
