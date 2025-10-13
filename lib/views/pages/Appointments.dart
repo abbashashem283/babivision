@@ -270,6 +270,7 @@ class _AppointmentsState extends State<Appointments> {
 
   late dynamic _selectedService;
   late dynamic _selectedClinic;
+  AppointmentManager? _appointmentController;
   List<Service>? _services;
   List<Clinic>? _clinics;
 
@@ -398,6 +399,26 @@ class _AppointmentsState extends State<Appointments> {
     }
   }
 
+  Future<Response<dynamic>>? _bookAppointment() {
+    //get user based on login
+    List<String> appointmentAsList = _appointment!.split(" ");
+    final clinic = _selectedClinic.id;
+    final service = _selectedService.id;
+    final day = appointmentAsList[0];
+    final time = appointmentAsList[1];
+    final String? optician = _appointmentController!.bookOptician(day, time);
+    if (optician == null) return null;
+    return Http.post("/api/appointments/book", {
+      "user_id": 1,
+      "optician_id": optician,
+      "service_id": service,
+      "clinic_id": clinic,
+      "day": day,
+      "start_time": time,
+      "end_time": Time.addMinutes(time, _selectedService.durationMin),
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -522,8 +543,8 @@ class _AppointmentsState extends State<Appointments> {
                                             debugPrint(
                                               'appointments from db ${data.toString()}',
                                             );
-                                            AppointmentManager
-                                            appointmentController =
+
+                                            _appointmentController =
                                                 AppointmentManager(
                                                   serviceTime:
                                                       _selectedService
@@ -561,7 +582,7 @@ class _AppointmentsState extends State<Appointments> {
                                                   );
                                                 },
                                                 appointments:
-                                                    appointmentController
+                                                    _appointmentController!
                                                         .allAvailableAppointments(
                                                           Time.today.day,
                                                           upto: 30,
@@ -588,6 +609,7 @@ class _AppointmentsState extends State<Appointments> {
                       flex: 1,
                       child: FilledButton(
                         onPressed: () {
+                          if (_appointmentController == null) return;
                           if (_appointment == null) {
                             showDialog(
                               context: context,
@@ -608,6 +630,7 @@ class _AppointmentsState extends State<Appointments> {
                                     actionsAlignment: MainAxisAlignment.center,
                                   ),
                             );
+                            return;
                           }
 
                           showDialog(
