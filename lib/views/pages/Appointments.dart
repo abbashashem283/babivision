@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Time.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
+import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/controllers/AppointmentManager.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
+import 'package:babivision/views/popups/Snackbars.dart';
 import 'package:dio/dio.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/material.dart';
@@ -271,11 +273,12 @@ class _AppointmentsState extends State<Appointments> {
 
   late dynamic _selectedService;
   late dynamic _selectedClinic;
+  Future<Response<dynamic>>? _appointmentFetcher;
   AppointmentManager? _appointmentController;
   List<Service>? _services;
   List<Clinic>? _clinics;
 
-  bool _isLoading = true, _isError = false, _isDone = false;
+  bool _isLoading = true, _isError = false, _isDone = false, _isBooking = false;
 
   Future<Response<dynamic>> fetchAppointments({
     required startDay,
@@ -409,7 +412,7 @@ class _AppointmentsState extends State<Appointments> {
     final time = appointmentAsList[1];
     final String? optician = _appointmentController!.bookOptician(day, time);
     if (optician == null) return null;
-    return Http.post("/api/appointments/book", {
+    final postData = {
       "user_id": 7,
       "optician_id": optician,
       "service_id": service,
@@ -417,7 +420,9 @@ class _AppointmentsState extends State<Appointments> {
       "day": day,
       "start_time": time,
       "end_time": Time.addMinutes(time, _selectedService.durationMin),
-    });
+    };
+    debugPrint(postData.toString());
+    return Http.post("/api/appointments/book", postData);
   }
 
   @override
@@ -480,6 +485,11 @@ class _AppointmentsState extends State<Appointments> {
                                           "The new value of dropdown btn is null",
                                         );
                                         _selectedService = newValue!;
+                                        _appointmentFetcher = fetchAppointments(
+                                          startDay: Time.today.day,
+                                          upto: 30,
+                                          clinic: _selectedClinic.id,
+                                        );
                                       });
                                     },
                                   ),
@@ -497,6 +507,11 @@ class _AppointmentsState extends State<Appointments> {
                                           "The new value of dropdown btn is null",
                                         );
                                         _selectedClinic = newValue!;
+                                        _appointmentFetcher = fetchAppointments(
+                                          startDay: Time.today.day,
+                                          upto: 30,
+                                          clinic: _selectedClinic.id,
+                                        );
                                       });
                                     },
                                   ),
@@ -514,92 +529,121 @@ class _AppointmentsState extends State<Appointments> {
                                           height: 150,
                                         ),
                                       )
-                                      : FutureBuilder(
-                                        future: fetchAppointments(
-                                          startDay: Time.today.day,
-                                          upto: 30,
-                                          clinic: _selectedClinic.id,
-                                        ),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }
-                                          if (snapshot.hasError) {
-                                            return Text(
-                                              snapshot.error.toString(),
-                                            );
-                                          }
-                                          if (snapshot.hasData) {
-                                            debugPrint(
-                                              "ff1 ${snapshot.data.toString()}",
-                                            );
-                                            final Map<String, dynamic> data =
-                                                jsonDecode(
+                                      : Stack(
+                                        children: [
+                                          FutureBuilder(
+                                            future: _appointmentFetcher,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              }
+                                              if (snapshot.hasError) {
+                                                return Text(
+                                                  snapshot.error.toString(),
+                                                );
+                                              }
+                                              if (snapshot.hasData) {
+                                                debugPrint(
+                                                  "ff1 ${snapshot.data.toString()}",
+                                                );
+                                                final Map<String, dynamic>
+                                                data = jsonDecode(
                                                   snapshot.data.toString(),
                                                 );
-                                            debugPrint(
-                                              'appointments from db ${data.toString()}',
-                                            );
-
-                                            _appointmentController =
-                                                AppointmentManager(
-                                                  serviceTime:
-                                                      _selectedService
-                                                          .durationMin,
-                                                  openTime:
-                                                      _selectedClinic.openTime,
-                                                  closeTime:
-                                                      _selectedClinic.closeTime,
-                                                  workdays: {
-                                                    ..._selectedClinic.workDays,
-                                                  },
-                                                  appointments: data,
+                                                debugPrint(
+                                                  'appointments from db ${data.toString()}',
                                                 );
-                                            // return Text(
-                                            //   appointmentController
-                                            //       .allAvailableAppointments(
-                                            //         Time.today.day,
-                                            //         upto: 2,
-                                            //         day0Time:
-                                            //             Time.today.time,
-                                            //       )
-                                            //       .toString(),
-                                            // );
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 10,
-                                              ),
-                                              child: AppointmentList(
-                                                onAppointmentSelected: (
-                                                  newAppointment,
-                                                ) {
-                                                  _appointment = newAppointment;
-                                                  debugPrint(
-                                                    "book appointment $newAppointment",
-                                                  );
-                                                },
-                                                appointments:
-                                                    _appointmentController!
-                                                        .allAvailableAppointments(
-                                                          Time.today.day,
-                                                          upto: 30,
-                                                          day0Time:
-                                                              Time.today.time,
-                                                        ),
-                                              ),
-                                            );
-                                          }
-                                          if (snapshot.hasError) {
-                                            return Text(
-                                              snapshot.error.toString(),
-                                            );
-                                          }
-                                          return SizedBox.shrink();
-                                        },
+
+                                                _appointmentController =
+                                                    AppointmentManager(
+                                                      serviceTime:
+                                                          _selectedService
+                                                              .durationMin,
+                                                      openTime:
+                                                          _selectedClinic
+                                                              .openTime,
+                                                      closeTime:
+                                                          _selectedClinic
+                                                              .closeTime,
+                                                      workdays: {
+                                                        ..._selectedClinic
+                                                            .workDays,
+                                                      },
+                                                      appointments: data,
+                                                    );
+                                                // return Text(
+                                                //   appointmentController
+                                                //       .allAvailableAppointments(
+                                                //         Time.today.day,
+                                                //         upto: 2,
+                                                //         day0Time:
+                                                //             Time.today.time,
+                                                //       )
+                                                //       .toString(),
+                                                // );
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        top: 10,
+                                                      ),
+                                                  child: AppointmentList(
+                                                    onAppointmentSelected: (
+                                                      newAppointment,
+                                                    ) {
+                                                      _appointment =
+                                                          newAppointment;
+                                                      debugPrint(
+                                                        "book appointment $newAppointment",
+                                                      );
+                                                    },
+                                                    appointments:
+                                                        _appointmentController!
+                                                            .allAvailableAppointments(
+                                                              Time.today.day,
+                                                              upto: 30,
+                                                              day0Time:
+                                                                  Time
+                                                                      .today
+                                                                      .time,
+                                                            ),
+                                                  ),
+                                                );
+                                              }
+                                              if (snapshot.hasError) {
+                                                return Text(
+                                                  snapshot.error.toString(),
+                                                );
+                                              }
+                                              return SizedBox.shrink();
+                                            },
+                                          ),
+                                          _isBooking
+                                              ? Container(
+                                                color: Colors.black12,
+                                                child: Center(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: Border.all(
+                                                        width: 0.2,
+                                                      ),
+                                                    ),
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                ),
+                                              )
+                                              : SizedBox.shrink(),
+                                        ],
                                       ),
                             ),
                           ],
@@ -646,98 +690,143 @@ class _AppointmentsState extends State<Appointments> {
                                 ),
                                 actions: [
                                   FilledButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       Navigator.pop(context);
-                                      showDialog(
-                                        context: context,
-                                        builder:
-                                            (context) => PopScope(
-                                              canPop: false,
-                                              child: AlertDialog(
-                                                contentPadding: EdgeInsets.zero,
-                                                content: FutureBuilder(
-                                                  future: _bookAppointment(),
-                                                  builder: (context, snapshot) {
-                                                    bool hasServerErrors =
-                                                        false;
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState.waiting)
-                                                      return SizedBox(
-                                                        width: 50,
-                                                        height: 50,
-                                                        child: Center(
-                                                          child:
-                                                              CircularProgressIndicator(),
-                                                        ),
-                                                      );
+                                      //746 showDialog(
+                                      //   context: context,
+                                      //   builder:
+                                      //       (context) => PopScope(
+                                      //         canPop: false,
+                                      //         child: AlertDialog(
+                                      //           contentPadding: EdgeInsets.zero,
+                                      //           content: FutureBuilder(
+                                      //             future: _bookAppointment(),
+                                      //             builder: (context, snapshot) {
+                                      //               bool hasServerErrors =
+                                      //                   false;
+                                      //               if (snapshot
+                                      //                       .connectionState ==
+                                      //                   ConnectionState.waiting)
+                                      //                 return SizedBox(
+                                      //                   width: 50,
+                                      //                   height: 50,
+                                      //                   child: Center(
+                                      //                     child:
+                                      //                         CircularProgressIndicator(),
+                                      //                   ),
+                                      //                 );
 
-                                                    if (snapshot.hasData) {
-                                                      final data = jsonDecode(
-                                                        snapshot.data
-                                                            .toString(),
-                                                      );
-                                                      debugPrint(
-                                                        "data from server ${data.toString()}",
-                                                      );
-                                                      if (data?["type"] ==
-                                                              "error" ||
-                                                          data?["errors"] !=
-                                                              null) {
-                                                        hasServerErrors = true;
-                                                      } else {
-                                                        Future.delayed(
-                                                          Duration(seconds: 2),
-                                                          () {
-                                                            if (mounted)
-                                                              Navigator.pop(
-                                                                context,
-                                                              );
-                                                          },
-                                                        );
-                                                        return SizedBox(
-                                                          height: 40,
-                                                          child: FormMessage(
-                                                            type:
-                                                                MessageType
-                                                                    .success,
-                                                            message:
-                                                                "Appointment Added!",
-                                                          ),
-                                                        );
-                                                      }
-                                                    }
-                                                    debugPrint(
-                                                      "server errors $hasServerErrors",
-                                                    );
-                                                    if (snapshot.hasError ||
-                                                        hasServerErrors) {
-                                                      Future.delayed(
-                                                        Duration(seconds: 2),
-                                                        () {
-                                                          if (mounted)
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
-                                                        },
-                                                      );
+                                      //               if (snapshot.hasData) {
+                                      //                 final data = jsonDecode(
+                                      //                   snapshot.data
+                                      //                       .toString(),
+                                      //                 );
+                                      //                 debugPrint(
+                                      //                   "data from server ${data.toString()}",
+                                      //                 );
+                                      //                 if (data?["type"] ==
+                                      //                         "error" ||
+                                      //                     data?["errors"] !=
+                                      //                         null) {
+                                      //                   hasServerErrors = true;
+                                      //                   debugPrint(
+                                      //                     data["message"]
+                                      //                         .toString(),
+                                      //                   );
+                                      //                 } else {
+                                      //                   Future.delayed(
+                                      //                     Duration(seconds: 2),
+                                      //                     () {
+                                      //                       if (mounted)
+                                      //                         Navigator.pop(
+                                      //                           context,
+                                      //                         );
+                                      //                     },
+                                      //                   );
+                                      //                   return SizedBox(
+                                      //                     height: 40,
+                                      //                     child: FormMessage(
+                                      //                       type:
+                                      //                           MessageType
+                                      //                               .success,
+                                      //                       message:
+                                      //                           "Appointment Added!",
+                                      //                     ),
+                                      //                   );
+                                      //                 }
+                                      //               }
+                                      //               debugPrint(
+                                      //                 "server errors $hasServerErrors",
+                                      //               );
+                                      //               if (snapshot.hasError ||
+                                      //                   hasServerErrors) {
+                                      //                 Future.delayed(
+                                      //                   Duration(seconds: 2),
+                                      //                   () {
+                                      //                     if (mounted)
+                                      //                       Navigator.pop(
+                                      //                         context,
+                                      //                       );
+                                      //                   },
+                                      //                 );
 
-                                                      return SizedBox(
-                                                        height: 40,
-                                                        child: FormMessage(
-                                                          type:
-                                                              MessageType.error,
-                                                          message:
-                                                              "Couldn't place appointment",
-                                                        ),
-                                                      );
-                                                    }
-                                                    return SizedBox.shrink();
-                                                  },
-                                                ),
-                                              ),
-                                            ),
+                                      //                 return SizedBox(
+                                      //                   height: 40,
+                                      //                   child: FormMessage(
+                                      //                     type:
+                                      //                         MessageType.error,
+                                      //                     message:
+                                      //                         "Couldn't place appointment",
+                                      //                   ),
+                                      //                 );
+                                      //               }
+                                      //               return SizedBox.shrink();
+                                      //             },
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      // );
+
+                                      setState(() {
+                                        _isBooking = true;
+                                      });
+
+                                      final response = await _bookAppointment();
+
+                                      final data = response?.data;
+                                      debugPrint(
+                                        "response data ${response?.data.toString()}",
                                       );
+                                      setState(() {
+                                        _isBooking = false;
+                                      });
+
+                                      if (data?["type"] == "error" ||
+                                          data?["message"] == null) {
+                                        debugPrint("checking mounted");
+                                        if (mounted) {
+                                          debugPrint("showing snack");
+                                          showSnackbar(
+                                            context: context,
+                                            snackBar:
+                                                TextSnackBar(
+                                                  icon: Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.grey[200],
+                                                  foreGroundColor: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                  label:
+                                                      "Couldn't place appointment",
+                                                  duration: Duration(
+                                                    seconds: 3,
+                                                  ),
+                                                ).create(),
+                                          );
+                                        }
+                                      }
                                     },
                                     child: Text("Yes"),
                                   ),

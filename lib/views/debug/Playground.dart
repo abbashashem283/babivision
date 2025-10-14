@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:babivision/Utils/Http.dart';
+import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/data/storage/SecureStorage.dart';
 import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/forms/TextInput.dart';
+import 'package:babivision/views/popups/Snackbars.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -150,12 +152,41 @@ class _PlaygroundState extends State<Playground> {
     return Scaffold(
       appBar: AppBar(title: Text("Playground")),
       body: Center(
-        child: Container(
-          height: 500,
-          width: 300,
-          color: Colors.white24,
-          child: InkUpList(),
+        child: FilledButton(
+          onPressed: () {
+            showSnackbar(
+              context: context,
+              snackBar:
+                  TextSnackBar(
+                    label: "Appointment Added!",
+                    duration: Duration(seconds: 10),
+                    foreGroundColor: Colors.black,
+                    backgroundColor: Colors.grey[200],
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 25,
+                      color: Colors.green,
+                    ),
+                  ).create(),
+            );
+          },
+          child: Text("show snackbar"),
         ),
+        // child: Container(
+        //   width: 200,
+        //   height: 200,
+        //   decoration: BoxDecoration(
+        //     color: Colors.blue,
+        //     borderRadius: BorderRadius.circular(8),
+        //     border: Border(
+        //       top: BorderSide(color: Colors.black, width: 1),
+        //       right: BorderSide(color: Colors.black, width: 1),
+        //       bottom: BorderSide(color: Colors.black, width: 1),
+        //       left: BorderSide(color: Colors.transparent, width: 1),
+        //     ),
+        //   ),
+        //   child: Center(child: Text("test")),
+        // ),
       ),
     );
   }
