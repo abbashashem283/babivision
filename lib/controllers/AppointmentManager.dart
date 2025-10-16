@@ -5,10 +5,10 @@ class AppointmentManager {
   final int serviceTime;
   final String openTime;
   final String closeTime;
-  final Map<String, dynamic> appointments;
+  final Map<String, dynamic>? appointments;
   final Set<String> workdays;
 
-  late Map<String, dynamic> _appointmentDays;
+  late Map<String, dynamic>? _appointmentDays;
   late Map<String, dynamic> _opticians;
   late Map _opticianAvailability;
   late List<String> _optician_ids;
@@ -20,9 +20,9 @@ class AppointmentManager {
     required this.workdays,
     required this.appointments,
   }) {
-    _appointmentDays = this.appointments['appointments'];
-    _opticians = this.appointments['optician_info'];
-    _optician_ids = this.appointments['optician_info']!.keys.toList();
+    _appointmentDays = this.appointments?['appointments'] ?? {};
+    _opticians = this.appointments!['optician_info'];
+    _optician_ids = this.appointments!['optician_info']!.keys.toList();
     _opticianAvailability = {};
   }
 

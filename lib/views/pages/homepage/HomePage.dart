@@ -26,7 +26,8 @@ class _HomepageState extends State<Homepage> {
           children: [
             _buildGridRow(context, [
               {
-                "onPress": () => Navigator.pushNamed(context, '/appointments'),
+                "onPress":
+                    () => Navigator.pushNamed(context, '/appointments/book'),
                 "img_src": "assets/icon-images/calendar.svg",
                 "label": "Book Appointment",
                 "color": Colors.white,
