@@ -371,8 +371,8 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
       });
     }
     try {
-      final servicesResponse = await Http.get("/api/services");
-      final clinicsResponse = await Http.get("/api/clinics");
+      final servicesResponse = await Http.get("/api/services", isAuth: true);
+      final clinicsResponse = await Http.get("/api/clinics", isAuth: true);
       debugPrint(servicesResponse.toString());
       final Map<String, dynamic> jsonServices = jsonDecode(
         servicesResponse.toString(),
@@ -403,14 +403,13 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
           _isError = false;
         });
       }
-    } on Exception catch (_) {
+    } on Exception catch (e) {
       // TODO
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isDone = false;
-          _isError = true;
-        });
+      debugPrint("caught must _isError");
+      if (e is MissingTokenException) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, "/login");
+        }
       }
     }
   }
