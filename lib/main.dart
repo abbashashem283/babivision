@@ -29,6 +29,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Homepage(),
       routes: getRoutes(context),
+      onGenerateRoute: dynamicRoutes,
     );
   }
 }

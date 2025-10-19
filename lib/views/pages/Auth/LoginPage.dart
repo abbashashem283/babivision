@@ -12,7 +12,10 @@ import 'package:flutter/services.dart' as services;
 import 'package:babivision/Utils/Widgets.dart' as w;
 
 class Loginpage extends StatefulWidget {
-  const Loginpage({super.key});
+  final String origin;
+  final String redirect;
+
+  const Loginpage({super.key, required this.origin, required this.redirect});
 
   @override
   State<Loginpage> createState() => _LoginpageState();
@@ -122,14 +125,13 @@ class _LoginpageState extends State<Loginpage> {
                             if (_forgotPassword) {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
-                                  Navigator.push(
+                                  Navigator.pushReplacementNamed(
                                     context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => PasswordCodeConfirmation(
-                                            email: _emailController.text,
-                                          ),
-                                    ),
+                                    "/password/code",
+                                    arguments: {
+                                      "email": _emailController.text,
+                                      "origin": widget.origin,
+                                    },
                                   );
                                 }
                               });
@@ -144,6 +146,12 @@ class _LoginpageState extends State<Loginpage> {
                                 refreshToken: refreshToken,
                                 csrfToken: csrfToken,
                               );
+                              if (mounted) {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  widget.redirect,
+                                );
+                              }
                             }
                           },
                           builder:

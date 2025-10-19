@@ -11,8 +11,8 @@ class SecureStorage {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<String?> read(String key) async {
-    String? value = await _storage.read(key: key);
+  Future<dynamic> read(String key) async {
+    final value = await _storage.read(key: key);
     return value;
   }
 

@@ -286,7 +286,10 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     required clinic,
   }) async {
     debugPrint("fetch data $startDay  $clinic");
-    return Http.get("/api/appointments?startDay=$startDay&clinic=$clinic");
+    return Http.get(
+      "/api/appointments?startDay=$startDay&clinic=$clinic",
+      isAuth: true,
+    );
   }
 
   String get optionUnselectedSvgUrl {
@@ -373,7 +376,9 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     try {
       final servicesResponse = await Http.get("/api/services", isAuth: true);
       final clinicsResponse = await Http.get("/api/clinics", isAuth: true);
-      debugPrint(servicesResponse.toString());
+      debugPrint(
+        "clinics and services response ${servicesResponse.toString()}",
+      );
       final Map<String, dynamic> jsonServices = jsonDecode(
         servicesResponse.toString(),
       );
@@ -406,15 +411,22 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     } on Exception catch (e) {
       // TODO
       debugPrint("caught must _isError");
-      if (e is MissingTokenException) {
+      if (e is MissingTokenException || e is AuthenticationFailedException) {
         if (mounted) {
-          Navigator.pushReplacementNamed(context, "/login");
+          Navigator.pushReplacementNamed(
+            context,
+            "/login",
+            arguments: {
+              "origin": "/appointments/book",
+              "redirect": "/appointments/book",
+            },
+          );
         }
       }
     }
   }
 
-  Future<Response<dynamic>>? _bookAppointment() {
+  Future<Response<dynamic>?> _bookAppointment() async {
     //get user based on login
     List<String> appointmentAsList = _appointment!.split(" ");
     final clinic = _selectedClinic.id;
@@ -423,17 +435,34 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     final time = appointmentAsList[1];
     final String? optician = _appointmentController!.bookOptician(day, time);
     if (optician == null) return null;
-    final postData = {
-      "user_id": 7,
-      "optician_id": optician,
-      "service_id": service,
-      "clinic_id": clinic,
-      "day": day,
-      "start_time": time,
-      "end_time": Time.addMinutes(time, _selectedService.durationMin),
-    };
-    debugPrint(postData.toString());
-    return Http.post("/api/appointments/book", postData);
+    try {
+      final userResponse = await Http.get("/api/auth/user", isAuth: true);
+      final user = userResponse.data['user'];
+
+      final postData = {
+        "user_id": user['id'],
+        "optician_id": optician,
+        "service_id": service,
+        "clinic_id": clinic,
+        "day": day,
+        "start_time": time,
+        "end_time": Time.addMinutes(time, _selectedService.durationMin),
+      };
+      debugPrint(postData.toString());
+      return Http.post("/api/appointments/book", postData, isAuth: true);
+    } catch (e) {
+      if (e is MissingTokenException || e is AuthenticationFailedException) {
+        if (mounted)
+          Navigator.pushReplacementNamed(
+            context,
+            "/login",
+            arguments: {
+              "origin": "/appointments/book",
+              "redirect": "/appointments/book",
+            },
+          );
+      }
+    }
   }
 
   @override

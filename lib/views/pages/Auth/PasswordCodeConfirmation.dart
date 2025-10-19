@@ -10,7 +10,12 @@ import 'package:flutter/services.dart' as services;
 
 class PasswordCodeConfirmation extends StatefulWidget {
   final String email;
-  const PasswordCodeConfirmation({super.key, required this.email});
+  final String origin;
+  const PasswordCodeConfirmation({
+    super.key,
+    required this.email,
+    required this.origin,
+  });
 
   @override
   State<PasswordCodeConfirmation> createState() =>
@@ -112,15 +117,24 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                             if (response.statusCode == 200) {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (!mounted) return;
-                                Navigator.push(
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder:
+                                //         (context) => PasswordReset(
+                                //           email: widget.email,
+                                //           code: _pinController.text,
+                                //         ),
+                                //   ),
+                                // );
+                                Navigator.pushReplacementNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => PasswordReset(
-                                          email: widget.email,
-                                          code: _pinController.text,
-                                        ),
-                                  ),
+                                  "/password/reset",
+                                  arguments: {
+                                    "email": widget.email,
+                                    "code": _pinController.text,
+                                    "origin": widget.origin,
+                                  },
                                 );
                               });
                             }

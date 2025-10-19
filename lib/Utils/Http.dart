@@ -1,3 +1,4 @@
+import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Tokens.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,34 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MissingTokenException implements Exception {
   final String message;
-  final String tokenType;
-  MissingTokenException({required this.message, required this.tokenType});
+  MissingTokenException({required this.message});
+}
+
+class AuthenticationFailedException implements Exception {
+  final String message;
+  AuthenticationFailedException({required this.message});
 }
 
 class Http {
+  static List<int> authErrorCodes = [403, 401];
+  // static Future<Response<dynamic>?> _refreshTokens() async {
+  //   debugPrint("...attempting token refresh");
+  //   final tokens = await Tokens.getAll();
+  //   if (tokens == null) return null;
+  //   try {
+  //     final response = await post(
+  //       '/api/auth/refresh',
+  //       {'refresh_token': tokens['refresh_token']},
+  //       headers: {"Authorization": "Bearer ${tokens['access_token']}"},
+  //     );
+  //     //debugPrint("...response got ${response.data.toString()}");
+  //     return response;
+  //   } on DioException catch (e) {
+  //     debugPrint("refresh error ${e.response?.data.toString()}");
+  //     return e.response;
+  //   }
+  // }
+
   static Future<Response<dynamic>> get(
     String endpoint, {
     Map<String, dynamic>? headers,
@@ -19,25 +43,43 @@ class Http {
     final fullPath = "${dotenv.env['HOST']}$endpoint";
     headers = {...?headers, "Accept": "application/json"};
     if (isAuth) {
-      final accessToken = await Tokens.get(TokenTypes.ACCESS);
-      if (accessToken == null)
+      final tokens = await Tokens.getAll();
+      if (tokens == null)
         throw MissingTokenException(
-          message: "access token is missing",
-          tokenType: TokenTypes.ACCESS,
+          message: "some or all tokens are missing from local storage",
         );
-      headers = {...headers, "Authorization": "Bearer $accessToken"};
+      headers = {
+        ...headers,
+        "Authorization": "Bearer ${tokens['access_token']}",
+      };
     }
     try {
       final response = await client.get(
         fullPath,
         options: Options(headers: headers),
       );
+      debugPrint("response by dio ${response.data.toString()}");
+
       return response;
     } on DioException catch (e) {
-      if (e.response != null) {
-        return e.response!;
+      if (e.response == null) rethrow;
+      final response = e.response!;
+      final responseCode = response.statusCode;
+      if (isAuth && authErrorCodes.contains(responseCode)) {
+        final refreshResponse = await Auth.refreshTokens();
+        if (refreshResponse == null || refreshResponse.data["type"] == "error")
+          throw AuthenticationFailedException(
+            message: refreshResponse?.data["message"] ?? "...",
+          );
+        await Tokens.setAll(
+          accessToken: refreshResponse.data['access_token'],
+          refreshToken: refreshResponse.data['refresh_token'],
+          csrfToken: refreshResponse.data['csrf_token'],
+        );
+        debugPrint("fetching $endpoint again isAuth: $isAuth");
+        return get(endpoint, isAuth: isAuth);
       }
-      rethrow;
+      return response;
     }
   }
 
@@ -45,10 +87,22 @@ class Http {
     String endpoint,
     Map<String, dynamic> data, {
     Map<String, dynamic>? headers,
+    bool isAuth = false,
   }) async {
     final client = Dio();
     final fullPath = "${dotenv.env['HOST']}$endpoint";
     headers = {...?headers, "Accept": "application/json"};
+    if (isAuth) {
+      final tokens = await Tokens.getAll();
+      if (tokens == null)
+        throw MissingTokenException(
+          message: "some or all tokens are missing from local storage",
+        );
+      headers = {
+        ...headers,
+        "Authorization": "Bearer ${tokens['access_token']}",
+      };
+    }
     try {
       final response = await client.post(
         fullPath,
@@ -57,10 +111,23 @@ class Http {
       );
       return response;
     } on DioException catch (e) {
-      if (e.response != null) {
-        return e.response!;
+      final response = e.response!;
+      final responseCode = response.statusCode;
+      if (isAuth && authErrorCodes.contains(responseCode)) {
+        final refreshResponse = await Auth.refreshTokens();
+        if (refreshResponse == null || refreshResponse.data["type"] == "error")
+          throw AuthenticationFailedException(
+            message: refreshResponse?.data["message"] ?? "...",
+          );
+        await Tokens.setAll(
+          accessToken: refreshResponse.data['access_token'],
+          refreshToken: refreshResponse.data['refresh_token'],
+          csrfToken: refreshResponse.data['csrf_token'],
+        );
+        debugPrint("fetching $endpoint again isAuth: $isAuth");
+        return post(endpoint, data, isAuth: isAuth);
       }
-      rethrow;
+      return response;
     }
   }
 }

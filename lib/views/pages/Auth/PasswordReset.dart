@@ -11,7 +11,13 @@ import 'package:babivision/Utils/Widgets.dart' as w;
 class PasswordReset extends StatefulWidget {
   final String email;
   final String code;
-  const PasswordReset({super.key, required this.email, required this.code});
+  final String origin;
+  const PasswordReset({
+    super.key,
+    required this.email,
+    required this.code,
+    required this.origin,
+  });
 
   @override
   State<PasswordReset> createState() => _PasswordResetState();
@@ -114,6 +120,21 @@ class _PasswordResetState extends State<PasswordReset> {
                                   }),
                           onFetched: (response) {
                             debugPrint(response.data.toString());
+                            final data = response.data;
+                            if (data["type"] == "success") {
+                              Future.delayed(Duration(seconds: 2), () {
+                                if (mounted) {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    "/login",
+                                    arguments: {
+                                      "origin": widget.origin,
+                                      "redirect": widget.origin,
+                                    },
+                                  );
+                                }
+                              });
+                            }
                           },
                           builder:
                               (errors) => Column(
