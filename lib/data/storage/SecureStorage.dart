@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/material.dart';
 
 class SecureStorage {
   static final SecureStorage _instance = SecureStorage._internal();
@@ -11,7 +12,8 @@ class SecureStorage {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<dynamic> read(String key) async {
+  Future<String?> read(String key) async {
+    debugPrint("fetching $key from secure storage");
     final value = await _storage.read(key: key);
     return value;
   }

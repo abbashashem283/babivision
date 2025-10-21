@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/navigation/Routing.dart';
+import 'package:babivision/data/ValueNotifiers.dart';
 import 'package:babivision/views/buttons/CIconButton.dart';
 import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
@@ -19,6 +21,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
+  Map<String, dynamic>? _user = null;
 
   Widget _getSelectedTab() {
     switch (_currentIndex) {
@@ -27,8 +30,25 @@ class _HomepageState extends State<Homepage> {
           children: [
             _buildGridRow(context, [
               {
-                "onPress":
-                    () => Navigator.pushNamed(context, '/appointments/book'),
+                "onPress": () async {
+                  final user = await Auth.user();
+                  if (mounted) {
+                    if (user == null) {
+                      Navigator.pushNamed(
+                        context,
+                        '/login',
+                        arguments: {
+                          "origin": '/home',
+                          "redirect": '/appointments/book',
+                        },
+                      ).then((_) {
+                        debugPrint("MUST REFRESH NOOOOOW!");
+                      });
+                    } else {
+                      Navigator.pushNamed(context, '/appointments/book');
+                    }
+                  }
+                },
                 "img_src": "assets/icon-images/calendar.svg",
                 "label": "Book Appointment",
                 "color": Colors.white,
@@ -254,6 +274,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("building homepage NOOOW! with user ${_user}");
     bool homeActive = _currentIndex == 0;
     bool servicesActive = _currentIndex == 1;
     bool profileActive = _currentIndex == 2;
@@ -280,6 +301,7 @@ class _HomepageState extends State<Homepage> {
             : Colors.transparent;
 
     return AppbaDrawerScaffold(
+      user: _user,
       body: Align(
         alignment: Alignment.topCenter,
         child: SizedBox(

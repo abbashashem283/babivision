@@ -1,3 +1,6 @@
+import 'dart:convert';
+//import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Tokens.dart';
 import 'package:babivision/data/storage/SecureStorage.dart';
@@ -24,10 +27,38 @@ class Auth {
   }
 
   static Future<Map<String, dynamic>?> user() async {
-    Map<String, dynamic>? localUser = await SecureStorage().read("user");
-    if (localUser != null) return localUser;
-    final userResponse = await Http.get("/api/auth/user", isAuth: true);
-    final user = userResponse.data['user'];
-    return user;
+    debugPrint("**1");
+    String? storedUser = await SecureStorage().read("user");
+    debugPrint("stored user is ${storedUser.toString()}");
+    if (storedUser != null) {
+      debugPrint("attempting to decode stored user ${storedUser}");
+      Map<String, dynamic> localUser = jsonDecode(storedUser);
+      debugPrint("decode successfull returning $localUser)");
+      return localUser;
+    }
+    try {
+      final userResponse = await Http.get("/api/auth/user", isAuth: true);
+      debugPrint("**2 ${userResponse.data.toString()}");
+      final user = userResponse.data['user'];
+      debugPrint("**3");
+      if (user == null) return user;
+      await SecureStorage().write("user", jsonEncode(user));
+      debugPrint("**4");
+      return user;
+    } catch (e) {
+      if (e is MissingTokenException || e is AuthenticationFailedException) {
+        return null;
+      }
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> logout() async {
+    final response = await Http.post("/api/auth/logout", {}, isAuth: true);
+    final data = response.data;
+    if (data["type"] == "success") {
+      await Tokens.removeAll();
+    }
+    return data;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Time.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
@@ -436,11 +437,12 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     final String? optician = _appointmentController!.bookOptician(day, time);
     if (optician == null) return null;
     try {
-      final userResponse = await Http.get("/api/auth/user", isAuth: true);
-      final user = userResponse.data['user'];
+      final user = await Auth.user();
+      //final user = userResponse.data['user'];
+      //useeeeeeeeeeeeeeer
 
       final postData = {
-        "user_id": user['id'],
+        "user_id": user?['id'],
         "optician_id": optician,
         "service_id": service,
         "clinic_id": clinic,
@@ -747,7 +749,8 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
                                       });
 
                                       if (data?["type"] == "error" ||
-                                          data?["message"] == null) {
+                                          data?["message"] == null ||
+                                          data?["errors"] != null) {
                                         debugPrint("checking mounted");
                                         if (!mounted) return;
                                         debugPrint("showing snack");

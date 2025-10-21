@@ -15,24 +15,7 @@ class AuthenticationFailedException implements Exception {
 }
 
 class Http {
-  static List<int> authErrorCodes = [403, 401];
-  // static Future<Response<dynamic>?> _refreshTokens() async {
-  //   debugPrint("...attempting token refresh");
-  //   final tokens = await Tokens.getAll();
-  //   if (tokens == null) return null;
-  //   try {
-  //     final response = await post(
-  //       '/api/auth/refresh',
-  //       {'refresh_token': tokens['refresh_token']},
-  //       headers: {"Authorization": "Bearer ${tokens['access_token']}"},
-  //     );
-  //     //debugPrint("...response got ${response.data.toString()}");
-  //     return response;
-  //   } on DioException catch (e) {
-  //     debugPrint("refresh error ${e.response?.data.toString()}");
-  //     return e.response;
-  //   }
-  // }
+  static List<int> authErrorCodes = [403, 401, 409];
 
   static Future<Response<dynamic>> get(
     String endpoint, {
@@ -102,6 +85,7 @@ class Http {
         ...headers,
         "Authorization": "Bearer ${tokens['access_token']}",
       };
+      data = {...data, "csrf_token": tokens['csrf_token']};
     }
     try {
       final response = await client.post(
@@ -111,6 +95,7 @@ class Http {
       );
       return response;
     } on DioException catch (e) {
+      if (e.response == null) rethrow;
       final response = e.response!;
       final responseCode = response.statusCode;
       if (isAuth && authErrorCodes.contains(responseCode)) {

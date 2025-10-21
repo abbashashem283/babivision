@@ -37,4 +37,11 @@ class Tokens {
       TokenTypes.CSRF: csrf,
     };
   }
+
+  static Future<void> removeAll() async {
+    await SecureStorage().delete(TokenTypes.ACCESS);
+    await SecureStorage().delete(TokenTypes.CSRF);
+    await SecureStorage().delete(TokenTypes.REFRESH);
+    await SecureStorage().delete('user');
+  }
 }

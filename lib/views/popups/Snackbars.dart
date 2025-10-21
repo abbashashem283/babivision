@@ -56,4 +56,26 @@ class TextSnackBar {
       duration: duration,
     );
   }
+
+  static SnackBar success({required String message}) {
+    return TextSnackBar(
+      icon: Icon(Icons.check_circle_outline, color: Colors.green),
+      backgroundColor: Colors.grey[200],
+      foreGroundColor: Colors.green,
+      fontWeight: FontWeight.bold,
+      label: message,
+      duration: Duration(seconds: 3),
+    ).create();
+  }
+
+  static SnackBar error({required String message}) {
+    return TextSnackBar(
+      icon: Icon(Icons.error, color: Colors.red),
+      backgroundColor: Colors.grey[200],
+      foreGroundColor: Colors.red,
+      fontWeight: FontWeight.bold,
+      label: message,
+      duration: Duration(seconds: 3),
+    ).create();
+  }
 }

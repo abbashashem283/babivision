@@ -3,6 +3,8 @@ import 'package:babivision/views/pages/Appointments.dart';
 import 'package:babivision/views/pages/Auth/LoginPage.dart';
 import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
+import 'package:babivision/views/pages/Auth/RegisterPage.dart';
+import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:flutter/material.dart';
 
 final protectedRoutes = ["/appointments/book", "/appointments"];
@@ -29,6 +31,8 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
   return {
     "/appointments/book": (context) => AppointmentBooker(),
     "/appointments": (context) => Appointments(),
+    "/home": (context) => Homepage(),
+    "/register": (context) => RegisterPage(),
   };
 }
 

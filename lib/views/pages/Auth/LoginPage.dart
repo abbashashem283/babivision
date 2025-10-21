@@ -1,6 +1,8 @@
+import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Tokens.dart';
 import 'package:babivision/data/KConstants.dart';
+import 'package:babivision/data/ValueNotifiers.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/TextInput.dart';
@@ -146,6 +148,7 @@ class _LoginpageState extends State<Loginpage> {
                                 refreshToken: refreshToken,
                                 csrfToken: csrfToken,
                               );
+                              user.value = await Auth.user();
                               if (mounted) {
                                 Navigator.pushReplacementNamed(
                                   context,
