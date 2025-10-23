@@ -46,7 +46,7 @@ class _InkUpListState extends State<InkUpList> {
     //   bool atEnd = offset >= maxOffset - 5;
     //   bool scrollingUp = offset < _lastOffset;
 
-    //   debugPrint('$offset $maxOffset');
+    //   //debugPrint('$offset $maxOffset');
 
     //   // Show ink only if user is at end AND scrolling up
     //   setState(() {
@@ -65,18 +65,18 @@ class _InkUpListState extends State<InkUpList> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("build");
+    //debugPrint("build");
     return Stack(
       children: [
         // Scrollable list
         NotificationListener<ScrollNotification>(
           onNotification: (notification) {
             // if (notification is ScrollUpdateNotification) {
-            //   debugPrint("ok");
+            //   //debugPrint("ok");
             // }
-            debugPrint(notification.runtimeType.toString());
+            //debugPrint(notification.runtimeType.toString());
             if (notification is OverscrollNotification) {
-              debugPrint("over");
+              //debugPrint("over");
               if (notification.overscroll < 0)
                 setState(() {
                   _showInk = true;

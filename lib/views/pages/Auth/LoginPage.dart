@@ -120,7 +120,7 @@ class _LoginpageState extends State<Loginpage> {
                           },
                           onFetched: (response) async {
                             final data = response.data;
-                            //debugPrint(data.toString());
+                            ////debugPrint(data.toString());
                             if (data["type"] == "warning") {
                               return {"type": MessageType.warning};
                             }
@@ -138,7 +138,7 @@ class _LoginpageState extends State<Loginpage> {
                                 }
                               });
                             }
-                            debugPrint("Setting Tokens");
+                            //debugPrint("Setting Tokens");
                             if (data?["access_token"] != null) {
                               final String accessToken = data['access_token'];
                               final String refreshToken = data['refresh_token'];

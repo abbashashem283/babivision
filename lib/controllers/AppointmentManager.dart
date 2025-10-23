@@ -35,17 +35,17 @@ class AppointmentManager {
       Map<String, dynamic> optician = _opticians!['$optician_id']![0];
       String shift_start = optician!['shift_start'].substring(0, 5);
       String shift_end = optician!['shift_end'].substring(0, 5);
-      debugPrint(
-        'optician appointments for $optician_id at $day are ${opticianAppointments.toString()}',
-      );
-      debugPrint(
-        "time gaps for $optician_id at $day ${_timeGaps(opticianAppointments, shift_start, shift_end)}",
-      );
+      // //debugPrint(
+      //   'optician appointments for $optician_id at $day are ${opticianAppointments.toString()}',
+      // );
+      // //debugPrint(
+      //   "time gaps for $optician_id at $day ${_timeGaps(opticianAppointments, shift_start, shift_end)}",
+      // );
       result[optician_id] = _availableSlots(
         _timeGaps(opticianAppointments, shift_start, shift_end),
       );
     });
-    //debugPrint(result.toString());
+    ////debugPrint(result.toString());
     return result;
   }
 
@@ -59,7 +59,7 @@ class AppointmentManager {
     for (int i = 0; i < upto; ++i) {
       //print(day);
       //print(Time.dayFromYMD(day));
-      //debugPrint("today is ${Time.displayFullDate(day)} and i=$i");
+      ////debugPrint("today is ${Time.displayFullDate(day)} and i=$i");
       if (!workdays.contains(Time.dayFromYMD(day))) {
         day = Time.addDays(day, 1);
         --i;
@@ -72,14 +72,14 @@ class AppointmentManager {
 
       if (gaps == null) break;
 
-      debugPrint("gaps for day $day -> ${gaps.toString()}");
+      //debugPrint("gaps for day $day -> ${gaps.toString()}");
 
       _opticianAvailability[day] = gaps;
       ////print(gaps);
       _optician_ids.forEach((optician_id) {
         appointments.addAll(gaps[optician_id]!);
       });
-      // debugPrint(
+      // //debugPrint(
       //   'all available appoointments on $day unfiltered ${appointments.toString()}',
       // );
       if (day0Time != null && day == Time.today.day)
@@ -149,24 +149,24 @@ class AppointmentManager {
     if (diff > 0) {
       result.add({time_end!: diff});
     }
-    //debugPrint("time gaps ${result.toString()}");
+    ////debugPrint("time gaps ${result.toString()}");
     return result;
   }
 
   Set<String> _availableSlots(List<Map<String, int>> gaps) {
     Set<String> result = {};
-    //debugPrint("gapz ${gaps.toString()}");
+    ////debugPrint("gapz ${gaps.toString()}");
     gaps.forEach((gap) {
       String time = gap.keys.first;
       int timeGap = gap[time]!;
       int iterations = timeGap ~/ serviceTime;
       for (int i = 0; i < iterations; ++i) {
-        //debugPrint("timo $time");
+        ////debugPrint("timo $time");
         result.add(time);
         time = Time.addMinutes(time, serviceTime);
       }
     });
-    //debugPrint("gapo $result");
+    ////debugPrint("gapo $result");
     return result;
   }
 }

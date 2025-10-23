@@ -17,6 +17,8 @@ class KColors {
   static final Color findUsIcon = const Color.fromARGB(255, 32, 107, 173);
   static final Color orderLenses = const Color.fromARGB(255, 206, 242, 206);
   static final Color selectedSlot = const Color.fromARGB(255, 94, 24, 107);
+  static final Color opaqueBlack48 = const Color.fromARGB(122, 0, 0, 0);
+  static final Color opaqueBlack20 = const Color.fromARGB(50, 0, 0, 0);
 
   static Color getColor(context, String color) {
     switch (color) {

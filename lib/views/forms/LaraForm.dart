@@ -137,7 +137,7 @@ class LaraformState extends State<Laraform> {
         isError = false;
       });
       response = await widget.fetcher();
-      debugPrint(response?.data.toString());
+      //debugPrint(response?.data.toString());
       setState(() {
         isLoading = false;
         isDone = true;
@@ -152,7 +152,7 @@ class LaraformState extends State<Laraform> {
         await widget.onValidationError!();
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //debugPrint(e.toString());
       setState(() {
         isLoading = false;
         isDone = false;
@@ -162,8 +162,8 @@ class LaraformState extends State<Laraform> {
       if (widget.onError != null) {
         Map<String, dynamic>? userData = await widget.onError!(e);
         userMessage = userData?["message"];
-        debugPrint("hererreerer");
-        debugPrint(e.toString());
+        //debugPrint("hererreerer");
+        //debugPrint(e.toString());
       }
     }
   }

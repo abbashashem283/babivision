@@ -41,7 +41,7 @@ class Http {
         fullPath,
         options: Options(headers: headers),
       );
-      debugPrint("response by dio ${response.data.toString()}");
+      //debugPrint("response by dio ${response.data.toString()}");
 
       return response;
     } on DioException catch (e) {
@@ -59,7 +59,7 @@ class Http {
           refreshToken: refreshResponse.data['refresh_token'],
           csrfToken: refreshResponse.data['csrf_token'],
         );
-        debugPrint("fetching $endpoint again isAuth: $isAuth");
+        //debugPrint("fetching $endpoint again isAuth: $isAuth");
         return get(endpoint, isAuth: isAuth);
       }
       return response;
@@ -109,7 +109,7 @@ class Http {
           refreshToken: refreshResponse.data['refresh_token'],
           csrfToken: refreshResponse.data['csrf_token'],
         );
-        debugPrint("fetching $endpoint again isAuth: $isAuth");
+        //debugPrint("fetching $endpoint again isAuth: $isAuth");
         return post(endpoint, data, isAuth: isAuth);
       }
       return response;

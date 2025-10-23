@@ -119,7 +119,7 @@ class _PasswordResetState extends State<PasswordReset> {
                                         _confirmPasswordController.text,
                                   }),
                           onFetched: (response) {
-                            debugPrint(response.data.toString());
+                            //debugPrint(response.data.toString());
                             final data = response.data;
                             if (data["type"] == "success") {
                               Future.delayed(Duration(seconds: 2), () {

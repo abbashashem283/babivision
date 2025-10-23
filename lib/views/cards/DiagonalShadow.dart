@@ -47,9 +47,9 @@ class DiagonalShadow extends StatelessWidget {
               final diagonal = sqrt(
                 parentWidth * parentWidth + parentHeight * parentHeight,
               );
-              debugPrint("w $parentWidth");
-              debugPrint("h $parentHeight");
-              debugPrint("h $diagonal");
+              //debugPrint("w $parentWidth");
+              //debugPrint("h $parentHeight");
+              //debugPrint("h $diagonal");
               return Stack(
                 children: [
                   OverflowBox(

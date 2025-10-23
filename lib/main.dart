@@ -1,5 +1,6 @@
 import 'package:babivision/Utils/navigation/Routes.dart';
 import 'package:babivision/views/debug/Playground.dart';
+import 'package:babivision/views/pages/Appointments.dart';
 import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
@@ -27,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         ).copyWith(primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Homepage(),
+      home: Appointments(),
       routes: getRoutes(context),
       onGenerateRoute: dynamicRoutes,
     );

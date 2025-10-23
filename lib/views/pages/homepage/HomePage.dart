@@ -42,7 +42,7 @@ class _HomepageState extends State<Homepage> {
                           "redirect": '/appointments/book',
                         },
                       ).then((_) {
-                        debugPrint("MUST REFRESH NOOOOOW!");
+                        //debugPrint("MUST REFRESH NOOOOOW!");
                       });
                     } else {
                       Navigator.pushNamed(context, '/appointments/book');
@@ -274,7 +274,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("building homepage NOOOW! with user ${_user}");
+    //debugPrint("building homepage NOOOW! with user ${_user}");
     bool homeActive = _currentIndex == 0;
     bool servicesActive = _currentIndex == 1;
     bool profileActive = _currentIndex == 2;

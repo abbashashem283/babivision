@@ -34,11 +34,7 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _authUser;
-  }
-
-  Future<Map<String, dynamic>?> get _authUser async {
-    user.value = await Auth.user();
+    Auth.user();
   }
 
   @override
@@ -125,7 +121,7 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                       _isLoading = true;
                     });
                     final logout = await Auth.logout();
-                    debugPrint("logout response $logout");
+                    //debugPrint("logout response $logout");
                     setState(() {
                       _isLoading = false;
                     });

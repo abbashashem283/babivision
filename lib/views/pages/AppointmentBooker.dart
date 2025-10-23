@@ -67,11 +67,11 @@ class _SlotButtonState extends State<SlotButton> {
   }
 }
 
-class AppointmentList extends StatefulWidget {
+class AppointmentSlots extends StatefulWidget {
   final List<dynamic> appointments;
   final String? selectedAppointment;
   final Function(String appointment) onAppointmentSelected;
-  const AppointmentList({
+  const AppointmentSlots({
     super.key,
     required this.appointments,
     required this.onAppointmentSelected,
@@ -79,10 +79,10 @@ class AppointmentList extends StatefulWidget {
   });
 
   @override
-  State<AppointmentList> createState() => _AppointmentListState();
+  State<AppointmentSlots> createState() => _AppointmentSlotsState();
 }
 
-class _AppointmentListState extends State<AppointmentList> {
+class _AppointmentSlotsState extends State<AppointmentSlots> {
   String? _selectedAppointment;
   String? _visibleDate;
 
@@ -286,7 +286,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
 
     required clinic,
   }) async {
-    debugPrint("fetch data $startDay  $clinic");
+    //debugPrint("fetch data $startDay  $clinic");
     return Http.get(
       "/api/appointments?startDay=$startDay&clinic=$clinic",
       isAuth: true,
@@ -365,7 +365,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
   }
 
   void get _getServicesWClinics async {
-    //debugPrint("getting services + clinics");
+    ////debugPrint("getting services + clinics");
     if (_services != null && _clinics != null) return;
     if (mounted) {
       setState(() {
@@ -377,27 +377,27 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     try {
       final servicesResponse = await Http.get("/api/services", isAuth: true);
       final clinicsResponse = await Http.get("/api/clinics", isAuth: true);
-      debugPrint(
-        "clinics and services response ${servicesResponse.toString()}",
-      );
+      // //debugPrint(
+      //   "clinics and services response ${servicesResponse.toString()}",
+      // );
       final Map<String, dynamic> jsonServices = jsonDecode(
         servicesResponse.toString(),
       );
-      // //debugPrint(jsonServices.toString());
+      // ////debugPrint(jsonServices.toString());
       final Map<String, dynamic> jsonClinics = jsonDecode(
         clinicsResponse.toString(),
       );
-      //debugPrint("1");
+      ////debugPrint("1");
       List<Service> services =
           (jsonServices["services"] as List)
               .map((service) => Service.fromJson(service))
               .toList();
-      //debugPrint("2");
+      ////debugPrint("2");
       List<Clinic> clinics =
           (jsonClinics["clinics"] as List)
               .map((clinic) => Clinic.fromJson(clinic))
               .toList();
-      //debugPrint("3");
+      ////debugPrint("3");
 
       _services = services;
       _clinics = clinics;
@@ -411,7 +411,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
       }
     } on Exception catch (e) {
       // TODO
-      debugPrint("caught must _isError");
+      //debugPrint("caught must _isError");
       if (e is MissingTokenException || e is AuthenticationFailedException) {
         if (mounted) {
           Navigator.pushReplacementNamed(
@@ -450,7 +450,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
         "start_time": time,
         "end_time": Time.addMinutes(time, _selectedService.durationMin),
       };
-      debugPrint(postData.toString());
+      //debugPrint(postData.toString());
       return Http.post("/api/appointments/book", postData, isAuth: true);
     } catch (e) {
       if (e is MissingTokenException || e is AuthenticationFailedException) {
@@ -585,16 +585,16 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
                                                 );
                                               }
                                               if (snapshot.hasData) {
-                                                debugPrint(
-                                                  "ff1 ${snapshot.data.toString()}",
-                                                );
+                                                // //debugPrint(
+                                                //   "ff1 ${snapshot.data.toString()}",
+                                                // );
                                                 final Map<String, dynamic>
                                                 data = jsonDecode(
                                                   snapshot.data.toString(),
                                                 );
-                                                debugPrint(
-                                                  'appointments from db ${data.toString()}',
-                                                );
+                                                // //debugPrint(
+                                                //   'appointments from db ${data.toString()}',
+                                                // );
 
                                                 if (data["type"] == "error")
                                                   return _buildPageError(
@@ -629,15 +629,15 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
                                                       const EdgeInsets.only(
                                                         top: 10,
                                                       ),
-                                                  child: AppointmentList(
+                                                  child: AppointmentSlots(
                                                     onAppointmentSelected: (
                                                       newAppointment,
                                                     ) {
                                                       _appointment =
                                                           newAppointment;
-                                                      debugPrint(
-                                                        "book appointment $newAppointment",
-                                                      );
+                                                      // //debugPrint(
+                                                      //   "book appointment $newAppointment",
+                                                      // );
                                                     },
                                                     appointments:
                                                         _appointmentController!
@@ -740,9 +740,9 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
                                       final response = await _bookAppointment();
 
                                       final data = response?.data;
-                                      debugPrint(
-                                        "response data ${response?.data.toString()}",
-                                      );
+                                      // //debugPrint(
+                                      //   "response data ${response?.data.toString()}",
+                                      // );
                                       if (!mounted) return;
                                       setState(() {
                                         _isBooking = false;
@@ -751,9 +751,9 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
                                       if (data?["type"] == "error" ||
                                           data?["message"] == null ||
                                           data?["errors"] != null) {
-                                        debugPrint("checking mounted");
+                                        //debugPrint("checking mounted");
                                         if (!mounted) return;
-                                        debugPrint("showing snack");
+                                        //debugPrint("showing snack");
                                         showSnackbar(
                                           context: context,
                                           snackBar:
