@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         ).copyWith(primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Appointments(),
+      home: Homepage(),
       routes: getRoutes(context),
       onGenerateRoute: dynamicRoutes,
     );

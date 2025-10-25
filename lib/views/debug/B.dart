@@ -4,11 +4,13 @@ class B extends StatelessWidget {
   final String color;
   final double thickness;
   final Widget child;
+  final bool inExpanded;
 
   const B({
     super.key,
     this.color = "g",
     this.thickness = 1,
+    this.inExpanded = false,
     required this.child,
   });
 
@@ -36,6 +38,8 @@ class B extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: inExpanded ? double.infinity : null,
+      height: inExpanded ? double.infinity : null,
       decoration: BoxDecoration(
         border: Border.all(color: getColor(color), width: thickness),
       ),
