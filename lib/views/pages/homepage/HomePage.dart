@@ -117,10 +117,11 @@ class _HomepageState extends State<Homepage> {
                         //shadowSize: (height * .08) * .9,
                         onPress: data["onPress"],
                         shadowSize: context.percentageOfHeight(.08) * .9,
-                        spacing: context.responsiveExplicit(
-                          fallback: 2,
-                          onHeight: {555: 15},
-                        ),
+                        spacing:
+                            context.responsiveExplicit(
+                              fallback: 2,
+                              onHeight: {555: 15},
+                            )!,
                         label: Text(
                           data["label"],
                           style: TextStyle(
@@ -202,15 +203,14 @@ class _HomepageState extends State<Homepage> {
           fontSize: context.responsiveExplicit(
             fallback: 9,
             onWidth: {
-              context.sm: context.responsiveExplicit(
-                fallback: 9,
-                onHeight: {-580: 5},
-              ),
-              context.md: context.responsiveExplicit(
-                //onWidth: {1300: 11},
-                onHeight: {-580: 5},
-                fallback: 9,
-              ),
+              context.sm:
+                  context.responsiveExplicit(fallback: 9, onHeight: {-580: 5})!,
+              context.md:
+                  context.responsiveExplicit(
+                    //onWidth: {1300: 11},
+                    onHeight: {-580: 5},
+                    fallback: 9,
+                  )!,
               context.lg: 16,
             },
           ),

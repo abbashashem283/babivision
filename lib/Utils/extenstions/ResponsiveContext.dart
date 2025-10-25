@@ -36,8 +36,8 @@ extension ResponsiveContext on BuildContext {
     }
   }
 
-  T responsiveExplicit<T>({
-    required T fallback,
+  T? responsiveExplicit<T>({
+    required T? fallback,
     Map<int, T>? onWidth,
     Map<int, T>? onHeight,
   }) {
@@ -66,8 +66,9 @@ extension ResponsiveContext on BuildContext {
         if (height >= point) apply = onHeight?[point];
       }
     }
+
     apply ??= fallback;
-    return apply!;
+    return apply;
   }
 
   T responsiveOrientation<T>({T? fallback, T? onLandscape, T? onPortrait}) {

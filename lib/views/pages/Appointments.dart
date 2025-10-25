@@ -74,10 +74,11 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
-                      flex: context.responsiveExplicit(
-                        fallback: 1,
-                        onWidth: {380: 55},
-                      ),
+                      flex:
+                          context.responsiveExplicit(
+                            fallback: 1,
+                            onWidth: {380: 55},
+                          )!,
                       child: B(
                         inExpanded: true,
                         child: Column(
@@ -110,10 +111,11 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
                       ),
                     ),
                     Expanded(
-                      flex: context.responsiveExplicit(
-                        fallback: 1,
-                        onWidth: {380: 45},
-                      ),
+                      flex:
+                          context.responsiveExplicit(
+                            fallback: 1,
+                            onWidth: {380: 45},
+                          )!,
                       child: B(
                         inExpanded: true,
                         child: Column(
@@ -245,6 +247,7 @@ class _AppointmentsListState extends State<AppointmentsList> {
       child: ListView.separated(
         itemCount: widget.items.length,
         controller: widget.controller,
+        physics: const AlwaysScrollableScrollPhysics(),
         separatorBuilder:
             (context, index) => SizedBox(
               height: context.responsiveExplicit(

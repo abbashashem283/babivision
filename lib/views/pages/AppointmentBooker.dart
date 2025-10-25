@@ -156,10 +156,11 @@ class _AppointmentSlotsState extends State<AppointmentSlots> {
                     ),
                   ),
                   child: GridView.count(
-                    crossAxisCount: context.responsiveExplicit(
-                      fallback: 3,
-                      onWidth: {500: 4},
-                    ), // number of columns
+                    crossAxisCount:
+                        context.responsiveExplicit(
+                          fallback: 3,
+                          onWidth: {500: 4},
+                        )!, // number of columns
                     mainAxisSpacing: 10, // vertical spacing
                     crossAxisSpacing: 10, // horizontal spacing hohohoh
                     shrinkWrap: true,
