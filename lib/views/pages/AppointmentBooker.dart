@@ -492,7 +492,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
           icon: Icon(Icons.arrow_back),
         ),
         title: Text(
-          "Appointments",
+          "Book Appointment",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

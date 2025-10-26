@@ -40,13 +40,15 @@ extension ResponsiveContext on BuildContext {
     required T? fallback,
     Map<int, T>? onWidth,
     Map<int, T>? onHeight,
+    Map<double, T>? onRatio,
   }) {
     assert(
-      onWidth != null || onHeight != null,
-      "Must supply breakpoints for either width or height",
+      onWidth != null || onHeight != null || onRatio != null,
+      "Must supply breakpoints for either width or height or ratio",
     );
     final List? pointsWidth = onWidth?.keys.toList();
     final List? pointsHeight = onHeight?.keys.toList();
+    final List? pointsRatio = onRatio?.keys.toList();
     T? apply;
     if (pointsWidth != null) {
       for (final point in pointsWidth) {
@@ -64,6 +66,15 @@ extension ResponsiveContext on BuildContext {
           continue;
         }
         if (height >= point) apply = onHeight?[point];
+      }
+    }
+    if (pointsRatio != null) {
+      for (final point in pointsRatio) {
+        if (point < 0) {
+          if (ratio <= point.abs()) apply = onRatio?[point];
+          continue;
+        }
+        if (ratio >= point) apply = onRatio?[point];
       }
     }
 

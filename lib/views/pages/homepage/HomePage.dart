@@ -39,18 +39,18 @@ class _HomepageState extends State<Homepage> {
                         '/login',
                         arguments: {
                           "origin": '/home',
-                          "redirect": '/appointments/book',
+                          "redirect": '/appointments',
                         },
                       ).then((_) {
                         //debugPrint("MUST REFRESH NOOOOOW!");
                       });
                     } else {
-                      Navigator.pushNamed(context, '/appointments/book');
+                      Navigator.pushNamed(context, '/appointments');
                     }
                   }
                 },
                 "img_src": "assets/icon-images/calendar.svg",
-                "label": "Book Appointment",
+                "label": "My Appointments",
                 "color": Colors.white,
                 "backgroundColor": KColors.appointment,
               },

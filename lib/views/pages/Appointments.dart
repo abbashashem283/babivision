@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Time.dart';
+import 'package:babivision/Utils/Widgets.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/data/KConstants.dart';
@@ -14,20 +15,24 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentListDelegate extends StatefulWidget {
+  final bool isLastItem;
   final String serviceName;
   final String appointmentStatus;
   final String day;
   final String startTime;
   final String endTime;
   final Function()? onDelete;
+  final Function()? onLongPress;
   const AppointmentListDelegate({
     super.key,
+    required this.isLastItem,
     required this.serviceName,
     required this.appointmentStatus,
     required this.day,
     required this.startTime,
     required this.endTime,
     this.onDelete,
+    this.onLongPress,
   });
 
   @override
@@ -41,11 +46,20 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
 
   @override
   Widget build(BuildContext context) {
+    final dateTimeTextSize = context.responsiveExplicit(
+      fallback: context.percentageOfHeight(.017),
+      onRatio: {
+        .39: context.percentageOfHeight(.019),
+        .45: context.percentageOfHeight(.02),
+      },
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
           onLongPress: () {
+            widget.onLongPress?.call();
             setState(() {
               _deleteVisible = true;
             });
@@ -59,6 +73,7 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
           },
           child: Container(
             width: double.infinity,
+            height: context.percentageOfHeight(.12),
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.purple,
@@ -66,84 +81,81 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
                 context.responsive(sm: 0, md: 8),
               ),
             ),
-            child: B(
-              child: SizedBox(
-                height: 64,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      flex:
-                          context.responsiveExplicit(
-                            fallback: 1,
-                            onWidth: {380: 55},
-                          )!,
-                      child: B(
-                        inExpanded: true,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //? service name
-                            Text(
-                              widget.serviceName,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: KColors.opaqueBlack20,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              padding: EdgeInsets.all(5),
-                              child: Text(
-                                widget.appointmentStatus,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
+            child: SizedBox(
+              //height: 64,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex:
+                        context.responsiveExplicit(
+                          fallback: 1,
+                          onWidth: {380: 55},
+                        )!,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //? service name
+                        Text(
+                          widget.serviceName,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.percentageOfHeight(.022),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      flex:
-                          context.responsiveExplicit(
-                            fallback: 1,
-                            onWidth: {380: 45},
-                          )!,
-                      child: B(
-                        inExpanded: true,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          spacing: 5,
-                          children: [
-                            B(
-                              child: Text(
-                                Time.displayFullDate(widget.day),
-                                style: TextStyle(color: Colors.white),
-                              ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: KColors.opaqueBlack20,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                            widget.appointmentStatus,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: context.percentageOfHeight(.022),
                             ),
-                            B(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Text(
-                                  "${widget.startTime} - ${widget.endTime}",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    flex:
+                        context.responsiveExplicit(
+                          fallback: 1,
+                          onWidth: {380: 45},
+                        )!,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      spacing: 5,
+                      children: [
+                        Text(
+                          Time.displayFullDate(widget.day),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: dateTimeTextSize,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Text(
+                            "${widget.startTime} - ${widget.endTime}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: dateTimeTextSize,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -188,7 +200,7 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
             );
           },
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: widget.isLastItem ? 0 : 200),
             width: double.infinity.clamp(0, 690),
             height: (_deleteVisible || _deleteConfirmation) ? 40 : 0,
             decoration: BoxDecoration(
@@ -206,8 +218,18 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
             child: Center(
               child: TextButton.icon(
                 onPressed: null,
-                label: Text("Delete", style: TextStyle(color: Colors.white)),
-                icon: Icon(Icons.delete_forever, color: Colors.white),
+                label: Text(
+                  "Delete",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: context.percentageOfWidth(.05).clamp(0, 30),
+                  ),
+                ),
+                icon: Icon(
+                  Icons.delete_forever,
+                  color: Colors.white,
+                  size: context.percentageOfWidth(.05).clamp(0, 30),
+                ),
               ),
             ),
           ),
@@ -221,11 +243,15 @@ class AppointmentsList extends StatefulWidget {
   final List items;
   final ScrollController? controller;
   final Function(int id, int index)? onAppointmentDeleted;
+  final Function(int index)? onItemLongPress;
+  final EdgeInsetsGeometry? padding;
   const AppointmentsList({
     super.key,
     required this.items,
     this.controller,
     this.onAppointmentDeleted,
+    this.onItemLongPress,
+    this.padding,
   });
 
   @override
@@ -247,26 +273,23 @@ class _AppointmentsListState extends State<AppointmentsList> {
       child: ListView.separated(
         itemCount: widget.items.length,
         controller: widget.controller,
+        padding: widget.padding,
         physics: const AlwaysScrollableScrollPhysics(),
-        separatorBuilder:
-            (context, index) => SizedBox(
-              height: context.responsiveExplicit(
-                fallback: 2,
-                onHeight: {1000: 30},
-              ),
-            ),
+        separatorBuilder: (context, index) => SizedBox(height: 2),
         itemBuilder: (context, index) {
           final appointment = widget.items[index];
           final service = appointment["service"];
           final startTime = appointment['start_time'].substring(0, 5);
           final endTime = appointment['end_time'].substring(0, 5);
           return AppointmentListDelegate(
+            isLastItem: index == widget.items.length - 1,
             key: ValueKey(appointment['id']),
             serviceName: service["name"],
             appointmentStatus: appointment["status"],
             day: appointment["day"],
             startTime: startTime,
             endTime: endTime,
+            onLongPress: () => widget.onItemLongPress?.call(index),
             onDelete:
                 () =>
                     widget.onAppointmentDeleted?.call(appointment["id"], index),
@@ -286,7 +309,10 @@ class Appointments extends StatefulWidget {
 }
 
 class _AppointmentsState extends State<Appointments> {
-  bool _isLoading = true, _isMiniLoading = false, _isError = false;
+  bool _isLoading = true,
+      _isMiniLoading = false,
+      _isError = false,
+      _showBottomListPadding = false;
   ValueNotifier<bool> _showFAB = ValueNotifier(false);
   final ScrollController _controller = ScrollController();
   Timer? _hideTimer;
@@ -426,19 +452,43 @@ class _AppointmentsState extends State<Appointments> {
       content = Center(child: ErrorMessage(message: "An error has occured!"));
     else if (_noAppointments)
       content = Center(child: Text("No Appointments Found"));
-    else
+    else {
       //? appointment list
+      List items = _appointments ?? [];
       content = Center(
-        child: Container(
-          //padding: EdgeInsets.only(left: 20, right: 20),
-          width: double.infinity.clamp(0, 700),
-          child: AppointmentsList(
-            items: _appointments ?? [],
-            controller: _controller,
-            onAppointmentDeleted: (id, index) => _deleteAppointment(id, index),
+        child: B(
+          child: Container(
+            //padding: EdgeInsets.only(left: 20, right: 20),
+            color: Color.fromARGB(255, 236, 160, 248),
+            width: double.infinity.clamp(0, 700),
+            child: AppointmentsList(
+              items: items,
+              controller: _controller,
+              padding:
+                  _showBottomListPadding ? EdgeInsets.only(bottom: 40) : null,
+              onItemLongPress: (index) {
+                final bool isLastItem = index == (items.length - 1);
+                if (isLastItem) {
+                  onPostFrame((_) {
+                    final toOffset = _controller.position.maxScrollExtent;
+                    debugPrint(
+                      "offset scroll ${_controller.offset} | toOffset $toOffset",
+                    );
+                    _controller.animateTo(
+                      toOffset + (140 - toOffset),
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    );
+                  });
+                }
+              },
+              onAppointmentDeleted:
+                  (id, index) => _deleteAppointment(id, index),
+            ),
           ),
         ),
       );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -456,13 +506,15 @@ class _AppointmentsState extends State<Appointments> {
         valueListenable: _showFAB,
         builder: (context, showFAB, _) {
           if (!_isLoading && (showFAB || _noAppointments))
-            return FloatingActionButton(
-              backgroundColor: Colors.purple[200],
-              shape: CircleBorder(),
-              onPressed: () {
-                Navigator.pushNamed(context, '/appointments/book');
-              },
-              child: Text("+", style: TextStyle(fontSize: 25)),
+            return SizedBox(
+              child: FloatingActionButton(
+                backgroundColor: Colors.purple[200],
+                shape: CircleBorder(),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/appointments/book');
+                },
+                child: Text("+", style: TextStyle(fontSize: 25)),
+              ),
             );
           return SizedBox.shrink();
         },
