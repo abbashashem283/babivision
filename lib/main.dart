@@ -7,6 +7,7 @@ import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:babivision/views/pages/Auth/LoginPage.dart';
 import 'package:babivision/views/pages/SplashScreen.dart';
+import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

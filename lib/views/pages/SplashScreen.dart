@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:babivision/views/pages/homepage/HomePage.dart';
+import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -17,10 +18,7 @@ class _SplashscreenState extends State<Splashscreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(Duration(seconds: 5), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Homepage()),
-        );
+        Navigator.pushNamed(context, "/home");
       });
     });
   }

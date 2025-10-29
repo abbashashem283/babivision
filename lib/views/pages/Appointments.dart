@@ -9,10 +9,12 @@ import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/data/ValueNotifiers.dart';
 import 'package:babivision/views/debug/B.dart';
+import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
 import 'package:babivision/views/page-components/ErrorMessage.dart';
 import 'package:babivision/views/popups/Snackbars.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AppointmentListDelegate extends StatefulWidget {
   final bool isLastItem;
@@ -54,187 +56,189 @@ class _AppointmentListDelegateState extends State<AppointmentListDelegate> {
       },
     );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onLongPress: () {
-            widget.onLongPress?.call();
-            setState(() {
-              _deleteVisible = true;
-            });
-            _hideDelete?.cancel();
-            _hideDelete = Timer(Duration(seconds: 5), () {
-              if (mounted)
-                setState(() {
-                  _deleteVisible = false;
-                });
-            });
-          },
-          child: Container(
-            width: double.infinity,
-            height: context.percentageOfHeight(.12),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.purple,
-              borderRadius: BorderRadius.circular(
-                context.responsive(sm: 0, md: 8),
+    return ClipRRect(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onLongPress: () {
+              widget.onLongPress?.call();
+              setState(() {
+                _deleteVisible = true;
+              });
+              _hideDelete?.cancel();
+              _hideDelete = Timer(Duration(seconds: 5), () {
+                if (mounted)
+                  setState(() {
+                    _deleteVisible = false;
+                  });
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              height: context.percentageOfHeight(.12),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.circular(
+                  context.responsive(sm: 0, md: 8),
+                ),
               ),
-            ),
-            child: SizedBox(
-              //height: 64,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    flex:
-                        context.responsiveExplicit(
-                          fallback: 1,
-                          onWidth: {380: 55},
-                        )!,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //? service name
-                        Text(
-                          widget.serviceName,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.percentageOfHeight(.022),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: KColors.opaqueBlack20,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            widget.appointmentStatus,
+              child: SizedBox(
+                //height: 64,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex:
+                          context.responsiveExplicit(
+                            fallback: 1,
+                            onWidth: {380: 55},
+                          )!,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //? service name
+                          Text(
+                            widget.serviceName,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: context.percentageOfHeight(.022),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex:
-                        context.responsiveExplicit(
-                          fallback: 1,
-                          onWidth: {380: 45},
-                        )!,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      spacing: 5,
-                      children: [
-                        Text(
-                          Time.displayFullDate(widget.day),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: dateTimeTextSize,
+                          Container(
+                            decoration: BoxDecoration(
+                              color: KColors.opaqueBlack20,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.all(5),
+                            child: Text(
+                              widget.appointmentStatus,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: context.percentageOfHeight(.022),
+                              ),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Text(
-                            "${widget.startTime} - ${widget.endTime}",
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex:
+                          context.responsiveExplicit(
+                            fallback: 1,
+                            onWidth: {380: 45},
+                          )!,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 5,
+                        children: [
+                          Text(
+                            Time.displayFullDate(widget.day),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: dateTimeTextSize,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _deleteConfirmation = true;
-            });
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Cancel Appointment"),
-                  content: Text(
-                    "Do you really wish to cancel you appointment ${widget.day} @ ${widget.startTime}?",
-                  ),
-                  actions: [
-                    FilledButton(
-                      onPressed: () {
-                        setState(() {
-                          _deleteConfirmation = false;
-                        });
-                        Navigator.pop(context);
-                        widget.onDelete?.call();
-                      },
-                      child: Text("Yes"),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          _deleteConfirmation = false;
-                        });
-
-                        Navigator.pop(context);
-                      },
-                      child: Text("No"),
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text(
+                              "${widget.startTime} - ${widget.endTime}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: dateTimeTextSize,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                );
-              },
-            );
-          },
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: widget.isLastItem ? 0 : 200),
-            width: double.infinity.clamp(0, 690),
-            height: (_deleteVisible || _deleteConfirmation) ? 40 : 0,
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: context.responsiveExplicit(
-                fallback: null,
-                onWidth: {
-                  700: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  ),
-                },
-              ),
-            ),
-            child: Center(
-              child: TextButton.icon(
-                onPressed: null,
-                label: Text(
-                  "Delete",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.percentageOfWidth(.05).clamp(0, 30),
-                  ),
-                ),
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.white,
-                  size: context.percentageOfWidth(.05).clamp(0, 30),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _deleteConfirmation = true;
+              });
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Cancel Appointment"),
+                    content: Text(
+                      "Do you really wish to cancel you appointment ${widget.day} @ ${widget.startTime}?",
+                    ),
+                    actions: [
+                      FilledButton(
+                        onPressed: () {
+                          setState(() {
+                            _deleteConfirmation = false;
+                          });
+                          Navigator.pop(context);
+                          widget.onDelete?.call();
+                        },
+                        child: Text("Yes"),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            _deleteConfirmation = false;
+                          });
+
+                          Navigator.pop(context);
+                        },
+                        child: Text("No"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: widget.isLastItem ? 0 : 200),
+              width: double.infinity.clamp(0, 690),
+              height: (_deleteVisible || _deleteConfirmation) ? 40 : 0,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: context.responsiveExplicit(
+                  fallback: null,
+                  onWidth: {
+                    700: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                  },
+                ),
+              ),
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: null,
+                  label: Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.percentageOfWidth(.05).clamp(0, 30),
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: Colors.white,
+                    size: context.percentageOfWidth(.05).clamp(0, 30),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -457,9 +461,7 @@ class _AppointmentsState extends State<Appointments> {
       List items = _appointments ?? [];
       content = Center(
         child: B(
-          child: Container(
-            //padding: EdgeInsets.only(left: 20, right: 20),
-            color: Color.fromARGB(255, 236, 160, 248),
+          child: SizedBox(
             width: double.infinity.clamp(0, 700),
             child: AppointmentsList(
               items: items,
@@ -530,23 +532,7 @@ class _AppointmentsState extends State<Appointments> {
           children: [
             content,
 
-            if (_isLoading || _isMiniLoading)
-              Container(
-                color: KColors.opaqueBlack20,
-                width: double.infinity,
-                height: double.infinity,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              ),
+            if (_isLoading || _isMiniLoading) StackLoadingIndicator.regular(),
           ],
         ),
       ),

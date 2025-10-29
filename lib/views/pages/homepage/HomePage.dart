@@ -7,6 +7,7 @@ import 'package:babivision/views/buttons/CIconButton.dart';
 import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/layout/AppBarDrawerScaffold.dart';
+import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
@@ -96,6 +97,8 @@ class _HomepageState extends State<Homepage> {
             ]),
           ],
         );
+      case 1:
+        return Services();
       default:
         return SizedBox.shrink();
     }
@@ -270,6 +273,13 @@ class _HomepageState extends State<Homepage> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    debugPrint("Home state init");
   }
 
   @override
