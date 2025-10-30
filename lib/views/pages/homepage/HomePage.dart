@@ -315,7 +315,10 @@ class _HomepageState extends State<Homepage> {
       body: Align(
         alignment: Alignment.topCenter,
         child: SizedBox(
-          width: double.infinity.clamp(50, 800),
+          width: double.infinity.clamp(
+            50,
+            _currentIndex == 0 ? 800 : context.percentageOfWidth(1),
+          ),
           child: FractionallySizedBox(
             //height: 250,
             widthFactor: 0.95,
