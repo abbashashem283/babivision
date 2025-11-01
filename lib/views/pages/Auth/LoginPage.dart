@@ -16,8 +16,14 @@ import 'package:babivision/Utils/Widgets.dart' as w;
 class Loginpage extends StatefulWidget {
   final String origin;
   final String redirect;
+  final Map? redirectData;
 
-  const Loginpage({super.key, required this.origin, required this.redirect});
+  const Loginpage({
+    super.key,
+    required this.origin,
+    required this.redirect,
+    this.redirectData,
+  });
 
   @override
   State<Loginpage> createState() => _LoginpageState();
@@ -127,7 +133,7 @@ class _LoginpageState extends State<Loginpage> {
                             if (_forgotPassword) {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
-                                  Navigator.pushReplacementNamed(
+                                  Navigator.pushNamed(
                                     context,
                                     "/password/code",
                                     arguments: {
@@ -153,6 +159,7 @@ class _LoginpageState extends State<Loginpage> {
                                 Navigator.pushReplacementNamed(
                                   context,
                                   widget.redirect,
+                                  arguments: widget.redirectData,
                                 );
                               }
                             }

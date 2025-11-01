@@ -7,8 +7,8 @@ import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:babivision/models/Service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 
 class ServicesList extends StatefulWidget {
   final List items;
@@ -22,28 +22,56 @@ class ServicesList extends StatefulWidget {
 
 class _ServicesListState extends State<ServicesList> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final TextStyle subTextStyle = TextStyle(
+      color: Colors.grey[400],
+      fontSize: context.responsiveExplicit(
+        fallback: context.percentageOfWidth(.05),
+        onWidth: {
+          350: context.percentageOfWidth(.025),
+          550: context.percentageOfWidth(.015),
+          800: context.percentageOfWidth(.01),
+          1000: 16,
+        },
+      ),
+    );
+
     return GlowingOverscrollIndicator(
       color: Colors.purple,
       axisDirection: AxisDirection.down,
-      child: GridView.builder(
-        controller: widget.controller,
-        itemCount: widget.items.length,
-        padding: EdgeInsets.only(left: 10, right: 10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: context.responsive(sm: 1, md: 2, lg: 3),
-          mainAxisSpacing: 20,
-          crossAxisSpacing: context.responsive(sm: 0, md: 20),
-          childAspectRatio: .7,
-        ),
-        itemBuilder: (context, index) {
-          final item = widget.items[index];
-          final image = item['image'];
-          final name = item['name'];
-          final duration = item['duration_min'];
-          final price = item['price'];
-          return B(
-            child: Container(
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: GridView.builder(
+          controller: widget.controller,
+          itemCount: widget.items.length,
+          physics: AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.only(left: 10, right: 10, bottom: 40),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount:
+                context.responsiveExplicit(
+                  fallback: 1,
+                  onWidth: {350: 2, 550: 3, 1500: 4},
+                )!,
+            mainAxisSpacing:
+                context.responsiveExplicit(fallback: 0, onWidth: {350: 10})!,
+            crossAxisSpacing:
+                context.responsiveExplicit(fallback: 0, onWidth: {350: 10})!,
+            childAspectRatio: .7,
+          ),
+
+          itemBuilder: (context, index) {
+            final item = widget.items[index];
+            final image = item.image;
+            final name = item.name;
+            final duration = item.durationMin;
+            final price = item.price;
+            return Container(
               //height: context.percentageOfHeight(.67),
               //height: 400,
               decoration: BoxDecoration(
@@ -91,93 +119,93 @@ class _ServicesListState extends State<ServicesList> {
                     child: SizedBox(
                       width: double.infinity,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 8, 8),
+                        padding:
+                            context.responsiveExplicit(
+                              fallback: const EdgeInsets.fromLTRB(20, 20, 8, 8),
+                              onWidth: {
+                                350: const EdgeInsets.fromLTRB(10, 10, 8, 8),
+                                //500: const EdgeInsets.fromLTRB(20, 20, 8, 8),
+                              },
+                            )!,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             //SizedBox(height: 25),
-                            B(
-                              //inExpanded: true,
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: context.responsive(
-                                      sm: 20,
-                                      // lg: 14,
-                                      lg: 20,
-                                    ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                name,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: context.responsiveExplicit(
+                                    fallback: context.percentageOfWidth(.06),
+                                    onWidth: {
+                                      350: context.percentageOfWidth(.035),
+                                      550: context.percentageOfWidth(.025),
+                                      800: context.percentageOfWidth(.02),
+                                      1000: 20,
+                                    },
                                   ),
                                 ),
                               ),
                             ),
 
-                            B(
-                              //inExpanded: true,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Duration: $duration mins",
-                                    style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontSize: context.responsive(
-                                        sm: 16,
-                                        //lg: 12,
-                                        lg: 16,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    "Price: $price\$",
-                                    style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontSize: context.responsive(
-                                        sm: 16,
-                                        //lg: 12,
-                                        lg: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Duration: $duration mins",
+                                  style: subTextStyle,
+                                ),
+                                SizedBox(height: 2),
+                                Text("Price: $price\$", style: subTextStyle),
+                              ],
                             ),
-                            B(
-                              //inExpanded: true,
-                              child: Center(
-                                child: B(
-                                  color: "r",
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    // style: TextButton.styleFrom(
-                                    //   padding: context.responsive(
-                                    //     sm: null,
-                                    //     md: EdgeInsets.zero,
-                                    //   ),
-                                    // ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "Book Appointment",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Icon(Icons.arrow_forward),
-                                      ],
-                                    ),
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/appointments/book',
+                                    arguments: {"service": item as Service},
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  padding: context.responsiveExplicit(
+                                    fallback: null,
+                                    onWidth: {350: EdgeInsets.zero},
                                   ),
+                                  //padding: EdgeInsets.zero,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Book Appointment",
+                                      style: TextStyle(
+                                        fontSize: context.responsiveExplicit(
+                                          fallback: context.percentageOfWidth(
+                                            .045,
+                                          ),
+                                          onWidth: {
+                                            350: context.percentageOfWidth(.02),
+                                            550: context.percentageOfWidth(.01),
+                                            1000: 16,
+                                          },
+                                        ),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward),
+                                  ],
                                 ),
                               ),
                             ),
@@ -188,9 +216,9 @@ class _ServicesListState extends State<ServicesList> {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -227,13 +255,18 @@ class _ServicesState extends State<Services> {
       }
 
       if (data["services"] != null) {
+        final services =
+            data["services"].map((service) {
+              return Service.fromJson(service);
+            }).toList();
         setState(() {
           _isLoading = false;
           _isError = false;
-          _services = data["services"];
+          _services = services;
         });
       }
-    } catch (_) {
+    } catch (e) {
+      log("error has occured !!!!!! ${e.toString()}");
       setState(() {
         _isLoading = false;
         _isError = true;
@@ -259,6 +292,13 @@ class _ServicesState extends State<Services> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget content = SizedBox.shrink();
 
@@ -277,18 +317,21 @@ class _ServicesState extends State<Services> {
       else
         content = Scrollbar(
           thumbVisibility: true,
-          thickness: 5,
+          thickness: context.responsive(sm: 5, md: 10),
+          trackVisibility: context.responsive(sm: false, lg: true),
           controller: _scrollController,
           child: SizedBox(
             width: double.infinity,
             child: Center(
-              child: B(
-                child: SizedBox(
-                  width: context.percentageOfWidth(.7),
-                  child: ServicesList(
-                    controller: _scrollController,
-                    items: _services ?? [],
-                  ),
+              child: SizedBox(
+                width: context.responsiveExplicit(
+                  fallback: double.infinity,
+                  onWidth: {800: context.percentageOfWidth(.7)},
+                  onRatio: {-1: double.infinity},
+                ),
+                child: ServicesList(
+                  controller: _scrollController,
+                  items: _services ?? [],
                 ),
               ),
             ),
@@ -298,7 +341,7 @@ class _ServicesState extends State<Services> {
 
     return Stack(
       children: [
-        B(color: "r", child: content),
+        content,
         // Positioned(
         //   right: 0,
         //   child: B(

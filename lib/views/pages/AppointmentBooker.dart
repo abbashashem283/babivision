@@ -9,8 +9,6 @@ import 'package:babivision/controllers/AppointmentManager.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/models/Service.dart';
-import 'package:babivision/views/debug/B.dart';
-import 'package:babivision/views/forms/LaraForm.dart';
 import 'package:babivision/views/popups/Snackbars.dart';
 import 'package:dio/dio.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -248,7 +246,9 @@ class _AppointmentSlotsState extends State<AppointmentSlots> {
 }
 
 class AppointmentBooker extends StatefulWidget {
-  const AppointmentBooker({super.key});
+  final Service? service;
+  final Clinic? clinic;
+  const AppointmentBooker({super.key, this.service, this.clinic});
 
   @override
   State<AppointmentBooker> createState() => _AppointmentBookerState();
@@ -421,6 +421,10 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
             arguments: {
               "origin": "/appointments/book",
               "redirect": "/appointments/book",
+              "redirectData": {
+                "service": _selectedService,
+                "clinic": _selectedClinic,
+              },
             },
           );
         }
@@ -473,13 +477,9 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     // TODO: implement initState
 
     super.initState();
-    _selectedClinic = _noClinicPlaceHolder;
-    _selectedService = _noServicePlaceHolder;
-    // _appointmentsFuture = fetchAppointments(
-    //   startDay: Time.today.day,
-    //   upto: 30,
-    //   clinic: _selectedClinic.id,
-    // );
+    _selectedClinic = widget.clinic ?? _noClinicPlaceHolder;
+    _selectedService = widget.service ?? _noServicePlaceHolder;
+
     _getServicesWClinics;
   }
 

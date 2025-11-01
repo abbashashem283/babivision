@@ -317,12 +317,12 @@ class _HomepageState extends State<Homepage> {
         child: SizedBox(
           width: double.infinity.clamp(
             50,
-            _currentIndex == 0 ? 800 : context.percentageOfWidth(1),
+            _currentIndex == 1 ? context.percentageOfWidth(1) : 800,
           ),
           child: FractionallySizedBox(
             //height: 250,
-            widthFactor: 0.95,
-            heightFactor: 0.92,
+            widthFactor: _currentIndex == 1 ? .99 : .95,
+            heightFactor: _currentIndex == 1 ? .99 : .92,
             //height: 250,
             child: _getSelectedTab(),
           ),

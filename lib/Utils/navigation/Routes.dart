@@ -12,7 +12,11 @@ final protectedRoutes = ["/appointments/book", "/appointments"];
 
 final _dynamicRoutes = {
   "/login":
-      (args) => Loginpage(origin: args['origin'], redirect: args['redirect']),
+      (args) => Loginpage(
+        origin: args['origin'],
+        redirect: args['redirect'],
+        redirectData: args['redirectData'],
+      ),
   "/password/code":
       (args) => PasswordCodeConfirmation(
         email: args['email'],
@@ -24,13 +28,16 @@ final _dynamicRoutes = {
         code: args['code'],
         origin: args['origin'],
       ),
+  "/appointments/book":
+      (args) =>
+          AppointmentBooker(service: args['service'], clinic: args['clinic']),
 };
 
 Map<String, Widget Function(BuildContext context)> getRoutes(
   BuildContext context,
 ) {
   return {
-    "/appointments/book": (context) => AppointmentBooker(),
+    //"/appointments/book": (context) => AppointmentBooker(),
     "/appointments": (context) => Appointments(),
     "/home": (context) => Homepage(),
     "/register": (context) => RegisterPage(),
@@ -39,8 +46,8 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
 
 Route? dynamicRoutes(RouteSettings settings) {
   String? routeName = settings.name;
-  final args = settings.arguments as Map?;
-  if (routeName == null || args == null) return null;
+  final args = (settings.arguments as Map?) ?? {};
+  if (routeName == null) return null;
   final pageBuilder = _dynamicRoutes[routeName];
   if (pageBuilder == null) return null;
   return MaterialPageRoute(builder: (_) => pageBuilder({...args}));

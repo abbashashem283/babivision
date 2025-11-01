@@ -124,13 +124,17 @@ class _PasswordResetState extends State<PasswordReset> {
                             if (data["type"] == "success") {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
-                                  Navigator.pushReplacementNamed(
+                                  // Navigator.pushReplacementNamed(
+                                  //   context,
+                                  //   "/login",
+                                  //   arguments: {
+                                  //     "origin": widget.origin,
+                                  //     "redirect": widget.origin,
+                                  //   },
+                                  // );
+                                  Navigator.popUntil(
                                     context,
-                                    "/login",
-                                    arguments: {
-                                      "origin": widget.origin,
-                                      "redirect": widget.origin,
-                                    },
+                                    ModalRoute.withName("/login"),
                                   );
                                 }
                               });

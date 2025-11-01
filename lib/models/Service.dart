@@ -1,6 +1,7 @@
 class Service {
   final int id;
   final String name;
+  final String? image;
   final String discription;
   final int durationMin;
   final double price;
@@ -11,12 +12,14 @@ class Service {
     required this.discription,
     required this.durationMin,
     required this.price,
+    this.image,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       id: json["id"],
       name: json["name"],
+      image: json["image"],
       discription: json["discription"],
       durationMin: json["duration_min"],
       price: double.parse(json["price"]),
