@@ -72,7 +72,7 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                 icon: Icons.info,
                 iconColor: KColors.aboutUsIcon,
                 label: "About Us",
-                onClick: null,
+                onClick: () => Navigator.pushNamed(context, "/about"),
               ),
 
               _buildDrawerTile(
@@ -85,7 +85,7 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                 icon: Icons.article,
                 iconColor: Colors.orange,
                 label: "Terms & Privacy",
-                onClick: null,
+                onClick: () => Navigator.pushNamed(context, "/terms"),
               ),
               Divider(),
               _buildDrawerTile(

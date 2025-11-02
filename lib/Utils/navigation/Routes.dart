@@ -1,3 +1,4 @@
+import 'package:babivision/views/pages/AboutUs.dart';
 import 'package:babivision/views/pages/AppointmentBooker.dart';
 import 'package:babivision/views/pages/Appointments.dart';
 import 'package:babivision/views/pages/Auth/LoginPage.dart';
@@ -5,6 +6,7 @@ import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/Contact.dart';
+import 'package:babivision/views/pages/TermsPrivacy.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,8 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
     "/home": (context) => Homepage(),
     "/register": (context) => RegisterPage(),
     "/contact": (context) => Contact(),
+    "/about": (context) => AboutUs(),
+    "/terms": (context) => TermsPrivacyPage(),
   };
 }
 
