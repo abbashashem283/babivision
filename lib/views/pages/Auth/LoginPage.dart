@@ -16,13 +16,13 @@ import 'package:babivision/Utils/Widgets.dart' as w;
 class Loginpage extends StatefulWidget {
   final String origin;
   final String redirect;
-  final Map? redirectData;
+  final Map? redirectArguments;
 
   const Loginpage({
     super.key,
     required this.origin,
     required this.redirect,
-    this.redirectData,
+    this.redirectArguments,
   });
 
   @override
@@ -159,7 +159,7 @@ class _LoginpageState extends State<Loginpage> {
                                 Navigator.pushReplacementNamed(
                                   context,
                                   widget.redirect,
-                                  arguments: widget.redirectData,
+                                  arguments: widget.redirectArguments,
                                 );
                               }
                             }

@@ -151,43 +151,7 @@ class _PlaygroundState extends State<Playground> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Playground")),
-      body: Center(
-        child: FilledButton(
-          onPressed: () {
-            showSnackbar(
-              context: context,
-              snackBar:
-                  TextSnackBar(
-                    label: "Appointment Added!",
-                    duration: Duration(seconds: 10),
-                    foreGroundColor: Colors.black,
-                    backgroundColor: Colors.grey[200],
-                    icon: Icon(
-                      Icons.check_circle_outline,
-                      size: 25,
-                      color: Colors.green,
-                    ),
-                  ).create(),
-            );
-          },
-          child: Text("show snackbar"),
-        ),
-        // child: Container(
-        //   width: 200,
-        //   height: 200,
-        //   decoration: BoxDecoration(
-        //     color: Colors.blue,
-        //     borderRadius: BorderRadius.circular(8),
-        //     border: Border(
-        //       top: BorderSide(color: Colors.black, width: 1),
-        //       right: BorderSide(color: Colors.black, width: 1),
-        //       bottom: BorderSide(color: Colors.black, width: 1),
-        //       left: BorderSide(color: Colors.transparent, width: 1),
-        //     ),
-        //   ),
-        //   child: Center(child: Text("test")),
-        // ),
-      ),
+      body: Center(child: Container(color: Colors.red)),
     );
   }
 }

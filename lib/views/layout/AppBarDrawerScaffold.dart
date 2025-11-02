@@ -79,7 +79,7 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                 icon: Icons.message_rounded,
                 iconColor: KColors.contactIcon,
                 label: "Contact / Support",
-                onClick: null,
+                onClick: () => Navigator.pushNamed(context, "/contact"),
               ),
               _buildDrawerTile(
                 icon: Icons.article,

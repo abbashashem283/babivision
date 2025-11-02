@@ -4,6 +4,7 @@ import 'package:babivision/views/pages/Auth/LoginPage.dart';
 import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
+import 'package:babivision/views/pages/Contact.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ final _dynamicRoutes = {
       (args) => Loginpage(
         origin: args['origin'],
         redirect: args['redirect'],
-        redirectData: args['redirectData'],
+        redirectArguments: args['redirectArguments'],
       ),
   "/password/code":
       (args) => PasswordCodeConfirmation(
@@ -37,10 +38,10 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
   BuildContext context,
 ) {
   return {
-    //"/appointments/book": (context) => AppointmentBooker(),
     "/appointments": (context) => Appointments(),
     "/home": (context) => Homepage(),
     "/register": (context) => RegisterPage(),
+    "/contact": (context) => Contact(),
   };
 }
 

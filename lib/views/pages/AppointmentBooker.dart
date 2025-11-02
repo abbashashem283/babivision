@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Http.dart';
@@ -421,9 +422,9 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
             arguments: {
               "origin": "/appointments/book",
               "redirect": "/appointments/book",
-              "redirectData": {
-                "service": _selectedService,
-                "clinic": _selectedClinic,
+              "redirectArguments": {
+                "service": widget.service,
+                "clinic": widget.clinic,
               },
             },
           );
@@ -477,6 +478,7 @@ class _AppointmentBookerState extends State<AppointmentBooker> {
     // TODO: implement initState
 
     super.initState();
+    log("selected service is ${widget.service?.toString()}");
     _selectedClinic = widget.clinic ?? _noClinicPlaceHolder;
     _selectedService = widget.service ?? _noServicePlaceHolder;
 

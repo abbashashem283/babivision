@@ -134,7 +134,7 @@ class _PasswordResetState extends State<PasswordReset> {
                                   // );
                                   Navigator.popUntil(
                                     context,
-                                    ModalRoute.withName("/login"),
+                                    ModalRoute.withName('/login'),
                                   );
                                 }
                               });
