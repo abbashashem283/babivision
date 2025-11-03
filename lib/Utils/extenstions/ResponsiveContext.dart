@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 enum ScreenSize { sm, md, lg, xl, xxl }
 
+extension DoubleMaxExtension on double {
+  /// Returns this double if it is less than [maxValue], otherwise returns [maxValue]
+  double max(double maxValue) {
+    return this >= maxValue ? maxValue : this;
+  }
+}
+
 extension ResponsiveContext on BuildContext {
   double get width => MediaQuery.of(this).size.width;
   double get height => MediaQuery.of(this).size.height;

@@ -56,7 +56,7 @@ class _HomepageState extends State<Homepage> {
                 "backgroundColor": KColors.appointment,
               },
               {
-                "onPress": null,
+                "onPress": () => Navigator.pushNamed(context, "/findUs"),
                 "img_src": "assets/icon-images/map.svg",
                 "label": "Find Us",
                 "color": Colors.black,

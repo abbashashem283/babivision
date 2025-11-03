@@ -11,7 +11,7 @@ class B extends StatelessWidget {
     this.color = "g",
     this.thickness = 1,
     this.inExpanded = false,
-    required this.child,
+    this.child = const SizedBox.shrink(),
   });
 
   Color getColor(String color) {

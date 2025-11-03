@@ -106,6 +106,7 @@ class _ContactState extends State<Contact> {
             },
             builder:
                 (errors) => Container(
+                  height: context.percentageOfHeight(.5),
                   width: double.infinity.clamp(
                     0,
                     (context.responsiveExplicit(

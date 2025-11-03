@@ -6,6 +6,7 @@ import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/Contact.dart';
+import 'package:babivision/views/pages/FindUs.dart';
 import 'package:babivision/views/pages/TermsPrivacy.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
@@ -46,6 +47,7 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
     "/contact": (context) => Contact(),
     "/about": (context) => AboutUs(),
     "/terms": (context) => TermsPrivacyPage(),
+    "/findUs": (context) => FindUs(),
   };
 }
 
