@@ -1,8 +1,85 @@
+import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
+import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+
 import 'package:latlong2/latlong.dart';
+import 'package:babivision/Utils/Utils.dart';
+
+class ClinicList extends StatefulWidget {
+  final List items;
+  final int selectedClinic;
+  final Function(int index)? onItemSelected;
+  const ClinicList({
+    super.key,
+    required this.items,
+    this.selectedClinic = 0,
+    this.onItemSelected,
+  });
+
+  @override
+  State<ClinicList> createState() => _ClinicListState();
+}
+
+class _ClinicListState extends State<ClinicList> {
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _selectedIndex = widget.selectedClinic;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GlowingOverscrollIndicator(
+      color: Colors.purple,
+      axisDirection: AxisDirection.down,
+      child: ListView.builder(
+        physics: AlwaysScrollableScrollPhysics(),
+        itemCount: widget.items.length,
+        itemBuilder: (context, index) {
+          final item = widget.items[index];
+          final name = item.name;
+          final address = item.address;
+          return B(
+            child: SizedBox(
+              height: context.percentageOfHeight(.1),
+              child: ListTile(
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                  widget.onItemSelected?.call(index);
+                },
+                trailing:
+                    _selectedIndex == index
+                        ? Icon(Icons.check_circle, color: Colors.purple)
+                        : null,
+                leading: Icon(
+                  Icons.location_on,
+                  color: Colors.purple,
+                  size: context.fontSizeMin(35),
+                ),
+                title: Text(
+                  name,
+                  style: TextStyle(fontSize: context.fontSizeMin(19)),
+                ),
+                subtitle: Text(
+                  address,
+                  style: TextStyle(fontSize: context.fontSizeMin(16)),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
 
 class FindUs extends StatefulWidget {
   const FindUs({super.key});
@@ -13,6 +90,10 @@ class FindUs extends StatefulWidget {
 
 class _FindUsState extends State<FindUs> {
   final _mapController = MapController();
+  List? _clinics;
+  late Clinic _selectedClinic;
+
+  bool _isLoading = false, _isError = false;
 
   TileLayer get _mapTile {
     return TileLayer(
@@ -21,146 +102,216 @@ class _FindUsState extends State<FindUs> {
     );
   }
 
+  Future<void> _fetchClinics() async {
+    if (mounted)
+      setState(() {
+        _isLoading = true;
+        _isError = false;
+      });
+    try {
+      final response = await Http.get("/api/clinics");
+      if (response.data["type"] == "error" || response.data["clinics"] == null)
+        throw Exception();
+      List clinics =
+          response.data["clinics"]
+              .map((clinic) => Clinic.fromJson(clinic))
+              .toList();
+      setState(() {
+        _isLoading = false;
+        _clinics = clinics;
+        _selectedClinic = clinics[0];
+      });
+    } catch (e) {
+      log(e.toString());
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+          _isError = true;
+        });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchClinics();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0.5, // thin shadow for separation
-        // --- Back button on the top left ---
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-        ),
+    Widget content = SizedBox.shrink();
 
-        // --- App bar title ---
-        title: Text(
-          "Find Us",
+    if (_isLoading)
+      content = CircularProgressIndicator();
+    else if (_isError)
+      content = TextButton.icon(
+        onPressed: null,
+        label: Text(
+          "An Error Occured",
           style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-            //!
-            fontSize: context.responsiveExplicit(
-              fallback: 16,
-              onHeight: {1024: 24},
+            color: Colors.red,
+            fontSize: context.fontSizeMax(18),
+          ),
+        ),
+        icon: Icon(
+          Icons.error,
+          size: context.fontSizeMax(20),
+          color: Colors.red,
+        ),
+      );
+    else
+      content = SizedBox(
+        width: double.infinity.max(1000),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: B(
+            color: "tr",
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 20,
+                  child: B(
+                    color: "r",
+                    inExpanded: true,
+                    child: B(
+                      color: "b",
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Our Locations",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: context.responsiveExplicit(
+                                fallback: context.fontSizeAVG(24),
+                                onRatio: {
+                                  -1: context.fontSizeAVG(24),
+                                  .75: context.fontSizeMin(25),
+                                  .95: context.fontSizeMin(28),
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          FractionallySizedBox(
+                            widthFactor: .7,
+                            child: Text(
+                              "Visit one of our clinics to receive professional eye care and a wide range of eye wear",
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: context.responsiveExplicit(
+                                  fallback: context.fontSizeAVG(16),
+                                  onRatio: {
+                                    -1: context.fontSizeAVG(16),
+                                    .75: context.fontSizeMin(17),
+                                    .95: context.fontSizeMin(18),
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 47,
+                  child: B(
+                    color: "r",
+                    inExpanded: true,
+                    child: FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        minZoom: 3,
+                        maxZoom: 18,
+                        initialCenter: LatLng(
+                          double.parse(_selectedClinic.latitude),
+                          double.parse(_selectedClinic.longitude),
+                        ),
+                        initialZoom: 15,
+                        interactionOptions: InteractionOptions(
+                          flags: InteractiveFlag.all,
+                        ),
+                      ),
+                      children: [
+                        _mapTile,
+                        MarkerLayer(
+                          markers: List.generate(_clinics!.length, (index) {
+                            final clinic = _clinics![index];
+                            final latitude = double.parse(clinic.latitude);
+                            final longitude = double.parse(clinic.longitude);
+                            return Marker(
+                              point: LatLng(latitude, longitude),
+                              child: Icon(
+                                Icons.location_on,
+                                color: Colors.purple,
+                                size: 50,
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 33,
+                  child: B(
+                    color: "to",
+                    inExpanded: true,
+                    child: Center(
+                      child: SizedBox(
+                        height:
+                            _clinics!.length <= 2
+                                ? context.percentageOfHeight(.22)
+                                : null,
+                        child: ClinicList(
+                          items: _clinics!,
+                          selectedClinic: 0,
+                          onItemSelected: (index) {
+                            log("setting selected clinic to $index");
+                            final clinic = _clinics![index];
+                            setState(() {
+                              _selectedClinic = clinic;
+                            });
+                            final double latitude = double.parse(
+                              clinic.latitude,
+                            );
+                            final double longitude = double.parse(
+                              clinic.longitude,
+                            );
+                            _mapController.move(
+                              LatLng(latitude, longitude),
+                              15,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+      );
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back),
+        ),
+        title: Text("Find Us", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
 
-      body: Center(
-        child: SizedBox(
-          width: double.infinity.max(1000),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: B(
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 24,
-                    child: B(
-                      color: "r",
-                      inExpanded: true,
-                      child: B(
-                        color: "b",
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Our Locations",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: context.responsiveExplicit(
-                                  fallback: context.percentageOfWidth(.06),
-                                  // .max(35),
-                                  onWidth: {
-                                    500: context.percentageOfWidth(.05),
-                                    650: context.percentageOfWidth(.045),
-                                    800: context.percentageOfWidth(.042),
-                                    900: context.percentageOfWidth(.04),
-                                    1000: 40,
-                                    //.max(40),
-                                  },
-                                  onRatio: {
-                                    -.77: context.percentageOfWidth(.06),
-                                    -.6: context.percentageOfWidth(.062),
-                                    -.54: context.percentageOfWidth(.065),
-                                    -.46: context.percentageOfWidth(.067),
-                                    -.39: context.percentageOfWidth(.07),
-                                  },
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            FractionallySizedBox(
-                              widthFactor: .7,
-                              child: Text(
-                                "Visit one of our clinics to receive professional eye care and a wide range of eye wear",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  //fontWeight: FontWeight.bold,
-                                  fontSize: context.responsiveExplicit(
-                                    fallback: context.percentageOfWidth(.04),
-                                    //.max(20),
-                                    onWidth: {
-                                      500: context.percentageOfWidth(.03),
-                                      650: context.percentageOfWidth(.025),
-                                      800: context.percentageOfWidth(.022),
-                                      900: context.percentageOfWidth(.02),
-                                      1000: 20,
-                                      // .max(20),
-                                    },
-                                    onRatio: {
-                                      -.77: context.percentageOfWidth(.04),
-                                      -.6: context.percentageOfWidth(.042),
-                                      -.54: context.percentageOfWidth(.045),
-                                      -.46: context.percentageOfWidth(.047),
-                                      -.39: context.percentageOfWidth(.05),
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 39,
-                    child: B(
-                      color: "r",
-                      inExpanded: true,
-                      child: FlutterMap(
-                        mapController: _mapController,
-                        options: const MapOptions(
-                          initialCenter: LatLng(33.8617842, 35.5294576),
-                          initialZoom: 15,
-                          interactionOptions: InteractionOptions(
-                            flags: InteractiveFlag.all,
-                          ),
-                        ),
-                        children: [_mapTile],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 37,
-                    child: B(
-                      color: "r",
-                      inExpanded: true,
-                      child: SizedBox.shrink(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      body: Center(child: content),
     );
   }
 }

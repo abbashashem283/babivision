@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 enum ScreenSize { sm, md, lg, xl, xxl }
@@ -6,6 +8,10 @@ extension DoubleMaxExtension on double {
   /// Returns this double if it is less than [maxValue], otherwise returns [maxValue]
   double max(double maxValue) {
     return this >= maxValue ? maxValue : this;
+  }
+
+  double get rem {
+    return this * 16;
   }
 }
 
@@ -109,5 +115,26 @@ extension ResponsiveContext on BuildContext {
 
   double percentageOfHeight(double percent) {
     return height * percent;
+  }
+
+  double fontSizeMin(double size) {
+    double scaleWidth = width / 375; //iphone SE reference width
+    double scaleHeight = height / 667; //iphone SE reference height
+    double scaledSize = size * min(scaleWidth, scaleHeight);
+    return scaledSize;
+  }
+
+  double fontSizeMax(double size) {
+    double scaleWidth = width / 375; //iphone SE reference width
+    double scaleHeight = height / 667; //iphone SE reference height
+    double scaledSize = size * max(scaleWidth, scaleHeight);
+    return scaledSize;
+  }
+
+  double fontSizeAVG(double size) {
+    double scaleWidth = width / 375; //iphone SE reference width
+    double scaleHeight = height / 667; //iphone SE reference height
+    double scaledSize = size * ((scaleWidth + scaleHeight) / 2);
+    return scaledSize;
   }
 }

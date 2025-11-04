@@ -10,6 +10,7 @@ import 'package:babivision/views/pages/SplashScreen.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -21,19 +22,40 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-        ).copyWith(primary: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Homepage(),
-      routes: getRoutes(context),
-      onGenerateRoute: dynamicRoutes,
+    return ScreenUtilInit(
+      designSize: Size(375, 667),
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+            ).copyWith(primary: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: Homepage(),
+          routes: getRoutes(context),
+          onGenerateRoute: dynamicRoutes,
+        );
+      },
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     debugShowCheckedModeBanner: false,
+  //     theme: ThemeData(
+  //       colorScheme: ColorScheme.fromSeed(
+  //         seedColor: Colors.deepPurple,
+  //       ).copyWith(primary: Colors.deepPurple),
+  //       useMaterial3: true,
+  //     ),
+  //     home: Homepage(),
+  //     routes: getRoutes(context),
+  //     onGenerateRoute: dynamicRoutes,
+  //   );
+  // }
 }
 
 Future main() async {
