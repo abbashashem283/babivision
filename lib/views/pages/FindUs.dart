@@ -4,6 +4,7 @@ import 'package:babivision/models/Clinic.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:latlong2/latlong.dart';
 import 'package:babivision/Utils/Utils.dart';
@@ -57,7 +58,11 @@ class _ClinicListState extends State<ClinicList> {
                 },
                 trailing:
                     _selectedIndex == index
-                        ? Icon(Icons.check_circle, color: Colors.purple)
+                        ? Icon(
+                          Icons.check_circle,
+                          color: Colors.purple,
+                          size: context.fontSizeMin(24),
+                        )
                         : null,
                 leading: Icon(
                   Icons.location_on,
@@ -187,7 +192,7 @@ class _FindUsState extends State<FindUs> {
                                 fallback: context.fontSizeAVG(24),
                                 onRatio: {
                                   -1: context.fontSizeAVG(24),
-                                  .75: context.fontSizeMin(25),
+                                  .5: context.fontSizeMin(25),
                                   .95: context.fontSizeMin(28),
                                 },
                               ),
@@ -207,7 +212,7 @@ class _FindUsState extends State<FindUs> {
                                   fallback: context.fontSizeAVG(16),
                                   onRatio: {
                                     -1: context.fontSizeAVG(16),
-                                    .75: context.fontSizeMin(17),
+                                    .6: context.fontSizeMin(17),
                                     .95: context.fontSizeMin(18),
                                   },
                                 ),
@@ -246,11 +251,127 @@ class _FindUsState extends State<FindUs> {
                             final latitude = double.parse(clinic.latitude);
                             final longitude = double.parse(clinic.longitude);
                             return Marker(
+                              // height: 200,
+                              // alignment: Alignment.bottomCenter,
+                              width: context.percentageOfWidth(.5),
+                              height: context.percentageOfWidth(.5),
+                              //alignment: Alignment.topCenter,
                               point: LatLng(latitude, longitude),
-                              child: Icon(
-                                Icons.location_on,
-                                color: Colors.purple,
-                                size: 50,
+                              // width: 100.sw,
+                              // height: 100.sh,
+                              // child: B(
+                              //   child: Column(
+                              //     children: [
+                              //       Container(
+                              //         padding: EdgeInsets.all(8),
+                              //         //height: 6.0.rem,
+                              //         //width: 12.0.rem,
+                              //         //height: 536,
+                              //         decoration: BoxDecoration(
+                              //           color: Colors.purple,
+                              //           borderRadius: BorderRadius.circular(8),
+                              //         ),
+                              //         child: Column(
+                              //           //mainAxisSize: MainAxisSize.min,
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.spaceBetween,
+                              //           children: [
+                              //             FilledButton.icon(
+                              //               onPressed: null,
+                              //               // style: FilledButton.styleFrom(
+                              //               //   padding: EdgeInsets.zero,
+                              //               // ),
+                              //               label: Text("Directions"),
+                              //               icon: Icon(Icons.map),
+                              //             ),
+                              //             FilledButton.icon(
+                              //               onPressed: null,
+                              //               style: FilledButton.styleFrom(
+                              //                 padding: EdgeInsets.zero,
+                              //               ),
+                              //               label: Text("Book Appointment"),
+                              //               icon: Icon(
+                              //                 Icons.calendar_month_sharp,
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //       Icon(
+                              //         Icons.location_on,
+                              //         color: Colors.purple,
+                              //         size: context.fontSizeMin(24),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              child: B(
+                                color: "tr",
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: B(
+                                    color: "tr",
+                                    child: FractionallySizedBox(
+                                      heightFactor: .52,
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.purple,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        "/appointments/book",
+                                                        arguments: {
+                                                          'clinic':
+                                                              _selectedClinic,
+                                                        },
+                                                      );
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.calendar_month,
+                                                      color: Colors.white,
+                                                      size: context.fontSizeMin(
+                                                        35,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      Icons.map,
+                                                      color: Colors.white,
+                                                      size: context.fontSizeMin(
+                                                        35,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Icon(
+                                              Icons.location_on,
+                                              color: Colors.purple,
+                                              size: context.fontSizeMin(35),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             );
                           }),
