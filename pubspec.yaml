@@ -45,6 +45,8 @@ dependencies:
   flutter_map: ^8.2.2
   latlong2: ^0.9.1
   flutter_screenutil: ^5.9.3
+  url_launcher: ^6.3.2
+  geolocator: ^14.0.2
 
  
 

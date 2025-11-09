@@ -13,6 +13,7 @@ class AppbaDrawerScaffold extends StatefulWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final Function(int item)? onSideMenuItemTapped;
   final Map<String, dynamic>? user;
   const AppbaDrawerScaffold({
     super.key,
@@ -21,6 +22,7 @@ class AppbaDrawerScaffold extends StatefulWidget {
     this.floatingActionButton,
     this.floatingActionButtonLocation,
     this.user,
+    this.onSideMenuItemTapped,
   });
 
   @override
@@ -98,7 +100,9 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                 onClick: () {
                   if (userValue == null) {
                     Navigator.pushNamed(context, "/register");
+                    return;
                   }
+                  widget.onSideMenuItemTapped?.call(3);
                 },
               ),
               _buildDrawerTile(
