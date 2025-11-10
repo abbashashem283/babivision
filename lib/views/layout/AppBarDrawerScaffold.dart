@@ -81,7 +81,18 @@ class _AppbaDrawerScaffoldState extends State<AppbaDrawerScaffold> {
                 icon: Icons.message_rounded,
                 iconColor: KColors.contactIcon,
                 label: "Contact / Support",
-                onClick: () => Navigator.pushNamed(context, "/contact"),
+                onClick:
+                    () => Navigator.pushNamed(
+                      context,
+                      "/contact",
+                      arguments: {
+                        "title": "We’d love to hear from you 👋",
+                        "feedbackType": "feedback",
+                        "subTitle":
+                            "Send us a message and we’ll get back to you as soon as possible.",
+                        "appBarTitle": "Contact",
+                      },
+                    ),
               ),
               _buildDrawerTile(
                 icon: Icons.article,

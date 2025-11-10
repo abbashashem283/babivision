@@ -108,7 +108,18 @@ class _HomepageState extends State<Homepage> {
       case 1:
         return Services();
       case 2:
-        return Profile();
+        return Profile(
+          onUnAuthenticated: () {
+            setState(() {
+              _currentIndex = 0;
+            });
+            Navigator.pushNamed(
+              context,
+              "/login",
+              arguments: {"origin": "/home", "redirect": "/home"},
+            );
+          },
+        );
       default:
         return SizedBox.shrink();
     }

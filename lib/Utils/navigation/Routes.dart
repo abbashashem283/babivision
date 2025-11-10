@@ -1,15 +1,15 @@
+import 'package:babivision/views/forms/MessageForm.dart';
 import 'package:babivision/views/pages/AboutUs.dart';
 import 'package:babivision/views/pages/AppointmentBooker.dart';
 import 'package:babivision/views/pages/Appointments.dart';
 import 'package:babivision/views/pages/Auth/LoginPage.dart';
+import 'package:babivision/views/pages/Auth/PasswordChange.dart';
 import 'package:babivision/views/pages/Auth/PasswordCodeConfirmation.dart';
 import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
-import 'package:babivision/views/pages/Contact.dart';
 import 'package:babivision/views/pages/FindUs.dart';
 import 'package:babivision/views/pages/TermsPrivacy.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
-import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 
 final protectedRoutes = ["/appointments/book", "/appointments"];
@@ -32,9 +32,35 @@ final _dynamicRoutes = {
         code: args['code'],
         origin: args['origin'],
       ),
+  "/password/change": (args) => PasswordChange(origin: args['origin']),
   "/appointments/book":
       (args) =>
           AppointmentBooker(service: args['service'], clinic: args['clinic']),
+  "/contact":
+      (args) => MessageForm(
+        feedbackType: args['feedbackType'],
+        title: args['title'],
+        subTitle: args['subTitle'],
+        appBarTitle: args['appBarTitle'],
+      ),
+  "/contact/bug":
+      (args) => MessageForm(
+        feedbackType: args['feedbackType'],
+        title: args['title'],
+        subTitle: args['subTitle'],
+        appBarTitle: args['appBarTitle'],
+        name: args['name'],
+        email: args['email'],
+      ),
+  "/contact/complaint":
+      (args) => MessageForm(
+        feedbackType: args['feedbackType'],
+        title: args['title'],
+        subTitle: args['subTitle'],
+        appBarTitle: args['appBarTitle'],
+        name: args['name'],
+        email: args['email'],
+      ),
 };
 
 Map<String, Widget Function(BuildContext context)> getRoutes(
@@ -44,7 +70,6 @@ Map<String, Widget Function(BuildContext context)> getRoutes(
     "/appointments": (context) => Appointments(),
     "/home": (context) => Homepage(),
     "/register": (context) => RegisterPage(),
-    "/contact": (context) => Contact(),
     "/about": (context) => AboutUs(),
     "/terms": (context) => TermsPrivacyPage(),
     "/findUs": (context) => FindUs(),

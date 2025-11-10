@@ -19,6 +19,7 @@ class KColors {
   static final Color selectedSlot = const Color.fromARGB(255, 94, 24, 107);
   static final Color opaqueBlack48 = const Color.fromARGB(122, 0, 0, 0);
   static final Color opaqueBlack20 = const Color.fromARGB(50, 0, 0, 0);
+  static final Color profileBlue = const Color.fromARGB(255, 40, 123, 137);
 
   static Color getColor(context, String color) {
     switch (color) {

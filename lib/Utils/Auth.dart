@@ -61,6 +61,7 @@ class Auth {
     final data = response.data;
     if (data["type"] == "success") {
       await Tokens.removeAll();
+      Notifiers.user.value = null;
     }
     return data;
   }

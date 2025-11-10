@@ -10,20 +10,54 @@ import 'package:flutter/material.dart';
 /// where users can enter their name, email, and message.
 /// This version does not validate locally — validation is expected
 /// to happen on your backend (server-side).
-class Contact extends StatefulWidget {
-  const Contact({super.key});
+class MessageForm extends StatefulWidget {
+  final String feedbackType;
+
+  final String title;
+  final String subTitle;
+  final String endPoint;
+  final String appBarTitle;
+  final String successMessage;
+  final String errorMessage;
+  final String name;
+  final String email;
+  final String message;
+  final String submitButtonText;
+  const MessageForm({
+    super.key,
+    required this.feedbackType,
+    required this.title,
+    required this.subTitle,
+    required this.appBarTitle,
+    this.endPoint = "/api/feedback/add",
+    this.successMessage = "Feedback Added!",
+    this.errorMessage = "Couldn't Send Feedback!",
+    this.name = "",
+    this.email = "",
+    this.message = "",
+    this.submitButtonText = "Send Message",
+  });
 
   @override
-  State<Contact> createState() => _ContactState();
+  State<MessageForm> createState() => _MessageFormState();
 }
 
-class _ContactState extends State<Contact> {
+class _MessageFormState extends State<MessageForm> {
   // --- Text controllers for each input field ---
   // They let us read what's typed in the text fields.
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _messageController = TextEditingController();
   GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _nameController.text = widget.name;
+    _emailController.text = widget.email;
+    _messageController.text = widget.message;
+  }
 
   @override
   void dispose() {
@@ -62,7 +96,7 @@ class _ContactState extends State<Contact> {
 
         // --- App bar title ---
         title: Text(
-          "Contact Us",
+          widget.appBarTitle,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: Colors.black87,
@@ -86,7 +120,8 @@ class _ContactState extends State<Contact> {
           child: Laraform(
             key: _formKey,
             fetcher:
-                () => Http.post("/api/feedback/add", {
+                () => Http.post(widget.endPoint, {
+                  "type": widget.feedbackType,
                   "name": _nameController.text,
                   "email": _emailController.text,
                   "message": _messageController.text,
@@ -94,13 +129,15 @@ class _ContactState extends State<Contact> {
             onFetched: (response) {
               final data = response.data;
               if (data["type"] == "success") {
-                return {"type": MessageType.error};
-              } else if (data["type"] == "error") {
+                return {
+                  "message": widget.successMessage,
+                  "type": MessageType.success,
+                };
+              }
+              if (data["type"] == "error") {
                 showSnackbar(
                   context: context,
-                  snackBar: TextSnackBar.error(
-                    message: "Couldn't send feedback!",
-                  ),
+                  snackBar: TextSnackBar.error(message: widget.errorMessage),
                 );
               }
             },
@@ -136,7 +173,7 @@ class _ContactState extends State<Contact> {
                     children: [
                       // Page title
                       Text(
-                        "We’d love to hear from you 👋",
+                        widget.title,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -147,8 +184,8 @@ class _ContactState extends State<Contact> {
                       const SizedBox(height: 8),
 
                       // Subtitle text
-                      const Text(
-                        "Send us a message and we’ll get back to you as soon as possible.",
+                      Text(
+                        widget.subTitle,
                         style: TextStyle(color: Colors.black54),
                         textAlign: TextAlign.center,
                       ),
@@ -204,7 +241,7 @@ class _ContactState extends State<Contact> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          child: const Text("Send Message"),
+                          child: Text(widget.submitButtonText),
                         ),
                       ),
                     ],
