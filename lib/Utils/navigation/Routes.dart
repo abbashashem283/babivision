@@ -82,5 +82,8 @@ Route? dynamicRoutes(RouteSettings settings) {
   if (routeName == null) return null;
   final pageBuilder = _dynamicRoutes[routeName];
   if (pageBuilder == null) return null;
-  return MaterialPageRoute(builder: (_) => pageBuilder({...args}));
+  return MaterialPageRoute(
+    builder: (_) => pageBuilder({...args}),
+    settings: settings,
+  );
 }

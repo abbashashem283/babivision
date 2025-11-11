@@ -140,7 +140,21 @@ class _LoginpageState extends State<Loginpage> {
                                       "email": _emailController.text,
                                       "origin": widget.origin,
                                     },
-                                  );
+                                  ).then((passwordReset) {
+                                    if (!mounted || passwordReset == null)
+                                      return;
+                                    passwordReset as bool;
+                                    if (passwordReset) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        "/login",
+                                        arguments: {
+                                          "origin": widget.origin,
+                                          "redirect": widget.redirect,
+                                        },
+                                      );
+                                    }
+                                  });
                                 }
                               });
                             }

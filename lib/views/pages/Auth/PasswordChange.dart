@@ -1,5 +1,7 @@
+import 'package:babivision/Utils/Auth.dart';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/data/KConstants.dart';
+import 'package:babivision/data/ValueNotifiers.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/FormMessage.dart';
 import 'package:babivision/views/forms/LaraForm.dart';
@@ -20,6 +22,8 @@ class _PasswordChangeState extends State<PasswordChange> {
   GlobalKey<LaraformState> _formKey = GlobalKey<LaraformState>();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  final Map _user = user.value!;
 
   void _setImmersiveMode() {
     services.SystemChrome.setEnabledSystemUIMode(
@@ -100,21 +104,34 @@ class _PasswordChangeState extends State<PasswordChange> {
                           topMargin: 30,
                           topMarginIM: 20,
                           fetcher: () async {
-                            return Http.post("/api/auth/password/verify", {
+                            return Http.post("/api/auth/password/change", {
+                              'email': _user['email'],
                               'password': _passwordController.text,
-                            });
+                            }, isAuth: true);
                           },
 
                           onFetched: (response) {
-                            //debugPrint(response.data.toString());
+                            debugPrint(response.data.toString());
                             final data = response.data;
+                            if (data["type"] == "error")
+                              return {
+                                "type": "error",
+                                "message": data["message"],
+                              };
                             if (data["type"] == "success") {
                               Future.delayed(Duration(seconds: 2), () {
                                 if (mounted) {
-                                  Navigator.popUntil(
+                                  Navigator.pushNamed(
                                     context,
-                                    ModalRoute.withName('/login'),
-                                  );
+                                    "/password/code",
+                                    arguments: {
+                                      'origin': "/password/change",
+                                      'email': _user['email'],
+                                    },
+                                  ).then((passwordReset) {
+                                    if (mounted && passwordReset != null)
+                                      Navigator.pop(context, passwordReset);
+                                  });
                                 }
                               });
                             }

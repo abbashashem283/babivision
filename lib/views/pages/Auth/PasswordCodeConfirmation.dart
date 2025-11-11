@@ -127,7 +127,18 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                 //         ),
                                 //   ),
                                 // );
-                                Navigator.pushReplacementNamed(
+
+                                // Navigator.pushReplacementNamed(
+                                //   context,
+                                //   "/password/reset",
+                                //   arguments: {
+                                //     "email": widget.email,
+                                //     "code": _pinController.text,
+                                //     "origin": widget.origin,
+                                //   },
+                                // );
+
+                                Navigator.pushNamed(
                                   context,
                                   "/password/reset",
                                   arguments: {
@@ -135,7 +146,10 @@ class _PasswordCodeConfirmationState extends State<PasswordCodeConfirmation> {
                                     "code": _pinController.text,
                                     "origin": widget.origin,
                                   },
-                                );
+                                ).then((passwordReset) {
+                                  if (mounted)
+                                    Navigator.pop(context, passwordReset);
+                                });
                               });
                             }
                           },

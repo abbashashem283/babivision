@@ -132,10 +132,13 @@ class _PasswordResetState extends State<PasswordReset> {
                                   //     "redirect": widget.origin,
                                   //   },
                                   // );
-                                  Navigator.popUntil(
-                                    context,
-                                    ModalRoute.withName('/login'),
-                                  );
+
+                                  // Navigator.popUntil(
+                                  //   context,
+                                  //   ModalRoute.withName(widget.origin),
+                                  // );
+
+                                  Navigator.pop(context, true);
                                 }
                               });
                             }
