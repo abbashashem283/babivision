@@ -7,7 +7,8 @@ import 'package:babivision/views/buttons/CIconButton.dart';
 import 'package:babivision/views/cards/DiagonalShadow.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/layout/AppBarDrawerScaffold.dart';
-import 'package:babivision/views/pages/Profile.dart';
+import 'package:babivision/views/pages/homepage/tabs/Notifications.dart';
+import 'package:babivision/views/pages/homepage/tabs/Profile.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:babivision/data/KConstants.dart';
@@ -120,6 +121,8 @@ class _HomepageState extends State<Homepage> {
             );
           },
         );
+      case 3:
+        return Notifications();
       default:
         return SizedBox.shrink();
     }
@@ -344,21 +347,7 @@ class _HomepageState extends State<Homepage> {
       },
       body: Align(
         alignment: Alignment.topCenter,
-        child: SizedBox(
-          // width: double.infinity.clamp(
-          //   50,
-          //   _currentIndex == 1 ? context.percentageOfWidth(1) : 800,
-          // ),
-          // child: FractionallySizedBox(
-          //   //height: 250,
-          //   // widthFactor: _currentIndex == 1 ? .99 : .95,
-          //   // heightFactor: _currentIndex == 1 ? .99 : .92,
-          //   widthFactor: 1,
-          //   //height: 250,
-          //   child: _getSelectedTab(),
-          // ),
-          child: _getSelectedTab(),
-        ),
+        child: SizedBox(child: _getSelectedTab()),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
