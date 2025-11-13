@@ -1,9 +1,11 @@
 import 'package:babivision/Utils/navigation/Routes.dart';
+import 'package:babivision/data/storage/HiveStorage.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -58,5 +60,7 @@ class _MyAppState extends State<MyApp> {
 Future main() async {
   //debugPaintSizeEnabled = true;
   await dotenv.load(fileName: ".env");
+  await Hive.initFlutter();
+  await HiveStorage().initBox("babivision");
   runApp(const MyApp());
 }
