@@ -20,15 +20,15 @@ class HiveStorage {
     return _instance;
   }
 
-  void write(dynamic key, dynamic value) {
+  Future<void> write(dynamic key, dynamic value) async {
     assert(_box != null, "no selected box");
     final box = _box!;
-    box.put(key, value);
+    await box.put(key, value);
   }
 
-  void read(dynamic key) {
+  Future<dynamic> read(dynamic key, {dynamic defaultValue}) async {
     assert(_box != null, "no selected box");
     final box = _box!;
-    box.get(key);
+    return await box.get(key, defaultValue: defaultValue);
   }
 }

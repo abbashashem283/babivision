@@ -4,6 +4,7 @@ class CheckBox extends StatefulWidget {
   final bool initialValue;
   final Function()? onChecked;
   final Function()? onUnChecked;
+  final Function(bool value)? onValueChanged;
   final Color? activeColor;
   const CheckBox({
     super.key,
@@ -11,6 +12,7 @@ class CheckBox extends StatefulWidget {
     this.onChecked,
     this.onUnChecked,
     this.activeColor,
+    this.onValueChanged,
   });
 
   @override
@@ -39,6 +41,7 @@ class _CheckBoxState extends State<CheckBox> {
         } else {
           widget.onUnChecked?.call();
         }
+        widget.onValueChanged?.call(value);
         setState(() {
           _currentValue = value;
         });
