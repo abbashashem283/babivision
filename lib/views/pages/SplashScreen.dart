@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:babivision/views/pages/homepage/tabs/Services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -26,10 +28,10 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1B144A),
+      backgroundColor: KColors.offWhite,
       body: Center(
-        child: Image.asset(
-          'assets/images/babivision.png',
+        child: SvgPicture.asset(
+          'assets/images/babivision-logo.svg',
           width: 200,
           height: 200,
           fit: BoxFit.fill,

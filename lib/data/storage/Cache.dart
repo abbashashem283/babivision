@@ -8,8 +8,9 @@ class Cache {
 
   static Future<dynamic> get(
     dynamic key, {
-    Function()? onExpiredOrNull,
+    Function(dynamic oldValue)? onExpiredOrMiss,
     int ttl = 3600,
+    bool cacheNewValue = true,
   }) async {
     final data = await HiveStorage().read(key);
     dynamic newValue;
@@ -22,9 +23,10 @@ class Cache {
       if (now <= expires) return value;
     }
 
-    newValue = await onExpiredOrNull?.call();
+    final oldValue = data?["value"];
+    newValue = await onExpiredOrMiss?.call(oldValue);
 
-    if (newValue != null) await put(key, newValue, ttl: ttl);
+    if (newValue != null && cacheNewValue) await put(key, newValue, ttl: ttl);
     return newValue;
   }
 }
