@@ -29,4 +29,8 @@ class Cache {
     if (newValue != null && cacheNewValue) await put(key, newValue, ttl: ttl);
     return newValue;
   }
+
+  Future<void> remove(dynamic key) async {
+    await HiveStorage().delete(key);
+  }
 }

@@ -2,6 +2,7 @@ import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/models/Clinic.dart';
+import 'package:babivision/views/IconMessage.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/popups/Snackbars.dart';
 import 'package:flutter/material.dart';
@@ -196,21 +197,7 @@ class _FindUsState extends State<FindUs> {
     if (_isLoading)
       content = CircularProgressIndicator();
     else if (_isError)
-      content = TextButton.icon(
-        onPressed: null,
-        label: Text(
-          "An Error Occured",
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: context.fontSizeMax(18),
-          ),
-        ),
-        icon: Icon(
-          Icons.error,
-          size: context.fontSizeMax(20),
-          color: Colors.red,
-        ),
-      );
+      content = IconMessage.error();
     else
       content = SizedBox(
         width: double.infinity.max(1000),

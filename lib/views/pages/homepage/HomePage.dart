@@ -72,7 +72,8 @@ class _HomepageState extends State<Homepage> {
                 ]),
                 _buildGridRow(context, [
                   {
-                    "onPress": null,
+                    "onPress":
+                        () => Navigator.pushNamed(context, "/prescriptions"),
                     "img_src": "assets/icon-images/note.svg",
                     "label": "My Prescriptions",
                     "color": Colors.black,

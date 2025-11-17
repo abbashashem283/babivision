@@ -8,6 +8,7 @@ import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/Utils/popups/Utils.dart';
 import 'package:babivision/data/KConstants.dart';
 import 'package:babivision/data/ValueNotifiers.dart';
+import 'package:babivision/views/IconMessage.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
 import 'package:babivision/views/page-components/ErrorMessage.dart';
@@ -453,7 +454,7 @@ class _AppointmentsState extends State<Appointments> {
     if (_isLoading)
       content = SizedBox.shrink();
     else if (_isError)
-      content = Center(child: ErrorMessage(message: "An error has occured!"));
+      content = Center(child: IconMessage.error());
     else if (_noAppointments)
       content = Center(child: Text("No Appointments Found"));
     else {

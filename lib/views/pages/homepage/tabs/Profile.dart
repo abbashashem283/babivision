@@ -254,6 +254,11 @@ class _ProfileState extends State<Profile> {
                               _buildListTile(
                                 icon: Icons.medication_rounded,
                                 title: "Prescriptions",
+                                onPress:
+                                    () => Navigator.pushNamed(
+                                      context,
+                                      "/prescriptions",
+                                    ),
                               ),
                               _buildListTile(
                                 icon: Icons.report_sharp,

@@ -4,6 +4,7 @@ import 'package:babivision/Utils/Widgets.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
 import 'package:babivision/data/ValueNotifiers.dart';
 import 'package:babivision/data/storage/Cache.dart';
+import 'package:babivision/views/IconMessage.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/forms/CheckBox.dart';
 import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
@@ -97,7 +98,7 @@ class _NotificationListDelegateState extends State<NotificationListDelegate> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.amber[200],
-      height: context.percentageOfHeight(.12),
+      //height: context.percentageOfHeight(.12),
       child: Row(
         children: [
           Padding(
@@ -419,23 +420,7 @@ class _NotificationsState extends State<Notifications> {
         indicator: SpinKitWave(size: 24, color: Colors.amber[700]),
       );
     } else if (_isError) {
-      content = Center(
-        child: TextButton.icon(
-          onPressed: null,
-          label: Text(
-            "An Error Has Occured!",
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: context.fontSizeMin(24),
-            ),
-          ),
-          icon: Icon(
-            Icons.error,
-            color: Colors.red,
-            size: context.fontSizeMin(26),
-          ),
-        ),
-      );
+      content = Center(child: IconMessage.error());
     } else if (_notifications == null || _notifications!.isEmpty) {
       content = Center(
         child: TextButton.icon(

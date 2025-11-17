@@ -31,4 +31,10 @@ class HiveStorage {
     final box = _box!;
     return await box.get(key, defaultValue: defaultValue);
   }
+
+  Future<void> delete(dynamic key) async {
+    assert(_box != null, "no selected box");
+    final box = _box!;
+    await box.delete(key);
+  }
 }

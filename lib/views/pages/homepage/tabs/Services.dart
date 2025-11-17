@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:babivision/Utils/Http.dart';
 import 'package:babivision/Utils/Utils.dart';
 import 'package:babivision/Utils/extenstions/ResponsiveContext.dart';
+import 'package:babivision/views/IconMessage.dart';
 import 'package:babivision/views/debug/B.dart';
 import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
 import 'package:dio/dio.dart';
@@ -304,16 +305,7 @@ class _ServicesState extends State<Services> {
 
     if (!_isLoading) {
       if (_isError)
-        content = Center(
-          child: TextButton.icon(
-            onPressed: null,
-            label: Text(
-              "An Error has Occured!",
-              style: TextStyle(color: Colors.red),
-            ),
-            icon: Icon(Icons.error, color: Colors.red),
-          ),
-        );
+        content = Center(child: IconMessage.error());
       else
         content = Scrollbar(
           thumbVisibility: true,
