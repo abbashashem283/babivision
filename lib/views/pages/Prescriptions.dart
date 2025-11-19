@@ -296,6 +296,15 @@ class _PrescriptionsState extends State<Prescriptions> {
       content = StackLoadingIndicator.regular();
     else if (_isError)
       content = Center(child: IconMessage.error());
+    else if (_prescriptions == null || _prescriptions!.isEmpty)
+      content = Center(
+        child: IconMessage(
+          icon: Icons.event_note_rounded,
+          message: "No prescriptions available",
+          color: KColors.profileBlue,
+          scalableSize: context.fontSizeMin(24),
+        ),
+      );
     else
       content = Scrollbar(
         thumbVisibility: true,
