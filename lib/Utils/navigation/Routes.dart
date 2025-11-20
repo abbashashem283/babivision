@@ -9,6 +9,7 @@ import 'package:babivision/views/pages/Auth/PasswordReset.dart';
 import 'package:babivision/views/pages/Auth/RegisterPage.dart';
 import 'package:babivision/views/pages/FindUs.dart';
 import 'package:babivision/views/pages/Prescriptions.dart';
+import 'package:babivision/views/pages/Products.dart';
 import 'package:babivision/views/pages/TermsPrivacy.dart';
 import 'package:babivision/views/pages/homepage/HomePage.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,7 @@ final _dynamicRoutes = {
         name: args['name'],
         email: args['email'],
       ),
+  "/products": (args) => Products(category: args['category']),
 };
 
 Map<String, Widget Function(BuildContext context)> getRoutes(

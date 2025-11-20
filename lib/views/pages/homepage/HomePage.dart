@@ -80,7 +80,12 @@ class _HomepageState extends State<Homepage> {
                     "backgroundColor": Colors.white,
                   },
                   {
-                    "onPress": null,
+                    "onPress":
+                        () => Navigator.pushNamed(
+                          context,
+                          '/products',
+                          arguments: {'category': 'Accessories'},
+                        ),
                     "img_src": "assets/icon-images/accessories.svg",
                     "label": "Accessories",
                     "color": Colors.black,
@@ -89,14 +94,24 @@ class _HomepageState extends State<Homepage> {
                 ]),
                 _buildGridRow(context, [
                   {
-                    "onPress": null,
+                    "onPress":
+                        () => Navigator.pushNamed(
+                          context,
+                          '/products',
+                          arguments: {'category': 'Lenses'},
+                        ),
                     "img_src": "assets/icon-images/lenses.svg",
                     "label": "Lenses",
                     "color": Colors.black,
                     "backgroundColor": KColors.findUs,
                   },
                   {
-                    "onPress": null,
+                    "onPress":
+                        () => Navigator.pushNamed(
+                          context,
+                          '/products',
+                          arguments: {'category': 'Glasses'},
+                        ),
                     "img_src": "assets/icon-images/glasses.svg",
                     "label": "Glasses",
                     "color": Colors.black,

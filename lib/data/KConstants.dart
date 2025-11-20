@@ -10,6 +10,7 @@ class KColors {
     1,
   );
   static final Color offWhite = const Color.fromARGB(255, 253, 248, 253);
+  static final Color offWhite10 = const Color.fromARGB(255, 251, 251, 251);
   static final Color aboutUsIcon = const Color.fromARGB(255, 90, 51, 176);
   static final Color contactIcon = const Color.fromARGB(255, 39, 118, 143);
   static final Color appointment = const Color.fromARGB(255, 137, 101, 211);
