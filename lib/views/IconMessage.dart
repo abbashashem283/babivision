@@ -28,14 +28,14 @@ class IconMessage extends StatelessWidget {
     return TextButton.icon(
       onPressed: null,
       label: Text(
-        "An Error Has Occured!",
+        message,
         style: TextStyle(
           color: color,
           fontSize: context.fontSizeMin(scalableSize),
         ),
       ),
       icon: Icon(
-        Icons.error,
+        icon,
         color: color,
         size: context.fontSizeMin(scalableSize + 2),
       ),

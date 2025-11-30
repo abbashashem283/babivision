@@ -26,6 +26,10 @@ extension ResponsiveContext on BuildContext {
   int get md => 768;
   int get sm => 0;
 
+  double get dpr => MediaQuery.devicePixelRatioOf(this);
+
+  TextScaler get textScaler => MediaQuery.textScalerOf(this);
+
   ScreenSize get screenSize {
     if (width >= xxl) return ScreenSize.xxl;
     if (width >= xl) return ScreenSize.xl;
@@ -117,9 +121,11 @@ extension ResponsiveContext on BuildContext {
     return height * percent;
   }
 
-  double fontSizeMin(double size) {
-    double scaleWidth = width / 375; //iphone SE reference width
-    double scaleHeight = height / 667; //iphone SE reference height
+  double fontSizeMin(double size, {double? maxWidth, double? maxHeight}) {
+    double constrainedWidth = min(maxWidth ?? double.infinity, width);
+    double constrainedHeight = min(maxHeight ?? double.infinity, height);
+    double scaleWidth = constrainedWidth / 375; //iphone SE reference width
+    double scaleHeight = constrainedHeight / 667; //iphone SE reference height
     double scaledSize = size * min(scaleWidth, scaleHeight);
     return scaledSize;
   }
