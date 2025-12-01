@@ -96,6 +96,7 @@ class ProductDelegate extends StatelessWidget {
                     name,
                     style: TextStyle(
                       fontSize: context.fontSizeMin(16, maxWidth: 1000),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Row(
@@ -258,7 +259,7 @@ class _ProductsState extends State<Products> {
         _isLoading = true;
       });
       debugPrint("fetching /api/products/${widget.category}");
-      final response = await Http.get("/api/products/${widget.category}");
+      final response = await Http.get("/api/products/${widget.category ?? ''}");
       final products = response.data['products'];
       setState(() {
         _isLoading = false;

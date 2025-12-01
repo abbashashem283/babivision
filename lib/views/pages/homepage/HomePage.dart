@@ -457,7 +457,9 @@ class _HomepageState extends State<Homepage> {
         width: 70,
         height: 70,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, "/products");
+          },
           backgroundColor: KColors.homeFloatingBtn,
           shape: const CircleBorder(),
           child: Icon(Icons.shopping_cart, color: Colors.white, size: 35),
