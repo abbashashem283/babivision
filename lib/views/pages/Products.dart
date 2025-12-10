@@ -10,6 +10,7 @@ import 'package:babivision/views/loadingIndicators/StackLoadingIndicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDelegate extends StatelessWidget {
   final int id;
@@ -27,6 +28,24 @@ class ProductDelegate extends StatelessWidget {
     required this.stock,
     this.image,
   });
+
+  Future<void> _order(String message) async {
+    final String encoded = Uri.encodeComponent(message);
+
+    final Uri whatsappAppURI = Uri.parse(
+      "whatsapp://send?phone=96176930756&text=$encoded",
+    );
+
+    final Uri whatsappWebURI = Uri.parse(
+      "https://wa.me/96176930756?text=$encoded",
+    );
+
+    if (await canLaunchUrl(whatsappAppURI)) {
+      await launchUrl(whatsappAppURI, mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(whatsappWebURI, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,9 +166,13 @@ class ProductDelegate extends StatelessWidget {
                   ),
                   Center(
                     child: FilledButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        _order(
+                          "Hey I saw the *$name* product and I would like more info about it",
+                        );
+                      },
                       label: Text(
-                        "Buy Now",
+                        "Order Now",
                         style: TextStyle(
                           fontSize: context.fontSizeMin(16, maxWidth: 1000),
                         ),
